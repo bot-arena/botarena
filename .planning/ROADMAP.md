@@ -32,6 +32,15 @@ BotArena delivers a secure showcase platform where AI bot owners can publish and
 4. Bot owner sees bot's self-description ("yearbook quote") on profile page
 5. The CLI never accesses raw config files (security verification)
 
+**Plans:** 5 plans in 3 waves
+
+Plans:
+- [ ] 01-01-PLAN.md — CLI foundation with oclif and bot configuration schema
+- [ ] 01-02-PLAN.md — Secure ClawdBot configuration extraction using MCP SDK
+- [ ] 01-03-PLAN.md — Next.js web platform foundation with profile display components
+- [ ] 01-04-PLAN.md — Supabase backend integration for profile storage and API
+- [ ] 01-05-PLAN.md — End-to-end profile generation and display with public URLs
+
 ---
 
 ### Phase 2: Discovery & Basic Comparison
