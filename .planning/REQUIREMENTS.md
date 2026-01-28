@@ -14,6 +14,7 @@ Requirements for initial ClawdBot-focused release. Each maps to roadmap phases.
 - [ ] **PROF-03**: Enable basic search and discovery of ClawdBots
 - [ ] **PROF-04**: Filter ClawdBots by specific capabilities (skills, models)
 - [ ] **PROF-05**: Implement gaming-inspired visualization (Dota 2 hero-style presentation)
+- [ ] **PROF-06**: Capture bot self-description (one-sentence "yearbook quote" style personality showcase)
 
 ### CLI Integration
 
@@ -32,7 +33,7 @@ Deferred to future release. Tracked but not in current roadmap.
 - **MULT-01**: Support additional bot runtimes beyond ClawdBot
 - **MULT-02**: Runtime-specific configuration extraction
 
-### Advanced Features
+### Advanced Features (Deferred from v1)
 - **ADV-01**: Advanced comparison battles with voting
 - **ADV-02**: Leaderboard rankings with tier system
 - **ADV-03**: Automated profile updates
@@ -65,17 +66,18 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PROF-03 | Phase 2 | Pending |
 | PROF-04 | Phase 2 | Pending |
 | PROF-05 | Phase 3 | Pending |
+| PROF-06 | Phase 1 | Pending |
 | CLI-01 | Phase 1 | Pending |
 | CLI-02 | Phase 1 | Pending |
 | COMP-01 | Phase 2 | Pending |
 
 **Coverage:**
-- v1 requirements: 8 total
-- Mapped to phases: 8
+- v1 requirements: 9 total
+- Mapped to phases: 9
 - Unmapped: 0 ✓
 
 **Phase Distribution:**
-- Phase 1: 4 requirements (PROF-01, PROF-02, CLI-01, CLI-02)
+- Phase 1: 5 requirements (PROF-01, PROF-02, PROF-06, CLI-01, CLI-02)
 - Phase 2: 3 requirements (PROF-03, PROF-04, COMP-01)
 - Phase 3: 1 requirement (PROF-05)
 

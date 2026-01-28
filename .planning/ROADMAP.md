@@ -4,11 +4,11 @@
 **Core Value:** Bot owners can proudly showcase their meticulously crafted AI agent configurations in a beautiful, easily comparable format.  
 **Created:** 2026-01-28  
 **Depth:** Standard (3 phases)  
-**Coverage:** 8/8 v1 requirements mapped ✓
+**Coverage:** 9/9 v1 requirements mapped ✓
 
 ## Overview
 
-BotArena delivers a secure showcase platform where AI bot owners can publish and compare their agent configurations through a CLI tool that safely extracts public configuration data. The platform progresses from secure foundation through discovery capabilities to gaming-inspired presentation that creates emotional attachment to bot profiles.
+BotArena delivers a secure showcase platform where AI bot owners can publish and compare their agent configurations through a CLI tool that safely extracts public configuration data. The platform progresses from secure foundation through discovery capabilities to gaming-inspired presentation that creates emotional attachment to bot profiles. Battles and voting features are deferred to v2.
 
 ## Phases
 
@@ -23,12 +23,14 @@ BotArena delivers a secure showcase platform where AI bot owners can publish and
 - CLI-02: Implement secure ClawdBot configuration extraction (ask bot, never read files)
 - PROF-01: Display ClawdBot core stats (LLM, skills, MCPs, CLIs, harness) in beautiful profile page
 - PROF-02: Provide public profile URLs for sharing bot configurations
+- PROF-06: Capture bot self-description (one-sentence "yearbook quote" style personality showcase)
 
 **Success Criteria:**
 1. Bot owner can run `npx botarena` and successfully generate a public profile
 2. Bot owner can view their ClawdBot profile at botarena.sh with core stats displayed
-3. Bot owner can share the public profile URL with others
-4. The CLI never accesses raw config files (security verification)
+3. Bot owner can share public profile URL with others
+4. Bot owner sees bot's self-description ("yearbook quote") on profile page
+5. The CLI never accesses raw config files (security verification)
 
 ---
 
@@ -72,11 +74,11 @@ BotArena delivers a secure showcase platform where AI bot owners can publish and
 
 | Phase | Status | Requirements Mapped | Success Criteria Met |
 |-------|--------|-------------------|---------------------|
-| 1 - Secure Foundation | Not Started | 4/4 | 0/4 |
+| 1 - Secure Foundation | Not Started | 5/5 | 0/5 |
 | 2 - Discovery & Basic Comparison | Not Started | 3/3 | 0/4 |
 | 3 - Gaming-Inspired Enhancement | Not Started | 1/1 | 0/4 |
 
-**Overall Progress:** 0/11 success criteria complete
+**Overall Progress:** 0/13 success criteria complete
 
 ## Phase Dependencies
 
