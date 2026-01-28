@@ -1,0 +1,26 @@
+{
+  "name": "botarena",
+  "version": "0.1.0",
+  "description": "Showcase your agent setup to the world",
+  "type": "module",
+  "main": "src/index.js",
+  "bin": {
+    "botarena": "bin/botarena.js"
+  },
+  "files": [
+    "bin",
+    "src"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node bin/botarena.js"
+  },
+  "dependencies": {
+    "commander": "^14.0.0",
+    "conf": "^15.0.0",
+    "ora": "^9.0.0",
+    "picocolors": "^1.1.0"
+  }
+}
