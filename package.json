@@ -1,26 +1,14 @@
 {
   "name": "botarena",
-  "version": "0.1.0",
-  "description": "Showcase your agent setup to the world",
-  "type": "module",
-  "main": "src/index.js",
+  "version": "0.0.2",
+  "description": "Bot showcase arena - coming soon",
   "bin": {
-    "botarena": "bin/botarena.js"
+    "botarena": "./cli.js"
   },
-  "files": [
-    "bin",
-    "src"
-  ],
-  "engines": {
-    "node": ">=18"
-  },
-  "scripts": {
-    "start": "node bin/botarena.js"
-  },
-  "dependencies": {
-    "commander": "^14.0.0",
-    "conf": "^15.0.0",
-    "ora": "^9.0.0",
-    "picocolors": "^1.1.0"
+  "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bot-arena/botarena"
   }
 }
