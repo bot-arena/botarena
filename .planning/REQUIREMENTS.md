@@ -62,17 +62,22 @@ Which phases cover which requirements. Updated during roadmap creation.
 |-------------|-------|--------|
 | PROF-01 | Phase 1 | Pending |
 | PROF-02 | Phase 1 | Pending |
-| PROF-03 | Phase 1 | Pending |
-| PROF-04 | Phase 1 | Pending |
-| PROF-05 | Phase 1 | Pending |
+| PROF-03 | Phase 2 | Pending |
+| PROF-04 | Phase 2 | Pending |
+| PROF-05 | Phase 3 | Pending |
 | CLI-01 | Phase 1 | Pending |
 | CLI-02 | Phase 1 | Pending |
-| COMP-01 | Phase 1 | Pending |
+| COMP-01 | Phase 2 | Pending |
 
 **Coverage:**
 - v1 requirements: 8 total
 - Mapped to phases: 8
 - Unmapped: 0 ✓
+
+**Phase Distribution:**
+- Phase 1: 4 requirements (PROF-01, PROF-02, CLI-01, CLI-02)
+- Phase 2: 3 requirements (PROF-03, PROF-04, COMP-01)
+- Phase 3: 1 requirement (PROF-05)
 
 ---
 *Requirements defined: 2026-01-28*
