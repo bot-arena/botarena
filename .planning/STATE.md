@@ -49,9 +49,9 @@ Establishing secure foundation phase that enables bot owners to safely generate 
 
 ### Architecture Decisions
 - **CLI Tool:** Secure local bot config discovery via runtime APIs (never raw files)
-- **Web Platform:** Next.js with Supabase backend for profile hosting
+- **Web Platform:** Next.js with Convex reactive backend for profile hosting
 - **Security Pattern:** Dedicated Security Service with envelope encryption
-- **Data Structure:** JSONB in PostgreSQL for flexible bot schemas
+- **Data Structure:** Convex document-relational database with TypeScript schema for flexible bot profiles
 
 ### Security Constraints
 - Never read raw configuration files directly
@@ -61,7 +61,7 @@ Establishing secure foundation phase that enables bot owners to safely generate 
 
 ### Technical Stack Chosen
 - **Frontend:** Next.js 16.1.6, Motion 12.29.0, Tailwind CSS, Radix UI
-- **Backend:** Supabase 2.0+ with PostgreSQL 15+, Drizzle ORM
+- **Backend:** Convex with reactive TypeScript queries and automatic transactions
 - **CLI:** oclif 4.0+ framework, Node.js 22 LTS
 - **Security:** Zod validation, MCP SDK integration, node-forge cryptography
 

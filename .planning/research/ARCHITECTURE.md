@@ -19,41 +19,41 @@
 │                           API Gateway                             │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │  ┌─────────────────────────────────────────────────────────────────────┐  │
-│  │                    Service Layer                            │  │
+│  │              Backend Logic (Convex Functions)              │  │
 │  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────────┐ │  │
-│  │  │Config Service│  │Profile      │  │Comparison &    │ │  │
-│  │  │             │  │Service      │  │  Filtering      │ │  │
+│  │  │ Config      │  │ Profile     │  │ Comparison &    │ │  │
+│  │  │ Functions   │  │ Functions   │  │  Filtering      │ │  │
 │  │  └─────┬───────┘  └─────┬───────┘  └─────────┬───────┘ │  │
 │  │          │                 │                    │         │  │
 │  │  ┌───────┴───────┐  ┌─────┴───────┐  ┌─────┴───────┐ │  │
-│  │  │Security &     │  │Validation   │  │Search &      │ │  │
-│  │  │Encryption     │  │Service      │  │Indexing      │ │  │
-│  │  │Service        │  │             │  │Service       │ │  │
+│  │  │ Security &     │  │ Validation │  │ Search &      │ │  │
+│  │  │ Encryption     │  │ Functions  │  │ Indexing      │ │  │
+│  │  │ Functions      │  │            │  │ Functions     │ │  │
 │  │  └───────────────┘  └─────────────┘  └─────────────┘ │  │
 │  └─────────────────────────────────────────────────────────────────────┘  │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                           Data Layer                              │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │  ┌──────────┐  ┌──────────┐  ┌─────────────────────────────┐    │
-│  │ PostgreSQL│  │  Redis   │  │    Object Storage         │    │
-│  │ (Profiles)│  │ (Cache)  │  │  (Assets, Screenshots)   │    │
+│  │  Convex  │  │  Convex  │  │    Object Storage         │    │
+│  │ (Database)│  │ (Cache)  │  │  (Assets, Screenshots)   │    │
 │  └──────────┘  └──────────┘  └─────────────────────────────┘    │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ### Component Responsibilities
 
-| Component | Responsibility | Typical Implementation |
-|-----------|----------------|------------------------|
-| CLI Tool | Secure local bot config discovery and upload | Node.js with OClif framework, MCP integration |
+| Component | Responsibility | Implementation |
+|-----------|----------------|----------------|
+| CLI Tool | Secure local bot config discovery and upload | Node.js with Oclif framework, MCP integration |
 | Web App | Bot profile display, comparison, filtering | React/Next.js with game-inspired UI |
-| API Gateway | Request routing, auth, rate limiting | Express.js or Fastify |
-| Config Service | Bot config ingestion and validation | Express service with schema validation |
-| Profile Service | Bot profile storage and retrieval | PostgreSQL with JSON columns |
-| Security Service | Data encryption, secret handling | Encryption middleware, key management |
-| Validation Service | Bot config validation, sanitization | Schema validation engines |
-| Comparison Service | Bot comparison logic, filtering | Search algorithms, comparison engines |
-| Object Storage | Static assets, screenshots | AWS S3 or Cloudflare R2 |
+| API Gateway | Request routing, auth, rate limiting | Convex HTTP actions |
+| Config Functions | Bot config ingestion and validation | Convex mutations with schema validation |
+| Profile Functions | Bot profile storage and retrieval | Convex queries with reactive subscriptions |
+| Security Functions | Data encryption, secret handling | Helper functions in Convex |
+| Validation Functions | Bot config validation, sanitization | Zod schemas + validation helpers |
+| Comparison Functions | Bot comparison logic, filtering | Convex queries with search indexes |
+| Object Storage | Static assets, screenshots | Convex file storage or AWS S3 |
 
 ## Recommended Project Structure
 
@@ -95,7 +95,7 @@ src/
 
 - **cli/:** Isolated CLI tool with its own services for bot runtime integration. Follows Microsoft Bot Framework CLI patterns.
 - **web/:** Separate web application layer with game-inspired UI components. Independent of CLI.
-- **api/:** Microservice architecture with clear service boundaries matching security domains.
+- **api/:** Simple modular backend with clear function boundaries (queries, mutations, actions) - not microservices.
 - **shared/:** Common types and validation schemas used across CLI, web, and API.
 - **infrastructure/:** Infrastructure as code for secure deployment.
 
@@ -168,11 +168,11 @@ CLI discovers local bot runtime
     ↓
 CLI queries runtime for public config
     ↓
-Security Service validates and encrypts sensitive data
+Security validation (Zod schemas + helpers)
     ↓
-Config Service receives and validates configuration
+Config validation against schema
     ↓
-Profile Service stores bot profile
+Convex mutation stores bot profile
     ↓
 Web App displays new bot profile with game-inspired visuals
 ```
@@ -182,11 +182,11 @@ Web App displays new bot profile with game-inspired visuals
 ```
 User selects bots to compare on botarena.sh
     ↓
-Frontend requests bot profiles from API
+Frontend queries Convex for bot profiles (reactive)
     ↓
-Profile Service retrieves profiles from PostgreSQL
+Profile query retrieves profiles from Convex database
     ↓
-Comparison Service processes side-by-side analysis
+Comparison logic runs in Convex query function
     ↓
 Results rendered with filtering and sorting options
     ↓
@@ -195,23 +195,23 @@ Users can filter by LLM, skills, MCPs, etc.
 
 ### Key Data Flows
 
-1. **Bot Discovery:** CLI → Bot Runtime → Security Validation → Profile Storage
-2. **Profile Display:** Web Request → API → Profile Retrieval → Game UI Rendering  
-3. **Comparison Analysis:** Multi-profile Request → Comparison Service → Results Processing
-4. **Search/Filter:** Filter Criteria → Search Service → Indexed Results
+1. **Bot Discovery:** CLI → Bot Runtime → Security Validation → Convex Mutation
+2. **Profile Display:** Web Component → useQuery Hook → Convex Query → Game UI Rendering  
+3. **Comparison Analysis:** Multi-profile Query → Comparison Logic in Convex → Results
+4. **Search/Filter:** Filter Criteria → Convex Search Query → Indexed Results
 
 ## Scaling Considerations
 
 | Scale | Architecture Adjustments |
 |-------|--------------------------|
-| 0-1k users | Monolith deployment, single PostgreSQL instance, Redis cache |
-| 1k-100k users | Microservice scaling, read replicas, CDN for static assets |
-| 100k+ users | Database sharding, distributed caching, edge deployment |
+| 0-1k users | Convex free tier, single deployment |
+| 1k-100k users | Convex pro tier with automatic scaling, CDN for static assets |
+| 100k+ users | Convex enterprise with dedicated resources, edge deployment |
 
 ### Scaling Priorities
 
 1. **First bottleneck:** Profile database queries during popular bot comparisons
-   - **Fix:** Implement Redis caching for popular comparison sets
+   - **Fix:** Convex handles this automatically with reactive caching and query optimization
 2. **Second bottleneck:** Static asset delivery (screenshots, profile images)
    - **Fix:** CDN distribution and edge caching
 
@@ -245,21 +245,21 @@ Users can filter by LLM, skills, MCPs, etc.
 | MCP Servers | Model Context Protocol | Standardized integration |
 | Generic Bots | File system interrogation (sandboxed) | Fallback for unsupported runtimes |
 
-### Security Services
+### Security Patterns
 
-| Service | Integration Pattern | Notes |
-|---------|---------------------|-------|
-| Secret Management | Environment variables + HashiCorp Vault | Runtime credential injection |
+| Pattern | Implementation | Notes |
+|---------|----------------|-------|
+| Secret Management | Environment variables + Convex secrets | Runtime credential injection |
 | Data Encryption | AES-256 with envelope encryption | Sensitive field encryption |
-| Validation | JSON Schema + custom rules | Bot configuration validation |
+| Validation | Zod schemas | Bot configuration validation |
 
-### Internal Boundaries
+### Component Communication
 
-| Boundary | Communication | Notes |
-|----------|---------------|-------|
-| CLI ↔ Web Platform | API Gateway with authentication | CLI uploads, web displays |
-| Config Service ↔ Profile Service | Internal API calls | Config validation before profile creation |
-| Security Service ↔ All Services | Middleware layer | Centralized encryption/validation |
+| Components | Communication | Notes |
+|------------|---------------|-------|
+| CLI ↔ Web Platform | Convex HTTP actions + React queries | CLI uploads, web displays |
+| Config Validation ↔ Profile Storage | Same Convex mutation function | Config validation before storage |
+| Security Helpers ↔ All Functions | Shared utility functions | Centralized encryption/validation |
 
 ## Sources
 

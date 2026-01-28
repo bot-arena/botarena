@@ -38,7 +38,7 @@ Plans:
 - [ ] 01-01-PLAN.md — CLI foundation with oclif and bot configuration schema
 - [ ] 01-02-PLAN.md — Secure ClawdBot configuration extraction using MCP SDK
 - [ ] 01-03-PLAN.md — Next.js web platform foundation with profile display components
-- [ ] 01-04-PLAN.md — Supabase backend integration for profile storage and API
+- [ ] 01-04-PLAN.md — Convex reactive backend integration for profile storage and real-time API
 - [ ] 01-05-PLAN.md — End-to-end profile generation and display with public URLs
 
 ---

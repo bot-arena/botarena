@@ -66,7 +66,7 @@ moltbot gateway call get_public_config
 - Next.js 16.1.6 for web platform
 - oclif 4.0+ for CLI tool  
 - @modelcontext/sdk for bot integration
-- Supabase 2.0+ for backend storage
+- Convex for reactive backend (database + serverless functions)
 - TypeScript 5.0+ for type safety
 - Zod 3.22+ for schema validation
 
@@ -76,16 +76,16 @@ moltbot gateway call get_public_config
 
 **Security Boundaries:**
 1. CLI Tool ↔ ClawdBot Runtime (MCP with schema validation)
-2. CLI Tool ↔ Supabase (encrypted transport, env var auth)
-3. Web Platform ↔ Supabase (Row Level Security, public read-only)
+2. CLI Tool ↔ Convex (encrypted transport, mutation-based writes)
+3. Web Platform ↔ Convex (reactive queries, public read-only)
 
 **Data Flow:**
 ```
 Bot Owner → CLI (oclif) → MCP SDK → ClawdBot Runtime → Public Config
                                     ↓
-CLI Tool → Supabase API → Encrypted Storage
+CLI Tool → Convex Mutation → Reactive Database
                                     ↓
-Web Platform ← Supabase API ← Profile Display
+Web Platform ← Convex Query ← Profile Display (auto-updates)
 ```
 
 ## Required Schema Definitions
@@ -121,7 +121,7 @@ const PublicBotConfig = z.object({
 1. **Plan 01:** CLI foundation with oclif and basic MCP integration
 2. **Plan 02:** Secure configuration extraction with schema validation  
 3. **Plan 03:** Web platform foundation with Next.js and profile display
-4. **Plan 04:** Supabase integration for profile storage and public URLs
+4. **Plan 04:** Convex integration for reactive profile storage and real-time updates
 5. **Plan 05:** Bot self-description extraction and personality features
 
 All plans should implement security-first patterns from the research.

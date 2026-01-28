@@ -7,7 +7,7 @@
 
 ## Executive Summary
 
-BotArena is a showcase platform for AI bot configurations that follows a "secure-by-design" architecture where a CLI tool asks bot runtimes for public configuration rather than reading sensitive files directly. Experts recommend building this as a hybrid platform combining Next.js for the web showcase, a secure Node.js CLI tool, and Supabase for backend services. The key differentiator is game-inspired visualization (Dota 2 hero-style) combined with ironclad security that prevents exposure of API keys and sensitive bot configurations.
+BotArena is a showcase platform for AI bot configurations that follows a "secure-by-design" architecture where a CLI tool asks bot runtimes for public configuration rather than reading sensitive files directly. Experts recommend building this as a hybrid platform combining Next.js for the web showcase, a secure Node.js CLI tool, and Convex for reactive backend services. The key differentiator is game-inspired visualization (Dota 2 hero-style) combined with ironclad security that prevents exposure of API keys and sensitive bot configurations.
 
 The recommended approach prioritizes security through the "ask the bot" pattern where CLI integration queries runtimes like ClawdBot for public configuration data only. The architecture separates concerns into three main layers: CLI tool for secure config discovery, web platform for game-inspired profile display, and API services with dedicated security boundaries. The main risk is the complexity of secure configuration handling across multiple bot runtimes, which is mitigated by implementing a dedicated Security Service with clear encryption responsibilities and never accessing raw configuration files.
 
@@ -15,11 +15,11 @@ The recommended approach prioritizes security through the "ask the bot" pattern 
 
 ### Recommended Stack
 
-Next.js 16.1.6 forms the foundation for the web platform with excellent static generation for bot profiles, while Node.js 22 LTS powers the CLI tool through the oclif framework. Supabase with PostgreSQL 15+ provides the backend with JSONB support perfect for variable bot schemas, complemented by Drizzle ORM for type-safe database access. The frontend uses Motion for game-inspired animations, Tailwind CSS for rapid styling, and Radix UI for accessible components. Security is handled through Zod validation, MCP SDK integration, and node-forge for cryptographic operations.
+Next.js 16.1.6 forms the foundation for the web platform with excellent static generation for bot profiles, while Node.js 22 LTS powers the CLI tool through the oclif framework. Convex provides the reactive backend with TypeScript-native queries, automatic real-time subscriptions, and ACID-compliant transactions perfect for variable bot schemas. The frontend uses Motion for game-inspired animations, Tailwind CSS for rapid styling, and Radix UI for accessible components. Security is handled through Zod validation, MCP SDK integration, and node-forge for cryptographic operations.
 
 **Core technologies:**
 - Next.js 16.1.6: Web platform framework — Industry standard with hybrid rendering perfect for showcase sites
-- Supabase 2.0+: Backend services — PostgreSQL with JSONB support and built-in auth for flexible bot configs
+- Convex: Reactive backend — TypeScript-native queries with automatic real-time subscriptions, no SQL/ORM needed
 - oclif 4.0+: CLI framework — TypeScript-first CLI framework essential for secure `npx botarena` tool
 - Motion 12.29.0: Animation library — React-first API perfect for game-inspired UI with hardware acceleration
 - MCP SDK: Bot integration — Standard for AI agent integration with ClawdBot runtime and other AI agents
@@ -78,7 +78,7 @@ Based on research, suggested phase structure:
 ### Phase 2: Discovery & Comparison
 **Rationale:** Once secure foundation exists, users need to find and compare bots to drive engagement
 **Delivers:** Search & discovery system, side-by-side comparison tool, category filtering
-**Uses:** Next.js hybrid rendering, Supabase search capabilities, Motion animations
+**Uses:** Next.js hybrid rendering, Convex search queries, Motion animations
 **Implements:** Profile Service, Comparison Service, Search Service
 
 ### Phase 3: Engagement & Gamification
@@ -100,7 +100,7 @@ Phases likely needing deeper research during planning:
 - **Phase 3:** Gaming UI implementation patterns - Motion library advanced usage and performance optimization needs research
 
 Phases with standard patterns (skip research-phase):
-- **Phase 2:** Search and filtering with Supabase - well-documented patterns, standard PostgreSQL全文搜索
+- **Phase 2:** Search and filtering with Convex - well-documented patterns, built-in search indexes
 
 ## Confidence Assessment
 
@@ -124,7 +124,7 @@ Phases with standard patterns (skip research-phase):
 ### Primary (HIGH confidence)
 - Next.js official documentation - App Router and static generation features
 - oclif documentation - v4.0 release notes and CLI patterns
-- Supabase documentation - JSONB support and auth integration
+- Convex documentation - Reactive queries, TypeScript-native functions, and real-time subscriptions
 - Motion documentation - React animation API and performance
 - Microsoft Bot Framework CLI architecture patterns
 

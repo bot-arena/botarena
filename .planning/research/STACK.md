@@ -26,9 +26,8 @@
 
 | Technology | Version | Purpose | Why |
 |------------|---------|---------|-----|
-| Supabase | 2.0+ | Bot profile storage & API | PostgreSQL with JSONB support for flexible bot configs, built-in auth, real-time features, excellent Node.js SDK |
-| PostgreSQL | 15+ | Primary database | JSONB support perfect for variable bot schemas, ACID compliance, mature ecosystem |
-| Drizzle ORM | 0.29+ | Database client | Type-safe database access, excellent TypeScript support, lightweight compared to Prisma |
+| Convex | Latest | Bot profile storage & reactive backend | Reactive database with TypeScript-native queries, automatic real-time subscriptions, zero SQL/ORM boilerplate, serverless functions built-in |
+| Convex Functions | Latest | Backend logic | Query/mutation/action functions in TypeScript with automatic transactions, ACID compliance, and strict isolation |
 
 ### Frontend & Visual Design
 
@@ -44,7 +43,7 @@
 | Technology | Version | Purpose | Why |
 |------------|---------|---------|-----|
 | MCP SDK | Latest | Model Context Protocol integration | Standard for AI agent integration, works with ClawdBot runtime and other AI agents |
-| @supabase/auth-helpers | Latest | Authentication | Secure auth integration, supports multiple providers, essential for bot owner verification |
+| Convex Auth | Latest | Authentication | Built-in auth with multiple providers, seamless integration with Convex backend |
 | Zod | 3.22+ | Schema validation | Runtime type checking for bot configurations, prevents malformed data submission |
 | Node-forge | 1.3+ | Cryptographic operations | Secure handling of API keys and sensitive bot configuration data |
 
@@ -62,7 +61,7 @@
 | Category | Recommended | Alternative | Why Not |
 |----------|-------------|-------------|---------|
 | **Web Framework** | Next.js | Remix | Next.js has better static generation support for showcase content, larger ecosystem |
-| **Database** | Supabase | MongoDB Atlas | Supabase provides SQL with JSON flexibility, better security posture, 50% cost reduction reported by users |
+| **Database** | Convex | Supabase/PostgreSQL | Convex provides reactive TypeScript-native queries with automatic subscriptions, zero SQL/ORM boilerplate, serverless by default, and AI-friendly code generation |
 | **CLI Framework** | oclif | Commander.js alone | oclif provides plugin system for future extensions, better TypeScript integration |
 | **Animation** | Motion | GSAP | Motion has React-first API, smaller bundle size, better integration with modern React patterns |
 
@@ -71,8 +70,7 @@
 ```bash
 # Core web platform
 npm install next@16.1.6 react@18 react-dom@18
-npm install @supabase/supabase-js@2
-npm install drizzle-orm@0.29.0
+npm install convex
 npm install motion@12.29.0 tailwindcss@3.4.0
 npm install @radix-ui/react-*
 npm install lucide-react@0.344.0
@@ -93,28 +91,29 @@ npm install -D eslint prettier
 
 | Avoid | Why | Use Instead |
 |-------|-----|-------------|
-| MongoDB | Document stores lack relational constraints, higher cost, vendor lock-in with SSPL licensing | PostgreSQL with JSONB columns via Supabase |
+| MongoDB | Document stores lack relational constraints, higher cost, vendor lock-in with SSPL licensing | Convex document-relational database with TypeScript |
 | Create React App | No built-in routing, poor static generation, deprecated | Next.js with App Router |
 | Styled Components | Runtime CSS generation, larger bundles, harder to maintain for gaming UI | Tailwind CSS with CSS-in-JS only where needed |
 | jQuery | Legacy, no React integration, poor performance | Motion for animations, React patterns for interactions |
-| Hardcoded API keys | Security risk, impossible to rotate, ends up in git | Environment variables + Supabase Vault + runtime encryption |
-| Custom auth system | Security pitfalls, maintenance burden, GDPR compliance issues | Supabase Auth with established providers |
+| Hardcoded API keys | Security risk, impossible to rotate, ends up in git | Environment variables + Convex secrets + runtime encryption |
+| Custom auth system | Security pitfalls, maintenance burden, GDPR compliance issues | Convex Auth with established providers |
+| Raw SQL/ORMs | Context switching, type safety issues, query optimization overhead | Convex TypeScript queries with automatic optimization |
 
 ## Stack Patterns by Variant
 
 **If you need maximum performance:**
 - Use Next.js with `output: 'export'` for fully static generation
 - Implement Motion's `LayoutGroup` for batched animations
-- Leverage Supabase edge functions for dynamic content
+- Leverage Convex preloading for instant data loading
 
 **If you need rapid development:**
 - Use Next.js with hybrid rendering (static pages + dynamic API routes)
 - Start with Tailwind presets, customize progressively
-- Use Supabase auth helpers for immediate user management
+- Use Convex's built-in auth and automatic subscriptions for immediate user management
 
 **If you're targeting enterprise deployments:**
-- Add PostgreSQL connection pooling via PgBouncer
-- Implement row-level security in Supabase for multi-tenant data isolation
+- Use Convex enterprise features for multi-tenant isolation
+- Implement Convex's access control for row-level security
 - Use MCP's enterprise security features for agent integration
 
 ## Version Compatibility
@@ -123,22 +122,22 @@ npm install -D eslint prettier
 |-----------|-----------------|-------|
 | Next.js 16.1.6 | React 18 | Required for App Router features |
 | Motion 12.29.0 | React 18 | Uses React 18 concurrent features |
-| Supabase JS 2.0+ | Node 18+ | ESM modules, requires modern Node |
+| Convex | Node 18+ | ESM modules, requires modern Node |
 | oclif 4.0+ | Node 18 LTS | TypeScript-native, drops older Node support |
 
 ## Security Considerations
 
-- **Never store API keys in code** - Use Supabase Vault or environment variables
+- **Never store API keys in code** - Use Convex environment variables and secrets
 - **Validate all bot configs** - Zod schemas prevent injection attacks
-- **Use HTTPS everywhere** - Supabase provides automatic SSL
-- **Implement rate limiting** - Supabase Edge Functions + PostgreSQL triggers
+- **Use HTTPS everywhere** - Convex provides automatic SSL
+- **Implement rate limiting** - Convex actions with built-in limiting
 - **Encrypt sensitive data** - Use node-forge for any local temporary storage
 
 ## Sources
 
 - Next.js official documentation - App Router and static generation features (HIGH confidence)
 - oclif documentation - v4.0 release notes and CLI patterns (HIGH confidence)
-- Supabase documentation - JSONB support and auth integration (HIGH confidence)
+- Convex documentation - Reactive queries, mutations, and TypeScript integration (HIGH confidence)
 - Motion documentation - React animation API and performance (HIGH confidence)
 - Anthropic MCP documentation - Model Context Protocol standards (HIGH confidence)
 - WebSearch 2025-2026 results - Current ecosystem adoption patterns (MEDIUM confidence)
