@@ -38,12 +38,10 @@
 | Radix UI | 1.0+ | Component primitives | Accessible, unstyled components perfect for custom game-inspired design system |
 | Lucide React | 0.344+ | Icon library | Modern, clean icons that work well with gaming aesthetic |
 
-### Security & Integration
+### Security & Validation
 
 | Technology | Version | Purpose | Why |
 |------------|---------|---------|-----|
-| MCP SDK | Latest | Model Context Protocol integration | Standard for AI agent integration, works with ClawdBot runtime and other AI agents |
-| Convex Auth | Latest | Authentication | Built-in auth with multiple providers, seamless integration with Convex backend |
 | Zod | 3.22+ | Schema validation | Runtime type checking for bot configurations, prevents malformed data submission |
 | Node-forge | 1.3+ | Cryptographic operations | Secure handling of API keys and sensitive bot configuration data |
 
@@ -78,7 +76,6 @@ npm install zod@3.22.0
 
 # CLI tool
 npm install @oclif/core@4.0.0 inquirer@9.0.0
-npm install @modelcontextprotocol/sdk
 npm install node-forge@1.3.0
 
 # Development dependencies
@@ -98,6 +95,7 @@ npm install -D eslint prettier
 | Hardcoded API keys | Security risk, impossible to rotate, ends up in git | Environment variables + Convex secrets + runtime encryption |
 | Custom auth system | Security pitfalls, maintenance burden, GDPR compliance issues | Convex Auth with established providers |
 | Raw SQL/ORMs | Context switching, type safety issues, query optimization overhead | Convex TypeScript queries with automatic optimization |
+| MCP SDK | Unnecessary complexity for simple file discovery | Native Node.js fs/promises for file reading |
 
 ## Stack Patterns by Variant
 
@@ -114,7 +112,6 @@ npm install -D eslint prettier
 **If you're targeting enterprise deployments:**
 - Use Convex enterprise features for multi-tenant isolation
 - Implement Convex's access control for row-level security
-- Use MCP's enterprise security features for agent integration
 
 ## Version Compatibility
 
@@ -132,6 +129,27 @@ npm install -D eslint prettier
 - **Use HTTPS everywhere** - Convex provides automatic SSL
 - **Implement rate limiting** - Convex actions with built-in limiting
 - **Encrypt sensitive data** - Use node-forge for any local temporary storage
+- **File discovery allowlist** - Only read SOUL.md, skills/, never secrets
+
+## CLI Discovery Pattern
+
+**Simple file-based discovery:**
+```typescript
+// Read public files only
+const soulContent = await fs.readFile('SOUL.md', 'utf-8');
+const skills = await fs.readdir('skills/');
+
+// Interactive prompts for user input
+const description = await inquirer.prompt([{
+  message: 'Describe your bot:'
+}]);
+```
+
+**Why not MCP:**
+- Simplicity: File reading is simpler than protocol negotiation
+- No restart: User doesn't need to reload their bot
+- Control: User reviews everything before publish
+- Works immediately: No config changes needed
 
 ## Sources
 
@@ -139,9 +157,9 @@ npm install -D eslint prettier
 - oclif documentation - v4.0 release notes and CLI patterns (HIGH confidence)
 - Convex documentation - Reactive queries, mutations, and TypeScript integration (HIGH confidence)
 - Motion documentation - React animation API and performance (HIGH confidence)
-- Anthropic MCP documentation - Model Context Protocol standards (HIGH confidence)
 - WebSearch 2025-2026 results - Current ecosystem adoption patterns (MEDIUM confidence)
 
 ---
 *Stack research for: AI bot showcase platform*
 *Researched: January 28, 2026*
+*Updated: January 29, 2026 - Removed MCP SDK, using file discovery*
