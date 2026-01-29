@@ -5,6 +5,7 @@ import {
   validatePublicConfig,
   detectSensitiveFields,
 } from '../../schemas/bot-config.js';
+import { ClawdBotDiscovery } from '../../lib/clawdbot.js';
 
 export default class GenerateCommand extends Command {
   static description = 'Generate a bot profile for BotArena showcase';
@@ -18,7 +19,7 @@ export default class GenerateCommand extends Command {
   static flags = {
     interactive: Flags.boolean({
       description: 'Run with interactive prompts for bot configuration',
-      default: false,
+      default: true,
     }),
     'dry-run': Flags.boolean({
       description: 'Generate profile without uploading to BotArena',
@@ -31,6 +32,11 @@ export default class GenerateCommand extends Command {
     verbose: Flags.boolean({
       description: 'Enable verbose logging output',
       default: false,
+    }),
+    path: Flags.string({
+      char: 'p',
+      description: 'Path to bot directory',
+      default: '.',
     }),
   };
 
@@ -50,34 +56,61 @@ export default class GenerateCommand extends Command {
     }
 
     try {
-      // Step 1: Discover bot configuration
-      const botPath = args.botPath || process.cwd();
+      // Step 1: Initialize discovery
+      const botPath = args.botPath || flags.path || process.cwd();
       if (flags.verbose) {
         this.log(`Scanning bot directory: ${botPath}`);
       }
 
-      const discoveredInfo = await this.discoverBotConfig(botPath);
+      const discovery = new ClawdBotDiscovery(botPath);
+      
+      // Detect if this is a ClawdBot instance
+      const isClawdBot = await discovery.isClawdBot();
+      if (!isClawdBot) {
+        this.warn('⚠️  No ClawdBot instance detected. Run from a bot directory with SOUL.md or skills/ folder.');
+        return;
+      }
+      
+      // Show progress
+      this.log('🔍 Discovering bot configuration from safe files...');
+      
+      // Step 2: Discover bot info from files
+      const discovered = await discovery.discover();
+      this.log(`✅ Found bot: ${discovered.name || 'Unnamed'}`);
+      this.log(`📦 Runtime: ${discovered.runtime}`);
+      this.log(`🛠️  Skills detected: ${discovered.skills?.length || 0}`);
+
+      // Step 3: Get user description interactively
+      let userDescription = '';
+      if (flags.interactive) {
+        const answers = await inquirer.prompt([{
+          type: 'input',
+          name: 'description',
+          message: 'Describe your bot (yearbook quote style):',
+          default: 'A helpful AI assistant',
+          validate: (input: string) => input.length > 0 && input.length <= 500 || 'Description must be 1-500 characters'
+        }]);
+        userDescription = answers.description;
+      }
+
+      // Step 4: Extract public configuration
+      this.log('\n📝 Generating public configuration...');
+      const publicConfig = await discovery.extractPublicConfig(userDescription);
       
       if (flags.verbose) {
-        this.log('Discovered bot info:', discoveredInfo);
+        this.log('Extracted config:', publicConfig);
       }
 
-      // Step 2: Interactive prompts if requested
-      let botConfig = discoveredInfo;
-      if (flags.interactive) {
-        botConfig = await this.runInteractivePrompts(discoveredInfo);
-      }
-
-      // Step 3: Generate profile
-      const profile = await this.generateProfile(botConfig, flags);
+      // Step 5: Generate profile
+      const profile = await this.generateProfile(publicConfig, flags);
       
       if (flags.verbose) {
         this.log('Generated profile:', profile);
       }
 
-      // Step 4: Handle output
+      // Step 6: Handle output
       if (flags['dry-run']) {
-        this.log('🔍 Dry run mode - profile generated but not uploaded');
+        this.log('\n🔍 Dry run mode - profile generated but not uploaded');
         this.log(JSON.stringify(profile, null, 2));
       } else {
         await this.uploadProfile(profile, flags);
@@ -89,86 +122,7 @@ export default class GenerateCommand extends Command {
     }
   }
 
-  private async discoverBotConfig(_botPath: string): Promise<any> {
-    // TODO: Implement bot configuration discovery logic
-    // This will scan for SOUL.md, skills files, and other safe bot artifacts
-    
-    this.log('🔍 Discovering bot configuration from safe files...');
-
-    // Placeholder implementation with required fields for schema validation
-    return {
-      name: 'Unknown Bot',
-      description: 'Bot configuration discovered from files',
-      runtime: 'unknown',
-      detectedFrom: 'file-scan',
-      llm: {
-        primary: 'unknown',
-      },
-      harness: 'unknown',
-      skills: [],
-      mcps: [],
-      clis: [],
-      version: '1.0.0',
-    };
-  }
-
-  private async runInteractivePrompts(initialConfig: any): Promise<any> {
-    this.log('🎯 Interactive Bot Configuration');
-    this.log('================================');
-
-    const answers = await inquirer.prompt([
-      {
-        type: 'input',
-        name: 'name',
-        message: 'Bot name:',
-        default: initialConfig.name || 'My Bot',
-        validate: (input) => input.trim().length > 0 || 'Bot name is required',
-      },
-      {
-        type: 'input',
-        name: 'description',
-        message: 'Bot description (yearbook quote):',
-        default: initialConfig.description || 'An amazing AI bot',
-        validate: (input) => input.trim().length > 0 || 'Description is required',
-      },
-      {
-        type: 'list',
-        name: 'llm.primary',
-        message: 'Primary LLM:',
-        choices: ['gpt-4', 'claude-3', 'llama-3', 'gemini-pro', 'other'],
-        default: 'gpt-4',
-      },
-      {
-        type: 'checkbox',
-        name: 'llm.fallbacks',
-        message: 'Fallback LLMs (optional):',
-        choices: ['gpt-4', 'claude-3', 'llama-3', 'gemini-pro'],
-      },
-      {
-        type: 'input',
-        name: 'harness',
-        message: 'Bot harness/framework:',
-        default: initialConfig.runtime || 'unknown',
-      },
-      {
-        type: 'input',
-        name: 'version',
-        message: 'Bot version:',
-        default: '1.0.0',
-      },
-    ]);
-
-    return {
-      ...initialConfig,
-      ...answers,
-      llm: {
-        primary: answers['llm.primary'],
-        fallbacks: answers['llm.fallbacks'],
-      },
-    };
-  }
-
-  private async generateProfile(botConfig: any, flags: any): Promise<PublicBotConfigType & { id: string; generatedAt: string; platform: string }> {
+  private async generateProfile(botConfig: PublicBotConfigType, flags: any): Promise<PublicBotConfigType & { id: string; generatedAt: string; platform: string }> {
     if (flags.verbose) {
       this.log('📝 Generating BotArena profile...');
     }
@@ -208,5 +162,6 @@ export default class GenerateCommand extends Command {
 
     // Placeholder implementation
     this.log('📤 Profile upload simulated (not implemented yet)');
+    this.log('   In the next phase, this will upload to Convex backend');
   }
 }
