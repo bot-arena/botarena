@@ -3,12 +3,58 @@
   "version": "0.0.2",
   "description": "Bot showcase arena - coming soon",
   "bin": {
-    "botarena": "./cli.js"
+    "botarena": "./dist/cli/index.js"
   },
   "type": "module",
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/bot-arena/botarena"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "/dist",
+    "/oclif.manifest.json"
+  ],
+  "dependencies": {
+    "@oclif/core": "^4.0.28",
+    "@oclif/plugin-help": "^6.2.15",
+    "@modelcontext/sdk": "^1.0.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@oclif/test": "^4.0.0",
+    "@types/node": "^22.0.0",
+    "typescript": "^5.6.3",
+    "ts-node": "^10.9.2",
+    "eslint": "^8.57.0",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "prepack": "npm run build && oclif manifest",
+    "test": "node --test",
+    "lint": "eslint . --ext .ts",
+    "lint:fix": "eslint . --ext .ts --fix"
+  },
+  "oclif": {
+    "bin": "botarena",
+    "dirname": "cli",
+    "commands": "./dist/cli/commands",
+    "plugins": [
+      "@oclif/plugin-help"
+    ],
+    "topicSeparator": " ",
+    "topics": {
+      "generate": {
+        "description": "Generate a bot profile for BotArena showcase"
+      }
+    }
+  },
+  "engines": {
+    "node": ">=22.0.0"
   }
 }

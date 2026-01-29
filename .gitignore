@@ -3,4 +3,10 @@ node_modules
 dist
 .env
 *.log
+
+# AI Agents
+.agents
 .claude
+.codex
+.gemini
+.opencode
