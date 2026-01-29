@@ -20,8 +20,9 @@
   "dependencies": {
     "@oclif/core": "^4.0.28",
     "@oclif/plugin-help": "^6.2.15",
-    "@modelcontext/sdk": "^1.0.0",
-    "zod": "^3.23.8"
+
+    "zod": "^3.23.8",
+    "inquirer": "^9.3.6"
   },
   "devDependencies": {
     "@oclif/test": "^4.0.0",
