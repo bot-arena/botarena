@@ -1,7 +1,64 @@
 {
-  "version": "1.0.0",
-  "commands": [
-    "generate"
-  ],
-  "topics": []
+  "commands": {
+    "generate": {
+      "aliases": [],
+      "args": {
+        "botPath": {
+          "description": "Path to bot directory for configuration discovery",
+          "name": "botPath",
+          "required": false
+        }
+      },
+      "description": "Generate a bot profile for BotArena showcase",
+      "examples": [
+        "<%= config.bin %> <%= command.id %>",
+        "<%= config.bin %> <%= command.id %> --interactive",
+        "<%= config.bin %> <%= command.id %> --dry-run"
+      ],
+      "flags": {
+        "interactive": {
+          "description": "Run with interactive prompts for bot configuration",
+          "name": "interactive",
+          "allowNo": false,
+          "type": "boolean"
+        },
+        "dry-run": {
+          "description": "Generate profile without uploading to BotArena",
+          "name": "dry-run",
+          "allowNo": false,
+          "type": "boolean"
+        },
+        "output": {
+          "char": "o",
+          "description": "Output file path for generated profile",
+          "name": "output",
+          "hasDynamicHelp": false,
+          "multiple": false,
+          "type": "option"
+        },
+        "verbose": {
+          "description": "Enable verbose logging output",
+          "name": "verbose",
+          "allowNo": false,
+          "type": "boolean"
+        }
+      },
+      "hasDynamicHelp": false,
+      "hiddenAliases": [],
+      "id": "generate",
+      "pluginAlias": "botarena",
+      "pluginName": "botarena",
+      "pluginType": "core",
+      "strict": true,
+      "enableJsonFlag": false,
+      "isESM": true,
+      "relativePath": [
+        "dist",
+        "cli",
+        "commands",
+        "generate.js"
+      ]
+    }
+  },
+  "version": "0.0.2"
 }
