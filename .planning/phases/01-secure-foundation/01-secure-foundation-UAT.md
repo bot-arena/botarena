@@ -13,7 +13,9 @@ updated: 2026-01-29T17:05:00Z
 
 ## Current Test
 
-[testing aborted - user requested to skip remaining web tests]
+[testing paused - web component tests (6-13) to be continued at a later time when web testing is possible]
+
+**Note:** CLI tests (1-5) completed. Web-based tests (6-13) skipped pending future testing session.
 
 ## Tests
 
