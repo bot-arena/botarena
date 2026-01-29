@@ -6,9 +6,17 @@ dist
 .env
 *.log
 
+# Next.js
+.next
+out
+
+# Build infos
+*.tsbuildinfo
+
 # AI Agents
 .agents
 .claude
 .codex
 .gemini
 .opencode
+

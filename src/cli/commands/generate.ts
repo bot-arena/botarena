@@ -152,16 +152,67 @@ export default class GenerateCommand extends Command {
     };
   }
 
-  private async uploadProfile(_profile: PublicBotConfigType & { id: string; generatedAt: string; platform: string }, flags: any): Promise<void> {
-    // TODO: Implement profile upload to BotArena platform
-    // This will handle the secure upload process
-    
+  private async uploadProfile(profile: PublicBotConfigType & { id: string; generatedAt: string; platform: string }, flags: any): Promise<void> {
     if (flags.verbose) {
       this.log('🚀 Uploading profile to BotArena...');
     }
 
-    // Placeholder implementation
-    this.log('📤 Profile upload simulated (not implemented yet)');
-    this.log('   In the next phase, this will upload to Convex backend');
+    // Show configuration summary
+    this.log('\n📋 Profile Summary:');
+    this.log(`Name: ${profile.name}`);
+    this.log(`LLM: ${profile.llm.primary}`);
+    this.log(`Description: "${profile.description}"`);
+    this.log(`Skills: ${profile.skills.join(', ')}`);
+
+    // Ask for confirmation if interactive
+    let shouldUpload = true;
+    if (flags.interactive) {
+      const { confirm } = await inquirer.prompt([
+        {
+          type: 'confirm',
+          name: 'confirm',
+          message: 'Upload this profile to BotArena?',
+          default: true
+        }
+      ]);
+      shouldUpload = confirm;
+    }
+
+    if (shouldUpload) {
+      this.log('\n🚀 Uploading to BotArena...');
+
+      // Get API URL from environment or use default
+      const apiUrl = process.env.BOTARENA_API_URL || 'https://botarena.sh';
+
+      try {
+        const response = await fetch(`${apiUrl}/api/profiles`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'User-Agent': 'botarena-cli/1.0.0',
+          },
+          body: JSON.stringify(profile),
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.success) {
+          const profileUrl = `${apiUrl}/bots/${result.data.slug}`;
+
+          this.log('✅ Profile uploaded successfully!');
+          this.log(`📊 Name: ${result.data.name}`);
+          this.log(`🔗 Profile URL: ${profileUrl}`);
+          this.log(`🆔 Profile ID: ${result.data._id}`);
+          this.log(`📅 Created: ${new Date(result.data._creationTime).toLocaleDateString()}`);
+          this.log('\n🎉 Share your bot profile with the world!');
+        } else {
+          throw new Error(result.error || 'Upload failed');
+        }
+      } catch (error: any) {
+        this.error(`❌ Upload failed: ${error.message}`);
+      }
+    } else {
+      this.log('❌ Upload cancelled');
+    }
   }
 }

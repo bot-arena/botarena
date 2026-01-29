@@ -1,6 +1,5 @@
 import {
   safeReadFile,
-  discoverFiles,
   DiscoveryResult,
   extractNameFromSoul,
   extractAvatarFromSoul,
@@ -9,6 +8,7 @@ import {
 import { validatePublicConfig } from '../schemas/bot-config.js';
 import type { PublicBotConfigType } from '../schemas/bot-config.js';
 import * as path from 'path';
+import * as fs from 'fs/promises';
 
 /**
  * SECURITY NOTICE: ClawdBot Discovery
@@ -85,6 +85,16 @@ export class ClawdBotDiscovery {
     const skills = await this.discoverSkills();
     result.skills = skills;
 
+    // Discover MCP servers from mcp.json
+    const mcps = await this.discoverMCPs();
+    if (mcps.length > 0) {
+      result.files.push({
+        path: 'mcp.json',
+        content: JSON.stringify({ servers: mcps }, null, 2),
+        type: 'json',
+      });
+    }
+
     return result;
   }
 
@@ -97,6 +107,7 @@ export class ClawdBotDiscovery {
 
     // Build public config from discovered files + user input
     // SECURITY: User provides description interactively, we never extract from config files
+    const mcps = await this.discoverMCPs();
     const publicConfig = {
       name: discovery.name || 'Unnamed Bot',
       description: userDescription || 'A helpful AI assistant',
@@ -105,7 +116,7 @@ export class ClawdBotDiscovery {
         fallbacks: [],
       },
       skills: discovery.skills || [],
-      mcps: [],
+      mcps: mcps,
       clis: [],
       harness: 'ClawdBot',
       version: '1.0.0',
@@ -125,15 +136,17 @@ export class ClawdBotDiscovery {
     for (const skillDir of SKILL_DIRECTORIES) {
       const fullPath = path.join(this.basePath, skillDir);
       try {
-        const entries = await discoverFiles(fullPath, ['*']);
+        // Read directory entries and filter for subdirectories only
+        const entries = await fs.readdir(fullPath, { withFileTypes: true });
         for (const entry of entries) {
-          // Extract skill name from directory
-          const skillName = path.basename(entry);
-          // Filter out hidden files and test directories
-          if (!skillName.startsWith('.') && 
-              !skillName.includes('test') && 
-              !skillName.includes('node_modules')) {
-            skills.push(skillName);
+          if (entry.isDirectory()) {
+            const skillName = entry.name;
+            // Filter out hidden files and test directories
+            if (!skillName.startsWith('.') && 
+                !skillName.includes('test') && 
+                !skillName.includes('node_modules')) {
+              skills.push(skillName);
+            }
           }
         }
       } catch {
@@ -143,6 +156,32 @@ export class ClawdBotDiscovery {
     
     // Deduplicate and sort
     return [...new Set(skills)].sort();
+  }
+
+  /**
+   * Discover MCP servers from mcp.json
+   * Only extracts server names, never reads sensitive configuration
+   */
+  private async discoverMCPs(): Promise<string[]> {
+    const mcps: string[] = [];
+    const mcpPath = path.join(this.basePath, 'mcp.json');
+    
+    try {
+      const content = await safeReadFile(mcpPath);
+      if (content) {
+        const config = JSON.parse(content);
+        // Extract only server names, not their configuration
+        if (config.mcpServers && typeof config.mcpServers === 'object') {
+          mcps.push(...Object.keys(config.mcpServers));
+        } else if (config.servers && Array.isArray(config.servers)) {
+          mcps.push(...config.servers.map((s: any) => s.name || s));
+        }
+      }
+    } catch {
+      // mcp.json doesn't exist or is invalid, skip
+    }
+    
+    return mcps;
   }
 
   /**
@@ -168,7 +207,7 @@ export class ClawdBotDiscovery {
     for (const skillDir of SKILL_DIRECTORIES) {
       const fullPath = path.join(this.basePath, skillDir);
       try {
-        const entries = await discoverFiles(fullPath, ['*']);
+        const entries = await fs.readdir(fullPath);
         if (entries.length > 0) {
           return true;
         }
