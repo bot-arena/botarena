@@ -9,17 +9,17 @@ Requirements for initial ClawdBot-focused release. Each maps to roadmap phases.
 
 ### Bot Profiles
 
-- [ ] **PROF-01**: Display ClawdBot core stats (LLM, skills, MCPs, CLIs, harness) in beautiful profile page
-- [ ] **PROF-02**: Provide public profile URLs for sharing bot configurations
+- [x] **PROF-01**: Display ClawdBot core stats (LLM, skills, MCPs, CLIs, harness) in beautiful profile page
+- [x] **PROF-02**: Provide public profile URLs for sharing bot configurations
 - [ ] **PROF-03**: Enable basic search and discovery of ClawdBots
 - [ ] **PROF-04**: Filter ClawdBots by specific capabilities (skills, models)
 - [ ] **PROF-05**: Implement gaming-inspired visualization (Dota 2 hero-style presentation)
-- [ ] **PROF-06**: Capture bot self-description (one-sentence "yearbook quote" style personality showcase)
+- [x] **PROF-06**: Capture bot self-description (one-sentence "yearbook quote" style personality showcase)
 
 ### CLI Integration
 
-- [ ] **CLI-01**: Provide `npx botarena` command for delightful profile generation
-- [ ] **CLI-02**: Implement secure ClawdBot configuration extraction (ask bot, never read files)
+- [x] **CLI-01**: Provide `npx botarena` command for delightful profile generation
+- [x] **CLI-02**: Implement secure ClawdBot configuration extraction (ask bot, never read files)
 
 ### Comparison & Discovery
 
@@ -61,14 +61,14 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| PROF-01 | Phase 1 | Pending |
-| PROF-02 | Phase 1 | Pending |
+| PROF-01 | Phase 1 | Complete |
+| PROF-02 | Phase 1 | Complete |
 | PROF-03 | Phase 2 | Pending |
 | PROF-04 | Phase 2 | Pending |
 | PROF-05 | Phase 3 | Pending |
-| PROF-06 | Phase 1 | Pending |
-| CLI-01 | Phase 1 | Pending |
-| CLI-02 | Phase 1 | Pending |
+| PROF-06 | Phase 1 | Complete |
+| CLI-01 | Phase 1 | Complete |
+| CLI-02 | Phase 1 | Complete |
 | COMP-01 | Phase 2 | Pending |
 
 **Coverage:**
@@ -83,4 +83,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-01-28*
-*Last updated: 2026-01-28 after initial definition*
+*Last updated: 2026-01-29 after Phase 1 completion*
