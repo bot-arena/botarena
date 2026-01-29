@@ -1,5 +1,10 @@
 import { Command, Flags, Args } from '@oclif/core';
 import inquirer from 'inquirer';
+import {
+  PublicBotConfigType,
+  validatePublicConfig,
+  detectSensitiveFields,
+} from '../../schemas/bot-config.js';
 
 export default class GenerateCommand extends Command {
   static description = 'Generate a bot profile for BotArena showcase';
@@ -90,12 +95,20 @@ export default class GenerateCommand extends Command {
     
     this.log('🔍 Discovering bot configuration from safe files...');
 
-    // Placeholder implementation
+    // Placeholder implementation with required fields for schema validation
     return {
       name: 'Unknown Bot',
       description: 'Bot configuration discovered from files',
       runtime: 'unknown',
       detectedFrom: 'file-scan',
+      llm: {
+        primary: 'unknown',
+      },
+      harness: 'unknown',
+      skills: [],
+      mcps: [],
+      clis: [],
+      version: '1.0.0',
     };
   }
 
@@ -155,24 +168,37 @@ export default class GenerateCommand extends Command {
     };
   }
 
-  private async generateProfile(botConfig: any, flags: any): Promise<any> {
-    // TODO: Implement profile generation with schema validation
-    // This will use the PublicBotConfig schema for validation
-    
+  private async generateProfile(botConfig: any, flags: any): Promise<PublicBotConfigType & { id: string; generatedAt: string; platform: string }> {
     if (flags.verbose) {
       this.log('📝 Generating BotArena profile...');
     }
 
-    // Placeholder implementation
+    // Security check: Detect any sensitive fields in the config
+    const sensitiveFields = detectSensitiveFields(botConfig);
+    if (sensitiveFields.length > 0) {
+      this.warn(`⚠️  Warning: Potentially sensitive fields detected: ${sensitiveFields.join(', ')}`);
+      this.warn('These fields will be excluded from the public profile.');
+    }
+
+    // Validate against PublicBotConfig schema
+    // This ensures only safe, public fields are included
+    let validatedConfig: PublicBotConfigType;
+    try {
+      validatedConfig = validatePublicConfig(botConfig);
+    } catch (error: any) {
+      throw new Error(`Configuration validation failed: ${error.message}`);
+    }
+
+    // Generate the final profile
     return {
       id: `bot-${Date.now()}`,
-      ...botConfig,
+      ...validatedConfig,
       generatedAt: new Date().toISOString(),
       platform: 'botarena',
     };
   }
 
-  private async uploadProfile(_profile: any, flags: any): Promise<void> {
+  private async uploadProfile(_profile: PublicBotConfigType & { id: string; generatedAt: string; platform: string }, flags: any): Promise<void> {
     // TODO: Implement profile upload to BotArena platform
     // This will handle the secure upload process
     
