@@ -70,7 +70,7 @@ function ItemList({ items, label, maxDisplay = 3, colorClass }: ItemListProps) {
   
   return (
     <div className="mb-2">
-      <div className="text-[10px] uppercase text-[var(--color-text-secondary)] mb-1">
+      <div className="text-xs uppercase text-[var(--color-text-secondary)] mb-1">
         {label} ({items.length})
       </div>
       <div className="flex flex-wrap gap-1">
@@ -78,7 +78,7 @@ function ItemList({ items, label, maxDisplay = 3, colorClass }: ItemListProps) {
           <span
             key={item}
             className={cn(
-              "px-2 py-0.5 text-[10px] border border-[var(--color-border-strong)]",
+              "px-2 py-0.5 text-xs border border-[var(--color-border-strong)]",
               colorClass || "bg-[var(--color-bg-secondary)]"
             )}
           >
@@ -86,7 +86,7 @@ function ItemList({ items, label, maxDisplay = 3, colorClass }: ItemListProps) {
           </span>
         ))}
         {remaining > 0 && (
-          <span className="px-2 py-0.5 text-[10px] bg-[var(--color-bg-secondary)] border border-[var(--color-border-strong)]">
+          <span className="px-2 py-0.5 text-xs bg-[var(--color-bg-secondary)] border border-[var(--color-border-strong)]">
             +{remaining}
           </span>
         )}
@@ -136,7 +136,7 @@ export function BotCard({ profile, className }: BotCardProps) {
                 </Badge>
               </div>
               
-              <div className="flex gap-2 text-[10px]">
+              <div className="flex gap-2 text-xs">
                 <span className="bg-[var(--color-bg-secondary)] px-1.5 py-0.5 border border-[var(--color-border-strong)]">
                   {profile.harness}
                 </span>
@@ -149,13 +149,13 @@ export function BotCard({ profile, className }: BotCardProps) {
           
           {/* Prominent LLM Badge */}
           <div className="flex items-center gap-2">
-            <span className="text-[10px] uppercase text-[var(--color-text-secondary)]">
+            <span className="text-xs uppercase text-[var(--color-text-secondary)]">
               LLM
             </span>
-            <span className="px-2 py-0.5 text-xs font-medium bg-[var(--color-accent-primary)] text-white border border-[var(--color-border-strong)]">
+            <span className="px-2 py-0.5 text-sm font-medium bg-[var(--color-accent-primary)] text-white border border-[var(--color-border-strong)]">
               {profile.llm.primary}
               {profile.llm.fallbacks && profile.llm.fallbacks.length > 0 && (
-                <span className="text-[10px] opacity-80 ml-1">
+                <span className="text-xs opacity-80 ml-1">
                   +{profile.llm.fallbacks.length}
                 </span>
               )}
@@ -165,10 +165,10 @@ export function BotCard({ profile, className }: BotCardProps) {
 
         {/* Description */}
         <div className="mb-3">
-          <div className="text-[10px] uppercase text-[var(--color-text-secondary)] mb-1">
+          <div className="text-xs uppercase text-[var(--color-text-secondary)] mb-1">
             About
           </div>
-          <p className="text-xs italic text-[var(--color-text-primary)] line-clamp-2">
+          <p className="text-sm italic text-[var(--color-text-primary)] line-clamp-2">
             &ldquo;{profile.description}&rdquo;
           </p>
         </div>
@@ -200,10 +200,10 @@ export function BotCard({ profile, className }: BotCardProps) {
         {/* Footer with Updated timestamp */}
         <div className="border-t border-[var(--color-border-strong)] pt-3 mt-2">
           <div className="flex justify-between items-center">
-            <div className="text-[10px] text-[var(--color-text-tertiary)]">
+            <div className="text-xs text-[var(--color-text-tertiary)]">
               Updated: {formatTimestamp(profile.updatedAt)}
             </div>
-            <div className="text-[10px] uppercase text-[var(--color-accent-primary)] opacity-0 group-hover:opacity-100 transition-opacity font-medium">
+            <div className="text-xs uppercase text-[var(--color-accent-primary)] opacity-0 group-hover:opacity-100 transition-opacity font-medium">
               View Profile →
             </div>
           </div>
