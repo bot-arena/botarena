@@ -3,6 +3,9 @@
 import * as React from 'react';
 import { FilterTag } from '@/components/FilterTag';
 import { BotCard, BotCardProfile } from '@/components/BotCard';
+import { Input } from '@/components/Input';
+import { Select } from '@/components/Select';
+import { Label } from '@/components/Label';
 import { countActiveFilters } from '@/lib/utils';
 
 // Types
@@ -96,19 +99,16 @@ function SearchInput({ value, onChange }: SearchInputProps) {
 
   return (
     <div className="mb-4">
-      <label
-        htmlFor={inputId}
-        className="text-xs uppercase text-[var(--color-text-secondary)] mb-1 block"
-      >
-        SEARCH_QUERY
+      <label htmlFor={inputId} className="block mb-1">
+        <Label>SEARCH_QUERY</Label>
       </label>
-      <input
+      <Input
         id={inputId}
         type="text"
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder="SEARCH_BOT_NAMES..."
-        className="w-full bg-[var(--color-bg-dark)] border border-[var(--color-border-strong)] px-3 py-2 text-xs text-[var(--color-bg-panel)]"
+        variant="dark"
       />
     </div>
   );
@@ -124,11 +124,8 @@ function HarnessFilter({ value, onChange }: HarnessFilterProps) {
 
   return (
     <div className="mb-4">
-      <div
-        id={labelId}
-        className="text-xs uppercase text-[var(--color-text-secondary)] mb-2"
-      >
-        HARNESS_TYPE
+      <div id={labelId} className="mb-2">
+        <Label>HARNESS_TYPE</Label>
       </div>
       <div className="flex flex-wrap gap-2" role="group" aria-labelledby={labelId}>
         {HARNESS_OPTIONS.map((harness) => (
@@ -155,22 +152,19 @@ function SortSelect({ value, onChange }: SortSelectProps) {
 
   return (
     <div>
-      <label
-        htmlFor={selectId}
-        className="text-xs uppercase text-[var(--color-text-secondary)] mb-1 block"
-      >
-        SORT_ORDER
+      <label htmlFor={selectId} className="block mb-1">
+        <Label>SORT_ORDER</Label>
       </label>
-      <select
+      <Select
         id={selectId}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full bg-[var(--color-bg-panel)] border border-[var(--color-border-strong)] px-3 py-2 text-xs font-bold"
+        variant="bold"
       >
         <option value="updated">UPDATED_DESC</option>
         <option value="name">NAME_ASC</option>
         <option value="skills">SKILLS_COUNT_DESC</option>
-      </select>
+      </Select>
     </div>
   );
 }

@@ -4,6 +4,8 @@ import Link from 'next/link';
 import { cn, calculateRarity, getRarityColor, formatTimestamp } from '@/lib/utils';
 import { RetroCard } from './RetroCard';
 import { Badge } from './Badge';
+import { Tag } from './Tag';
+import { TagList } from './TagList';
 
 export interface BotCardProfile {
   id?: string;
@@ -32,7 +34,7 @@ export interface BotCardProps {
  */
 function getBotIcon(name: string): { initial: string; bgClass: string } {
   const initial = name.charAt(0).toUpperCase();
-  
+
   // Generate color based on name hash for consistency
   const colors = [
     'bg-amber-600',
@@ -44,55 +46,15 @@ function getBotIcon(name: string): { initial: string; bgClass: string } {
     'bg-orange-600',
     'bg-indigo-600',
   ];
-  
+
   let hash = 0;
   for (let i = 0; i < name.length; i++) {
     hash = name.charCodeAt(i) + ((hash << 5) - hash);
   }
-  
+
   const bgClass = colors[Math.abs(hash) % colors.length];
-  
+
   return { initial, bgClass };
-}
-
-interface ItemListProps {
-  items: string[];
-  label: string;
-  maxDisplay?: number;
-  colorClass?: string;
-}
-
-function ItemList({ items, label, maxDisplay = 3, colorClass }: ItemListProps) {
-  if (items.length === 0) return null;
-  
-  const displayItems = items.slice(0, maxDisplay);
-  const remaining = items.length - maxDisplay;
-  
-  return (
-    <div className="mb-2">
-      <div className="text-xs uppercase text-[var(--color-text-secondary)] mb-1">
-        {label} ({items.length})
-      </div>
-      <div className="flex flex-wrap gap-1">
-        {displayItems.map((item) => (
-          <span
-            key={item}
-            className={cn(
-              "px-2 py-0.5 text-xs border border-[var(--color-border-strong)]",
-              colorClass || "bg-[var(--color-bg-secondary)]"
-            )}
-          >
-            {item}
-          </span>
-        ))}
-        {remaining > 0 && (
-          <span className="px-2 py-0.5 text-xs bg-[var(--color-bg-secondary)] border border-[var(--color-border-strong)]">
-            +{remaining}
-          </span>
-        )}
-      </div>
-    </div>
-  );
 }
 
 /**
@@ -118,15 +80,15 @@ export function BotCard({ profile, className }: BotCardProps) {
         <div className="border-b border-[var(--color-border-strong)] pb-3 mb-3">
           <div className="flex items-start gap-3 mb-2">
             {/* Avatar */}
-            <div 
+            <div
               className={cn(
-                "w-10 h-10 flex items-center justify-center text-white font-bold text-lg border border-[var(--color-border-strong)] shrink-0",
+                'w-10 h-10 flex items-center justify-center text-white font-bold text-lg border border-[var(--color-border-strong)] shrink-0',
                 bgClass
               )}
             >
               {initial}
             </div>
-            
+
             {/* Name and Badges */}
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-1">
@@ -135,18 +97,14 @@ export function BotCard({ profile, className }: BotCardProps) {
                   {rarity}
                 </Badge>
               </div>
-              
+
               <div className="flex gap-2 text-xs">
-                <span className="bg-[var(--color-bg-secondary)] px-1.5 py-0.5 border border-[var(--color-border-strong)]">
-                  {profile.harness}
-                </span>
-                <span className="bg-[var(--color-bg-secondary)] px-1.5 py-0.5 border border-[var(--color-border-strong)]">
-                  v{profile.version}
-                </span>
+                <Tag>{profile.harness}</Tag>
+                <Tag>v{profile.version}</Tag>
               </div>
             </div>
           </div>
-          
+
           {/* Prominent LLM Badge */}
           <div className="flex items-center gap-2">
             <span className="text-xs uppercase text-[var(--color-text-secondary)]">
@@ -174,26 +132,26 @@ export function BotCard({ profile, className }: BotCardProps) {
         </div>
 
         {/* Item Lists - Skills, MCPs, CLIs */}
-        <ItemList
+        <TagList
           items={profile.skills}
           label="Skills"
           maxDisplay={3}
-          colorClass="bg-[var(--color-accent-primary)]/10 text-[var(--color-accent-primary)]"
+          variant="primary"
         />
-        
-        <ItemList
+
+        <TagList
           items={profile.mcps}
           label="MCPs"
           maxDisplay={2}
-          colorClass="bg-[var(--color-accent-success)]/10 text-[var(--color-accent-success)]"
+          variant="success"
         />
-        
+
         {profile.clis && profile.clis.length > 0 && (
-          <ItemList
+          <TagList
             items={profile.clis}
             label="CLIs"
             maxDisplay={2}
-            colorClass="bg-[var(--color-accent-warning)]/10 text-[var(--color-accent-warning)]"
+            variant="warning"
           />
         )}
 

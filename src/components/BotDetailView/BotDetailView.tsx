@@ -1,7 +1,8 @@
 'use client';
 
 import * as React from 'react';
-import Link from 'next/link';
+import { Panel } from '@/components/Panel';
+import { RetroCardLink } from '@/components/RetroCard';
 import { ConfigSection } from '@/components/ConfigSection';
 import { ConfigField } from '@/components/ConfigField';
 import {
@@ -55,11 +56,11 @@ export function BotDetailView({ profile }: BotDetailViewProps) {
       <section className="retro-card">
         <div className="grid md:grid-cols-3 gap-6">
           <div className="md:col-span-1">
-            <div className="w-full aspect-square bg-[var(--color-bg-secondary)] border-2 border-[var(--color-border-strong)] flex items-center justify-center mb-2">
+            <Panel className="w-full aspect-square flex items-center justify-center mb-2">
               <span className="text-5xl" aria-hidden="true">
                 {icon}
               </span>
-            </div>
+            </Panel>
             <div className="text-center">
               <div className="text-xs uppercase text-[var(--color-text-secondary)]">
                 RANK
@@ -78,12 +79,12 @@ export function BotDetailView({ profile }: BotDetailViewProps) {
               <InfoItem label="UPDATED" value={formatFullDate(profile.updatedAt)} />
             </div>
 
-            <div className="p-3 bg-[var(--color-bg-secondary)] border border-[var(--color-border-strong)]">
+            <Panel className="p-3">
               <div className="text-xs uppercase text-[var(--color-text-secondary)] mb-1">
                 YEARBOOK_QUOTE
               </div>
               <p className="text-sm italic">&ldquo;{profile.description}&rdquo;</p>
-            </div>
+            </Panel>
 
             {publicUrl && (
               <div>
@@ -137,12 +138,12 @@ export function BotDetailView({ profile }: BotDetailViewProps) {
         <ConfigSection title="CLI_TOOLS" expanded={true}>
           <div className="grid grid-cols-3 gap-2">
             {clisData.map((cli, index) => (
-              <div
+              <Panel
                 key={`${cli.name}-${index}`}
-                className="bg-[var(--color-bg-secondary)] border border-[var(--color-border-strong)] p-2 text-center"
+                className="p-2 text-center"
               >
                 <div className="text-xs font-bold">{cli.name}</div>
-              </div>
+              </Panel>
             ))}
           </div>
         </ConfigSection>
@@ -159,18 +160,18 @@ export function BotDetailView({ profile }: BotDetailViewProps) {
       <section>
         <div className="grid grid-cols-2 gap-4">
           {profile.slug && (
-            <Link
+            <RetroCardLink
               href={`/compare?base=${profile.slug}`}
-              className="retro-card text-center py-3 font-bold uppercase hover:bg-[var(--color-accent-primary)] hover:text-white transition-colors"
+              className="text-center py-3 font-bold uppercase hover:bg-[var(--color-accent-primary)] hover:text-white transition-colors"
             >
               ADD_TO_COMPARISON
-            </Link>
+            </RetroCardLink>
           )}
           <a
             href={`https://github.com/search?q=${encodeURIComponent(profile.name)}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="retro-card text-center py-3 font-bold uppercase hover:bg-[var(--color-accent-secondary)] hover:text-white transition-colors"
+            className="retro-card block text-center py-3 font-bold uppercase hover:bg-[var(--color-accent-secondary)] hover:text-white transition-colors"
           >
             FIND_ON_GITHUB
           </a>

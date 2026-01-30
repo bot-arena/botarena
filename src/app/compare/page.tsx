@@ -1,6 +1,9 @@
 'use client';
 
 import * as React from 'react';
+import { RetroCard } from '@/components/RetroCard';
+import { Panel } from '@/components/Panel';
+import { SectionHeader } from '@/components/SectionHeader';
 import { calculateRarityScore, cn } from '@/lib/utils';
 
 // Types
@@ -176,18 +179,18 @@ function ComparisonHeader({ baseName, compareName }: ComparisonHeaderProps) {
   return (
     <div className="grid grid-cols-3 gap-4 mb-6">
       <div />
-      <div className="retro-card text-center">
+      <RetroCard className="text-center">
         <div className="text-xs uppercase text-[var(--color-text-secondary)]">
           BASE_BOT
         </div>
         <div className="text-base font-bold">{baseName}</div>
-      </div>
-      <div className="retro-card text-center">
+      </RetroCard>
+      <RetroCard className="text-center">
         <div className="text-xs uppercase text-[var(--color-text-secondary)]">
           COMPARE_BOT
         </div>
         <div className="text-base font-bold">{compareName}</div>
-      </div>
+      </RetroCard>
     </div>
   );
 }
@@ -210,22 +213,22 @@ function StatsCompare({ label, base, compare }: StatsCompareProps) {
       </div>
       <div className="flex items-center gap-2">
         <div className="flex-1">
-          <div className="h-6 bg-[var(--color-bg-secondary)] border border-[var(--color-border-strong)] relative">
+          <Panel className="h-6 relative">
             <div
               className="absolute top-0 left-0 h-full bg-[var(--color-accent-primary)]"
               style={{ width: `${baseWidth}%` }}
             />
             <span className="absolute top-1 right-2 text-xs font-bold">{base}</span>
-          </div>
+          </Panel>
         </div>
         <div className="flex-1">
-          <div className="h-6 bg-[var(--color-bg-secondary)] border border-[var(--color-border-strong)] relative">
+          <Panel className="h-6 relative">
             <div
               className="absolute top-0 left-0 h-full bg-[var(--color-accent-success)]"
               style={{ width: `${compareWidth}%` }}
             />
             <span className="absolute top-1 right-2 text-xs font-bold">{compare}</span>
-          </div>
+          </Panel>
         </div>
       </div>
     </div>
@@ -269,10 +272,8 @@ export default function ComparePage() {
         compareName={COMPARE_BOT.name}
       />
 
-      <section className="retro-card mb-4">
-        <h2 className="text-xs font-bold uppercase mb-4 border-b border-[var(--color-border-strong)] pb-2">
-          SIGNIFICANT_DIFFERENCES
-        </h2>
+      <RetroCard className="mb-4">
+        <SectionHeader>SIGNIFICANT_DIFFERENCES</SectionHeader>
 
         {diffs.length === 0 ? (
           <div className="text-xs text-[var(--color-text-secondary)] text-center py-4">
@@ -281,12 +282,10 @@ export default function ComparePage() {
         ) : (
           diffs.map((diff) => <DiffRow key={diff.field} diff={diff} />)
         )}
-      </section>
+      </RetroCard>
 
-      <section className="retro-card">
-        <h2 className="text-xs font-bold uppercase mb-4 border-b border-[var(--color-border-strong)] pb-2">
-          STATISTICS_COMPARISON
-        </h2>
+      <RetroCard>
+        <SectionHeader>STATISTICS_COMPARISON</SectionHeader>
 
         <StatsCompare
           label="SKILLS_COUNT"
@@ -308,7 +307,7 @@ export default function ComparePage() {
           base={baseStats.rarity}
           compare={compareStats.rarity}
         />
-      </section>
+      </RetroCard>
     </div>
   );
 }
