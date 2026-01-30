@@ -110,22 +110,25 @@ export class ClawdBotDiscovery {
    * Extract public configuration from discovered files
    * User provides description interactively - never auto-extracted from sensitive files
    */
-  async extractPublicConfig(userDescription?: string): Promise<PublicBotConfigType> {
+  async extractPublicConfig(userDescription?: string, autoDescription?: string): Promise<PublicBotConfigType> {
     const discovery = await this.discover();
 
     // Build public config from discovered files + user input
     // SECURITY: User provides description interactively, we never extract from config files
     const mcps = await this.discoverMCPs();
+    const llm = await this.discoverLLM();
+    const clis = await this.discoverCLIs();
+
+    // Use auto-extracted description as fallback if user didn't provide one
+    const finalDescription = userDescription || autoDescription || 'A helpful AI assistant';
+
     const publicConfig = {
       name: discovery.name || 'Unnamed Bot',
-      description: userDescription || 'A helpful AI assistant',
-      llm: {
-        primary: 'Not specified',
-        fallbacks: [],
-      },
+      description: finalDescription,
+      llm: llm,
       skills: discovery.skills || [],
       mcps: mcps,
-      clis: [],
+      clis: clis,
       harness: 'ClawdBot',
       version: '1.0.0',
     };
@@ -289,6 +292,200 @@ export class ClawdBotDiscovery {
     }
     
     return mcps;
+  }
+
+  /**
+   * Discover LLM configuration from mcp.json and config files
+   * Extracts model info from various configuration sources
+   */
+  private async discoverLLM(): Promise<{ primary: string; fallbacks: string[] }> {
+    const result = {
+      primary: 'Not specified',
+      fallbacks: [] as string[],
+    };
+
+    // Try mcp.json first
+    try {
+      const mcpPath = path.join(this.basePath, 'mcp.json');
+      const content = await safeReadFile(mcpPath);
+      if (content) {
+        const config = JSON.parse(content);
+        // Look for model, llm, or provider fields
+        if (config.model) {
+          result.primary = config.model;
+        } else if (config.llm?.model) {
+          result.primary = config.llm.model;
+        } else if (config.llm?.primary) {
+          result.primary = config.llm.primary;
+        } else if (config.provider) {
+          result.primary = config.provider;
+        }
+
+        // Extract fallbacks if available
+        if (config.llm?.fallbacks && Array.isArray(config.llm.fallbacks)) {
+          result.fallbacks = config.llm.fallbacks;
+        }
+
+        if (result.primary !== 'Not specified') {
+          return result;
+        }
+      }
+    } catch {
+      // mcp.json doesn't exist or is invalid
+    }
+
+    // Try .clawdbot/config.json
+    try {
+      const configPath = path.join(this.basePath, '.clawdbot', 'config.json');
+      const content = await safeReadFile(configPath);
+      if (content) {
+        const config = JSON.parse(content);
+        if (config.model) {
+          result.primary = config.model;
+        } else if (config.llm?.model) {
+          result.primary = config.llm.model;
+        }
+
+        if (result.primary !== 'Not specified') {
+          return result;
+        }
+      }
+    } catch {
+      // config.json doesn't exist or is invalid
+    }
+
+    // Try claude.config.json
+    try {
+      const configPath = path.join(this.basePath, 'claude.config.json');
+      const content = await safeReadFile(configPath);
+      if (content) {
+        const config = JSON.parse(content);
+        if (config.model) {
+          result.primary = config.model;
+        } else if (config.llm?.model) {
+          result.primary = config.llm.model;
+        }
+
+        if (result.primary !== 'Not specified') {
+          return result;
+        }
+      }
+    } catch {
+      // claude.config.json doesn't exist
+    }
+
+    // Try to parse from SOUL.md
+    try {
+      const soulPath = path.join(this.basePath, 'SOUL.md');
+      const content = await safeReadFile(soulPath);
+      if (content) {
+        // Look for LLM mentions in various formats
+        const llmMatch = content.match(/(?:Model|LLM|AI Model):\s*(.+)/i);
+        if (llmMatch) {
+          result.primary = llmMatch[1].trim();
+          return result;
+        }
+
+        // Look for model references like "gpt-4", "claude-3", etc.
+        const modelPatterns = [
+          /\b(gpt-4[\w-]*)\b/i,
+          /\b(gpt-3[\w-]*)\b/i,
+          /\b(claude-3[\w-]*)\b/i,
+          /\b(claude-2[\w-]*)\b/i,
+          /\b(gemini[\w-]*)\b/i,
+          /\b(llama[\w-]*)\b/i,
+        ];
+
+        for (const pattern of modelPatterns) {
+          const match = content.match(pattern);
+          if (match) {
+            result.primary = match[1];
+            return result;
+          }
+        }
+      }
+    } catch {
+      // SOUL.md doesn't exist
+    }
+
+    return result;
+  }
+
+  /**
+   * Discover CLIs from package.json bin entries and CLI manifests
+   */
+  private async discoverCLIs(): Promise<string[]> {
+    const clis: string[] = [];
+
+    // Try package.json bin entries
+    try {
+      const packagePath = path.join(this.basePath, 'package.json');
+      const content = await safeReadFile(packagePath);
+      if (content) {
+        const pkg = JSON.parse(content);
+        if (pkg.bin) {
+          if (typeof pkg.bin === 'string') {
+            // Single CLI with package name
+            clis.push(pkg.name || 'cli');
+          } else if (typeof pkg.bin === 'object') {
+            // Multiple CLIs
+            clis.push(...Object.keys(pkg.bin));
+          }
+        }
+      }
+    } catch {
+      // package.json doesn't exist or is invalid
+    }
+
+    // Try cli.json manifest
+    try {
+      const cliPath = path.join(this.basePath, 'cli.json');
+      const content = await safeReadFile(cliPath);
+      if (content) {
+        const config = JSON.parse(content);
+        if (config.commands && Array.isArray(config.commands)) {
+          clis.push(...config.commands.map((cmd: any) => cmd.name || cmd));
+        } else if (config.clis && Array.isArray(config.clis)) {
+          clis.push(...config.clis);
+        }
+      }
+    } catch {
+      // cli.json doesn't exist
+    }
+
+    // Try commands.json manifest
+    try {
+      const commandsPath = path.join(this.basePath, 'commands.json');
+      const content = await safeReadFile(commandsPath);
+      if (content) {
+        const config = JSON.parse(content);
+        if (config.commands && Array.isArray(config.commands)) {
+          clis.push(...config.commands.map((cmd: any) => cmd.name || cmd));
+        }
+      }
+    } catch {
+      // commands.json doesn't exist
+    }
+
+    // Try to parse from SOUL.md
+    try {
+      const soulPath = path.join(this.basePath, 'SOUL.md');
+      const content = await safeReadFile(soulPath);
+      if (content) {
+        // Look for CLI mentions
+        const cliMatch = content.match(/(?:CLI|Command|Tool):\s*(.+)/i);
+        if (cliMatch) {
+          const cliName = cliMatch[1].trim();
+          if (!clis.includes(cliName)) {
+            clis.push(cliName);
+          }
+        }
+      }
+    } catch {
+      // SOUL.md doesn't exist
+    }
+
+    return [...new Set(clis)];
   }
 
   /**
