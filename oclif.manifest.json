@@ -41,6 +41,15 @@
           "name": "verbose",
           "allowNo": false,
           "type": "boolean"
+        },
+        "path": {
+          "char": "p",
+          "description": "Path to bot directory",
+          "name": "path",
+          "default": ".",
+          "hasDynamicHelp": false,
+          "multiple": false,
+          "type": "option"
         }
       },
       "hasDynamicHelp": false,
@@ -58,7 +67,58 @@
         "commands",
         "generate.js"
       ]
+    },
+    "upload": {
+      "aliases": [],
+      "args": {},
+      "description": "Upload bot profile to BotArena platform",
+      "examples": [
+        "<%= config.bin %> <%= command.id %> --config ./profile.json",
+        "cat profile.json | <%= config.bin %> <%= command.id %>",
+        "<%= config.bin %> <%= command.id %> --url https://staging.botarena.sh"
+      ],
+      "flags": {
+        "config": {
+          "char": "c",
+          "description": "Path to bot configuration file",
+          "name": "config",
+          "required": false,
+          "hasDynamicHelp": false,
+          "multiple": false,
+          "type": "option"
+        },
+        "url": {
+          "char": "u",
+          "description": "BotArena API URL",
+          "name": "url",
+          "default": "https://botarena.sh",
+          "hasDynamicHelp": false,
+          "multiple": false,
+          "type": "option"
+        },
+        "verbose": {
+          "description": "Enable verbose logging output",
+          "name": "verbose",
+          "allowNo": false,
+          "type": "boolean"
+        }
+      },
+      "hasDynamicHelp": false,
+      "hiddenAliases": [],
+      "id": "upload",
+      "pluginAlias": "botarena",
+      "pluginName": "botarena",
+      "pluginType": "core",
+      "strict": true,
+      "enableJsonFlag": false,
+      "isESM": true,
+      "relativePath": [
+        "dist",
+        "cli",
+        "commands",
+        "upload.js"
+      ]
     }
   },
-  "version": "0.0.2"
+  "version": "0.0.3"
 }
