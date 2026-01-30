@@ -83,8 +83,8 @@ export function BotCard({ profile, className }: BotCardProps) {
         </div>
 
         <div className="divide-y divide-[var(--color-border-strong)]">
-          <div className="grid grid-cols-[96px_1fr] gap-2 py-2">
-            <span className="text-[10px] uppercase tracking-widest text-[var(--color-text-secondary)]">
+          <div className="grid grid-cols-[96px_1fr] items-start gap-2 py-2">
+            <span className="text-[10px] font-semibold uppercase tracking-widest text-[var(--color-text-secondary)]">
               Mark
             </span>
             <div className="flex items-center gap-2">
@@ -102,19 +102,19 @@ export function BotCard({ profile, className }: BotCardProps) {
             </div>
           </div>
 
-          <div className="grid grid-cols-[96px_1fr] gap-2 py-2">
-            <span className="text-[10px] uppercase tracking-widest text-[var(--color-text-secondary)]">
+          <div className="grid grid-cols-[96px_1fr] items-start gap-2 py-2">
+            <span className="text-[10px] font-semibold uppercase tracking-widest text-[var(--color-text-secondary)]">
               Name
             </span>
             <div className="flex items-center gap-2">
-              <h3 className="text-sm font-semibold tracking-wide text-[var(--color-text-primary)]">
+              <h3 className="text-sm font-semibold leading-tight tracking-wide text-[var(--color-text-primary)]">
                 {profile.name}
               </h3>
             </div>
           </div>
 
-          <div className="grid grid-cols-[96px_1fr] gap-2 py-2">
-            <span className="text-[10px] uppercase tracking-widest text-[var(--color-text-secondary)]">
+          <div className="grid grid-cols-[96px_1fr] items-start gap-2 py-2">
+            <span className="text-[10px] font-semibold uppercase tracking-widest text-[var(--color-text-secondary)]">
               Rarity
             </span>
             <div className="flex items-center gap-2">
@@ -124,12 +124,12 @@ export function BotCard({ profile, className }: BotCardProps) {
             </div>
           </div>
 
-          <div className="grid grid-cols-[96px_1fr] gap-2 py-2">
-            <span className="text-[10px] uppercase tracking-widest text-[var(--color-text-secondary)]">
+          <div className="grid grid-cols-[96px_1fr] items-start gap-2 py-2">
+            <span className="text-[10px] font-semibold uppercase tracking-widest text-[var(--color-text-secondary)]">
               LLM
             </span>
             <div className="flex items-center flex-wrap gap-2">
-              <span className="text-sm font-semibold text-[var(--color-text-primary)]">
+              <span className="text-sm font-semibold leading-tight text-[var(--color-text-primary)]">
                 {profile.llm.primary}
               </span>
               <span className="text-xs text-[var(--color-text-tertiary)]">
@@ -138,8 +138,8 @@ export function BotCard({ profile, className }: BotCardProps) {
             </div>
           </div>
 
-          <div className="grid grid-cols-[96px_1fr] gap-2 py-2">
-            <span className="text-[10px] uppercase tracking-widest text-[var(--color-text-secondary)]">
+          <div className="grid grid-cols-[96px_1fr] items-start gap-2 py-2">
+            <span className="text-[10px] font-semibold uppercase tracking-widest text-[var(--color-text-secondary)]">
               Quote
             </span>
             <p className="text-sm leading-snug text-[var(--color-text-primary)]">
@@ -147,8 +147,8 @@ export function BotCard({ profile, className }: BotCardProps) {
             </p>
           </div>
 
-          <div className="grid grid-cols-[96px_1fr] gap-2 py-2">
-            <span className="text-[10px] uppercase tracking-widest text-[var(--color-text-secondary)]">
+          <div className="grid grid-cols-[96px_1fr] items-start gap-2 py-2">
+            <span className="text-[10px] font-semibold uppercase tracking-widest text-[var(--color-text-secondary)]">
               Harness
             </span>
             <div className="flex flex-wrap gap-1">
@@ -156,8 +156,8 @@ export function BotCard({ profile, className }: BotCardProps) {
             </div>
           </div>
 
-          <div className="grid grid-cols-[96px_1fr] gap-2 py-2">
-            <span className="text-[10px] uppercase tracking-widest text-[var(--color-text-secondary)]">
+          <div className="grid grid-cols-[96px_1fr] items-start gap-2 py-2">
+            <span className="text-[10px] font-semibold uppercase tracking-widest text-[var(--color-text-secondary)]">
               Version
             </span>
             <div className="flex flex-wrap gap-1">
@@ -165,8 +165,8 @@ export function BotCard({ profile, className }: BotCardProps) {
             </div>
           </div>
 
-          <div className="grid grid-cols-[96px_1fr] gap-2 py-2">
-            <span className="text-[10px] uppercase tracking-widest text-[var(--color-text-secondary)]">
+          <div className="grid grid-cols-[96px_1fr] items-start gap-2 py-2">
+            <span className="text-[10px] font-semibold uppercase tracking-widest text-[var(--color-text-secondary)]">
               Skills
             </span>
             <div className="flex flex-wrap gap-1">
@@ -182,8 +182,8 @@ export function BotCard({ profile, className }: BotCardProps) {
             </div>
           </div>
 
-          <div className="grid grid-cols-[96px_1fr] gap-2 py-2">
-            <span className="text-[10px] uppercase tracking-widest text-[var(--color-text-secondary)]">
+          <div className="grid grid-cols-[96px_1fr] items-start gap-2 py-2">
+            <span className="text-[10px] font-semibold uppercase tracking-widest text-[var(--color-text-secondary)]">
               MCPs
             </span>
             <div className="flex flex-wrap gap-1">
@@ -199,8 +199,8 @@ export function BotCard({ profile, className }: BotCardProps) {
             </div>
           </div>
 
-          <div className="grid grid-cols-[96px_1fr] gap-2 py-2">
-            <span className="text-[10px] uppercase tracking-widest text-[var(--color-text-secondary)]">
+          <div className="grid grid-cols-[96px_1fr] items-start gap-2 py-2">
+            <span className="text-[10px] font-semibold uppercase tracking-widest text-[var(--color-text-secondary)]">
               CLIs
             </span>
             <div className="flex flex-wrap gap-1">
