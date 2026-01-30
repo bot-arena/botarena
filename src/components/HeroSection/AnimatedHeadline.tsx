@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 
-const BOT_TYPES = ['CLAWDBOTS', 'MOLTBOTS', 'OPENBOTS'] as const;
+const BOT_TYPES = ['CLAWDBOTS', 'MOLTBOTS', 'OPENCLAWS'] as const;
 const TYPE_SPEED_MS = 100;
 const DELETE_SPEED_MS = 50;
 const PAUSE_DURATION_MS = 2000;
