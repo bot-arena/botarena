@@ -130,4 +130,209 @@ http.route({
   }),
 });
 
+/**
+ * POST /api/seed - Seed development profiles
+ * Only available in development environment
+ * Populates database with sample bot profiles
+ */
+http.route({
+  path: "/api/seed",
+  method: "POST",
+  handler: httpAction(async (ctx, request) => {
+    try {
+      // Check for development environment
+      // In Convex, we check the deployment URL or a custom header
+      const isDev = request.headers.get("x-environment") === "development" ||
+                    process.env.CONVEX_ENV === "dev";
+      
+      if (!isDev) {
+        return new Response(
+          JSON.stringify({ 
+            success: false, 
+            error: "Seed endpoint only available in development" 
+          }),
+          {
+            status: 403,
+            headers: { 
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "*",
+            },
+          }
+        );
+      }
+
+      // Import API inside handler
+      const { api } = await import("./_generated/api");
+
+      // Run seed mutation
+      const result = await ctx.runMutation(api.seed.seedDevProfiles, {});
+
+      return new Response(
+        JSON.stringify({
+          success: true,
+          data: result,
+          message: result.seeded > 0 
+            ? `Seeded ${result.seeded} development profiles`
+            : result.message,
+        }),
+        {
+          status: 200,
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+          },
+        }
+      );
+    } catch (error) {
+      console.error("Error seeding profiles:", error);
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: error instanceof Error ? error.message : "Failed to seed profiles",
+        }),
+        {
+          status: 500,
+          headers: { 
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+          },
+        }
+      );
+    }
+  }),
+});
+
+/**
+ * POST /api/seed/clear - Clear all development profiles
+ * Only available in development environment
+ */
+http.route({
+  path: "/api/seed/clear",
+  method: "POST",
+  handler: httpAction(async (ctx, request) => {
+    try {
+      // Check for development environment
+      const isDev = request.headers.get("x-environment") === "development" ||
+                    process.env.CONVEX_ENV === "dev";
+      
+      if (!isDev) {
+        return new Response(
+          JSON.stringify({ 
+            success: false, 
+            error: "Clear endpoint only available in development" 
+          }),
+          {
+            status: 403,
+            headers: { 
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "*",
+            },
+          }
+        );
+      }
+
+      // Import API inside handler
+      const { api } = await import("./_generated/api");
+
+      // Run clear mutation
+      const result = await ctx.runMutation(api.seed.clearDevProfiles, {});
+
+      return new Response(
+        JSON.stringify({
+          success: true,
+          data: result,
+          message: result.message,
+        }),
+        {
+          status: 200,
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+          },
+        }
+      );
+    } catch (error) {
+      console.error("Error clearing profiles:", error);
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: error instanceof Error ? error.message : "Failed to clear profiles",
+        }),
+        {
+          status: 500,
+          headers: { 
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+          },
+        }
+      );
+    }
+  }),
+});
+
+/**
+ * GET /api/seed/status - Check seed status
+ * Returns current database state
+ */
+http.route({
+  path: "/api/seed/status",
+  method: "GET",
+  handler: httpAction(async (ctx) => {
+    try {
+      // Import API inside handler
+      const { api } = await import("./_generated/api");
+
+      // Get seed status
+      const result = await ctx.runMutation(api.seed.getSeedStatus, {});
+
+      return new Response(
+        JSON.stringify({
+          success: true,
+          data: result,
+        }),
+        {
+          status: 200,
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+          },
+        }
+      );
+    } catch (error) {
+      console.error("Error checking seed status:", error);
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: error instanceof Error ? error.message : "Failed to check status",
+        }),
+        {
+          status: 500,
+          headers: { 
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+          },
+        }
+      );
+    }
+  }),
+});
+
+/**
+ * OPTIONS /api/seed - CORS preflight for seed endpoints
+ */
+http.route({
+  path: "/api/seed",
+  method: "OPTIONS",
+  handler: httpAction(async () => {
+    return new Response(null, {
+      status: 204,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, x-environment",
+      },
+    });
+  }),
+});
+
 export default http;
