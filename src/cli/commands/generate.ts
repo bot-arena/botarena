@@ -19,7 +19,7 @@ export default class GenerateCommand extends Command {
   static flags = {
     interactive: Flags.boolean({
       description: 'Run with interactive prompts for bot configuration',
-      default: true,
+      default: false,
     }),
     'dry-run': Flags.boolean({
       description: 'Generate profile without uploading to BotArena',
