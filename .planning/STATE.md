@@ -15,11 +15,19 @@ Phase 1 (Secure Foundation) is complete. Bot owners can now safely generate and 
 ## Current Position
 
 **Phase:** 1 of 3 (Secure Foundation)  
-**Plan:** 5 of 5 complete in current phase  
+**Plan:** 6 of 6 complete in current phase  
 **Status:** Phase 1 Complete ✓  
-**Last activity:** 2026-01-29 - Completed 01-05-PLAN.md
+**Last activity:** 2026-01-30 - Completed 01-06-PLAN.md (Gap 1: CLI Help Output Fix)
 
 Progress: ████████░░ 40% (5/13 success criteria)
+
+### Gap Closure Progress
+- ✅ **Gap 1:** CLI Help Output Issue - Documented npx cache troubleshooting
+- ⏳ **Gap 2:** Bot Discovery (skills, MCP, CLI) - Pending
+- ⏳ **Gap 3:** Interactive Mode UX - Pending  
+- ⏳ **Gap 4:** Profile Card Design - Pending
+- ⏳ **Gap 5:** Bot Profile 404 (DB seeding) - Pending
+- ⏳ **Gap 6:** Text Readability/Accessibility - Pending
 
 ### Next Steps
 1. Initialize Convex project (`npx convex dev`)
@@ -51,6 +59,7 @@ Progress: ████████░░ 40% (5/13 success criteria)
 | ClawdBot as Initial Target | Currently viral and serves as beachhead market | All v1 requirements focused on ClawdBot integration |
 | Convex HTTP API for server components | Avoids client/server boundary issues with generated types | Direct fetch to Convex endpoints in server components |
 | Gaming-inspired UI with glassmorphism | Creates emotional attachment while maintaining data clarity | Backdrop blur, gradient backgrounds, motion animations |
+| Transparent documentation for known issues | Build user trust by acknowledging problems with clear solutions | CLI README documents v0.0.2 stub cache issue with @latest workaround |
 
 ### Architecture Decisions
 - **CLI Tool:** Secure local bot config discovery via runtime APIs (never raw files)
@@ -82,10 +91,11 @@ Progress: ████████░░ 40% (5/13 success criteria)
 - Phase 1 complete with CLI generation, Convex backend, and profile pages
 
 ### What We're Working On
-- Phase 1 is complete with all 5 plans implemented
-- CLI can generate and upload profiles to Convex
-- Web platform displays profiles with gaming-inspired design
-- Ready to begin Phase 2: Discovery & Basic Comparison
+- Phase 1 has 6 plans (5 original + 1 gap closure), 6/6 complete
+- CLI documentation improved with npx cache troubleshooting
+- Gap closure in progress - addressing UAT findings from 01-secure-foundation-UAT.md
+- Remaining gaps: Bot discovery, Interactive mode UX, Profile cards, DB seeding, Text readability
+- Ready to begin Phase 2: Discovery & Basic Comparison after gap closure
 
 ### What We Need to Track
 - Convex initialization status (types generation)
@@ -107,5 +117,5 @@ Progress: ████████░░ 40% (5/13 success criteria)
 
 ---
 
-*State updated: 2026-01-29*  
-*Last action: Completed Phase 1, Plan 05 (End-to-End Profile Generation)*
+*State updated: 2026-01-30*  
+*Last action: Completed Phase 1, Plan 06 (Gap 1: CLI Help Output Fix)*
