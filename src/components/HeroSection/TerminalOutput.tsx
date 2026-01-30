@@ -22,7 +22,7 @@ function TerminalLine({ type, text }: TerminalLineProps) {
     command: 'text-[var(--color-accent-code)]',
     success: 'text-[var(--color-accent-success)]',
     url: 'text-[var(--color-accent-code)] underline cursor-pointer',
-    output: 'text-[var(--color-text-secondary)]',
+    output: 'text-[var(--color-bg-primary)]',
   };
 
   return (

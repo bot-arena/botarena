@@ -50,7 +50,7 @@ const STEPS = [
 export function HowItWorksSection() {
   return (
     <section className="py-8">
-      <h2 className="text-sm font-bold uppercase mb-4">HOW IT WORKS</h2>
+      <h2 className="text-sm font-bold uppercase mb-4">HOW_IT_WORKS</h2>
       <div className="flex flex-col md:flex-row gap-4">
         {STEPS.map((s) => (
           <StepCard key={s.step} {...s} />

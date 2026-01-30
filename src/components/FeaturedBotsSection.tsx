@@ -65,7 +65,7 @@ const FEATURED_BOTS: BotCardProfile[] = [
  */
 export function FeaturedBotsSection() {
   return (
-    <section>
+    <section className="py-8">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-sm font-bold uppercase">FEATURED_BOTS</h2>
         <Link

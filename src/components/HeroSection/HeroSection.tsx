@@ -30,7 +30,7 @@ export function HeroSection() {
               Explore Bots
             </Link>
             <a
-              href="https://github.com/botarena/botarena"
+              href="https://github.com/bot-arena/botarena"
               target="_blank"
               rel="noopener noreferrer"
               className="text-xs uppercase text-[var(--color-text-secondary)] hover:text-[var(--color-accent-primary)] underline underline-offset-2 inline-flex items-center gap-1"
