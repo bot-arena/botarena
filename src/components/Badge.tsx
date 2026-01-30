@@ -1,19 +1,35 @@
 'use client';
 
+import * as React from 'react';
 import { cn } from '@/lib/utils';
 
-interface BadgeProps {
-  children: React.ReactNode;
+export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
+  /**
+   * Whether the badge is in an active state
+   * @default false
+   */
   active?: boolean;
-  className?: string;
 }
 
-export function Badge({ children, active = false, className }: BadgeProps) {
-  const activeClasses = active ? 'badge-active' : 'badge-inactive';
-  
-  return (
-    <span className={cn('badge-retro', activeClasses, className)}>
-      {children}
-    </span>
-  );
-}
+/**
+ * A retro-styled badge component for displaying labels and status indicators.
+ * Used for showing bot rarity, tags, and status indicators.
+ */
+export const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
+  ({ children, active = false, className, ...props }, ref) => {
+    return (
+      <span
+        ref={ref}
+        className={cn(
+          'badge-retro',
+          active ? 'badge-active' : 'badge-inactive',
+          className
+        )}
+        {...props}
+      >
+        {children}
+      </span>
+    );
+  }
+);
+Badge.displayName = 'Badge';

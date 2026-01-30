@@ -1,7 +1,12 @@
 import { clsx, type ClassValue } from 'clsx';
+import { twMerge } from 'tailwind-merge';
 
+/**
+ * Combines multiple class values into a single string, merging Tailwind classes.
+ * Uses clsx for conditional classes and tailwind-merge to resolve conflicts.
+ */
 export function cn(...inputs: ClassValue[]) {
-  return clsx(inputs);
+  return twMerge(clsx(inputs));
 }
 
 export function formatDate(date: Date | string): string {

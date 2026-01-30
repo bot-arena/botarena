@@ -1,29 +1,49 @@
 'use client';
 
-import { useState } from 'react';
+import * as React from 'react';
 import { cn } from '@/lib/utils';
 
-interface ConfigSectionProps {
+export interface ConfigSectionProps extends React.HTMLAttributes<HTMLElement> {
+  /**
+   * The section title displayed in the header
+   */
   title: string;
-  children: React.ReactNode;
+  /**
+   * Whether the section is initially expanded
+   * @default false
+   */
   expanded?: boolean;
-  className?: string;
 }
 
-export function ConfigSection({ title, children, expanded = false, className }: ConfigSectionProps) {
-  const [isOpen, setIsOpen] = useState(expanded);
-  
-  return (
-    <section className={cn('config-section', className)}>
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="config-header"
-        aria-expanded={isOpen}
-      >
-        <span>{title}</span>
-        <span className="text-[10px]">{isOpen ? '[-]' : '[+]'}</span>
-      </button>
-      {isOpen && <div className="config-content">{children}</div>}
-    </section>
-  );
-}
+/**
+ * A collapsible configuration section component.
+ * Used in bot detail views to organize configuration into expandable sections.
+ */
+export const ConfigSection = React.forwardRef<HTMLElement, ConfigSectionProps>(
+  ({ title, children, expanded = false, className, ...props }, ref) => {
+    const [isOpen, setIsOpen] = React.useState(expanded);
+
+    return (
+      <section ref={ref} className={cn('config-section', className)} {...props}>
+        <button
+          type="button"
+          onClick={() => setIsOpen(!isOpen)}
+          className="config-header"
+          aria-expanded={isOpen}
+          aria-controls={`config-content-${title}`}
+        >
+          <span>{title}</span>
+          <span className="text-[10px]" aria-hidden="true">
+            {isOpen ? '[-]' : '[+]'}
+          </span>
+        </button>
+        {isOpen && (
+          <div id={`config-content-${title}`} className="config-content">
+            {children}
+          </div>
+        )}
+      </section>
+    );
+  }
+);
+ConfigSection.displayName = 'ConfigSection';

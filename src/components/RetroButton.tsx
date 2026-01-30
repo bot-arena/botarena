@@ -1,38 +1,38 @@
 'use client';
 
+import * as React from 'react';
 import { cn } from '@/lib/utils';
 
-interface RetroButtonProps {
-  children: React.ReactNode;
-  onClick?: () => void;
-  type?: 'button' | 'submit' | 'reset';
-  disabled?: boolean;
-  className?: string;
+export interface RetroButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  /**
+   * Visual variant of the button
+   * @default 'primary'
+   */
   variant?: 'primary' | 'secondary';
 }
 
-export function RetroButton({ 
-  children, 
-  onClick, 
-  type = 'button', 
-  disabled = false,
-  className,
-  variant = 'primary'
-}: RetroButtonProps) {
-  const baseClasses = 'btn-retro';
-  const variantClasses = variant === 'primary' 
-    ? '' 
-    : 'bg-[var(--color-bg-secondary)]';
-  const disabledClasses = disabled ? 'opacity-50 cursor-not-allowed' : '';
-  
-  return (
-    <button
-      type={type}
-      onClick={onClick}
-      disabled={disabled}
-      className={cn(baseClasses, variantClasses, disabledClasses, className)}
-    >
-      {children}
-    </button>
-  );
-}
+/**
+ * A retro-styled button component with primary and secondary variants.
+ * Used throughout the application for call-to-action buttons.
+ */
+export const RetroButton = React.forwardRef<HTMLButtonElement, RetroButtonProps>(
+  ({ children, className, variant = 'primary', disabled, type = 'button', ...props }, ref) => {
+    return (
+      <button
+        ref={ref}
+        type={type}
+        disabled={disabled}
+        className={cn(
+          'btn-retro',
+          variant === 'secondary' && 'bg-[var(--color-bg-secondary)]',
+          disabled && 'opacity-50 cursor-not-allowed',
+          className
+        )}
+        {...props}
+      >
+        {children}
+      </button>
+    );
+  }
+);
+RetroButton.displayName = 'RetroButton';
