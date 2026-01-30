@@ -37,6 +37,60 @@ cp .env.local.example .env.local
 # Start dev servers
 pnpm dev:web      # Next.js dev server (http://localhost:3000)
 pnpm convex dev   # Convex dev server (in another terminal)
+
+# Seed the database with sample profiles (in another terminal)
+pnpm seed
+```
+
+---
+
+## Getting Started
+
+### Option 1: Seed with Development Data (Quickest)
+
+Populate the database with sample bot profiles:
+
+```bash
+# Start Convex dev server (if not already running)
+pnpm convex dev
+
+# In another terminal, seed the database
+pnpm seed
+# or
+npm run seed
+```
+
+Then visit http://localhost:3000 to see the featured bots.
+
+**Available seed commands:**
+
+| Command | Description |
+|---------|-------------|
+| `pnpm seed` | Seed database with development profiles |
+| `pnpm seed:status` | Check how many profiles exist |
+| `pnpm seed:clear` | Remove all profiles (start fresh) |
+| `pnpm db:seed` | Start Convex and seed in one command |
+
+### Option 2: Upload Your Own Bot Profile
+
+1. Navigate to your ClawdBot project:
+```bash
+cd /path/to/your/bot
+```
+
+2. Generate and upload your bot profile:
+```bash
+# Non-interactive (for CI/CD)
+npx botarena@latest generate --description "My awesome bot" --yes
+
+# Interactive (for humans)
+npx botarena@latest generate --interactive
+```
+
+3. The CLI will output a public URL like:
+```
+Profile uploaded successfully!
+View your bot: http://localhost:3000/bots/your-bot-name
 ```
 
 ---
@@ -89,6 +143,55 @@ pnpm dev
 CLI commands are in `src/cli/commands/`:
 - `generate` — Interactively generate a bot profile JSON
 - `upload` — Upload profile to BotArena platform
+
+---
+
+## Troubleshooting
+
+### Profile page returns 404?
+
+If you navigate to `/bots/[slug]` and see a 404 error, the database is empty.
+
+**Solution:**
+```bash
+# Seed the database with development profiles
+pnpm seed
+
+# Verify profiles exist
+pnpm seed:status
+```
+
+### Seeing "coming soon" instead of CLI help?
+
+You may have a cached version of the CLI. Clear the npx cache:
+
+```bash
+# Clear npx cache
+npx clear-npx-cache
+
+# Or use explicit version
+npx botarena@latest --help
+```
+
+### Convex connection errors?
+
+If you see errors connecting to Convex:
+
+1. **Check Convex is running:**
+   ```bash
+   pnpm convex dev
+   ```
+
+2. **Verify environment variables:**
+   ```bash
+   cat .env.local | grep CONVEX
+   ```
+   Should show `NEXT_PUBLIC_CONVEX_URL=https://...`
+
+3. **Check Convex URL is correct:**
+   ```bash
+   pnpm seed:status
+   ```
 
 ---
 
@@ -230,6 +333,10 @@ BOTARENA_API_URL=https://botarena.sh
 | `pnpm build` | Build CLI + Web |
 | `pnpm build:cli` | Build CLI only |
 | `pnpm build:web` | Build Web only |
+| `pnpm seed` | Seed database with development profiles |
+| `pnpm seed:clear` | Clear all profiles from database |
+| `pnpm seed:status` | Check database seed status |
+| `pnpm db:seed` | Start Convex and seed in one command |
 | `pnpm prepack` | Prepare for npm publish |
 | `pnpm lint` | Run ESLint |
 | `pnpm test` | Run Node.js tests |
