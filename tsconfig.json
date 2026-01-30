@@ -4,7 +4,6 @@
     "module": "ESNext",
     "moduleResolution": "node",
     "outDir": "./dist",
-    "rootDir": "./src",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
@@ -48,7 +47,9 @@
   "include": [
     "src/**/*",
     ".next/types/**/*.ts",
-    ".next/dev/types/**/*.ts"
+    ".next/dev/types/**/*.ts",
+    "dist-web/types/**/*.ts",
+    "dist-web/dev/types/**/*.ts"
   ],
   "exclude": [
     "node_modules",
