@@ -61,17 +61,17 @@ export function BotDetailView({ profile }: BotDetailViewProps) {
               </span>
             </div>
             <div className="text-center">
-              <div className="text-[9px] uppercase text-[var(--color-text-secondary)]">
+              <div className="text-xs uppercase text-[var(--color-text-secondary)]">
                 RANK
               </div>
-              <div className={cn('text-sm font-bold', rarityColor)}>{rarity}</div>
+              <div className={cn('text-base font-bold', rarityColor)}>{rarity}</div>
             </div>
           </div>
 
           <div className="md:col-span-2 space-y-4">
             <h1 className="text-2xl font-bold uppercase">{profile.name}</h1>
 
-            <div className="grid grid-cols-2 gap-4 text-[10px]">
+            <div className="grid grid-cols-2 gap-4 text-sm">
               <InfoItem label="HARNESS" value={profile.harness} />
               <InfoItem label="VERSION" value={`v${profile.version}`} />
               <InfoItem label="CREATED" value={formatFullDate(profile.createdAt)} />
@@ -79,15 +79,15 @@ export function BotDetailView({ profile }: BotDetailViewProps) {
             </div>
 
             <div className="p-3 bg-[var(--color-bg-secondary)] border border-[var(--color-border-strong)]">
-              <div className="text-[9px] uppercase text-[var(--color-text-secondary)] mb-1">
+              <div className="text-xs uppercase text-[var(--color-text-secondary)] mb-1">
                 YEARBOOK_QUOTE
               </div>
-              <p className="text-xs italic">&ldquo;{profile.description}&rdquo;</p>
+              <p className="text-sm italic">&ldquo;{profile.description}&rdquo;</p>
             </div>
 
             {publicUrl && (
               <div>
-                <div className="text-[9px] uppercase text-[var(--color-text-secondary)] mb-1">
+                <div className="text-xs uppercase text-[var(--color-text-secondary)] mb-1">
                   PUBLIC_URL
                 </div>
                 <CopyableUrl url={publicUrl} />
@@ -120,7 +120,7 @@ export function BotDetailView({ profile }: BotDetailViewProps) {
             <SkillCard key={`${skill.name}-${index}`} skill={skill} />
           ))}
         </div>
-        <div className="mt-2 text-[9px] text-[var(--color-text-secondary)]">
+        <div className="mt-2 text-xs text-[var(--color-text-secondary)]">
           TOTAL_SKILLS: {skillsData.length}
         </div>
       </ConfigSection>
@@ -141,7 +141,7 @@ export function BotDetailView({ profile }: BotDetailViewProps) {
                 key={`${cli.name}-${index}`}
                 className="bg-[var(--color-bg-secondary)] border border-[var(--color-border-strong)] p-2 text-center"
               >
-                <div className="text-[10px] font-bold">{cli.name}</div>
+                <div className="text-xs font-bold">{cli.name}</div>
               </div>
             ))}
           </div>

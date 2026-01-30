@@ -31,11 +31,11 @@ export const ConfigField = React.forwardRef<HTMLDivElement, ConfigFieldProps>(
         )}
         {...props}
       >
-        <span className="text-[10px] uppercase text-[var(--color-text-secondary)]">
+        <span className="text-xs uppercase text-[var(--color-text-secondary)]">
           {label}
         </span>
         <span
-          className="text-[10px] font-bold max-w-[60%] truncate"
+          className="text-xs font-bold max-w-[60%] truncate"
           title={String(displayValue)}
         >
           {displayValue}

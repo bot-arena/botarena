@@ -17,7 +17,7 @@ export const Footer = React.forwardRef<HTMLElement, FooterProps>(
         {...props}
       >
         <div className="max-w-7xl mx-auto px-4">
-          <div className="flex flex-col md:flex-row justify-center items-center gap-4 text-[10px] text-[var(--color-text-secondary)]">
+          <div className="flex flex-col md:flex-row justify-center items-center gap-4 text-xs text-[var(--color-text-secondary)]">
             <span>BOTARENA_V1.0</span>
             <span className="hidden md:inline" aria-hidden="true">|</span>
             <a

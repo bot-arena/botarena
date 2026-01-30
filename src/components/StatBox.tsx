@@ -38,7 +38,7 @@ export const StatBox = React.forwardRef<HTMLDivElement, StatBoxProps>(
       <div ref={ref} className={cn('stat-box', className)} {...props}>
         <div className="section-label">{label}</div>
         <div className="text-lg font-bold mb-1">{value}</div>
-        <div className={cn('text-[9px] uppercase', statusColors[status])}>
+        <div className={cn('text-xs uppercase', statusColors[status])}>
           STATUS: {status.toUpperCase()}
         </div>
       </div>

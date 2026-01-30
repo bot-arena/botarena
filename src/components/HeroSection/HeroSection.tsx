@@ -33,7 +33,7 @@ export function HeroSection() {
               href="https://github.com/botarena/botarena"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[11px] uppercase text-[var(--color-text-secondary)] hover:text-[var(--color-accent-primary)] underline underline-offset-2 inline-flex items-center gap-1"
+              className="text-xs uppercase text-[var(--color-text-secondary)] hover:text-[var(--color-accent-primary)] underline underline-offset-2 inline-flex items-center gap-1"
             >
               <Github size={12} aria-hidden="true" />
               <span>View on GitHub</span>

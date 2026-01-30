@@ -98,7 +98,7 @@ function SearchInput({ value, onChange }: SearchInputProps) {
     <div className="mb-4">
       <label
         htmlFor={inputId}
-        className="text-[9px] uppercase text-[var(--color-text-secondary)] mb-1 block"
+        className="text-xs uppercase text-[var(--color-text-secondary)] mb-1 block"
       >
         SEARCH_QUERY
       </label>
@@ -108,7 +108,7 @@ function SearchInput({ value, onChange }: SearchInputProps) {
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder="SEARCH_BOT_NAMES..."
-        className="w-full bg-[var(--color-bg-dark)] border border-[var(--color-border-strong)] px-3 py-2 text-[10px] text-[var(--color-bg-panel)]"
+        className="w-full bg-[var(--color-bg-dark)] border border-[var(--color-border-strong)] px-3 py-2 text-xs text-[var(--color-bg-panel)]"
       />
     </div>
   );
@@ -126,7 +126,7 @@ function HarnessFilter({ value, onChange }: HarnessFilterProps) {
     <div className="mb-4">
       <div
         id={labelId}
-        className="text-[9px] uppercase text-[var(--color-text-secondary)] mb-2"
+        className="text-xs uppercase text-[var(--color-text-secondary)] mb-2"
       >
         HARNESS_TYPE
       </div>
@@ -157,7 +157,7 @@ function SortSelect({ value, onChange }: SortSelectProps) {
     <div>
       <label
         htmlFor={selectId}
-        className="text-[9px] uppercase text-[var(--color-text-secondary)] mb-1 block"
+        className="text-xs uppercase text-[var(--color-text-secondary)] mb-1 block"
       >
         SORT_ORDER
       </label>
@@ -165,7 +165,7 @@ function SortSelect({ value, onChange }: SortSelectProps) {
         id={selectId}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full bg-[var(--color-bg-panel)] border border-[var(--color-border-strong)] px-3 py-2 text-[10px] font-bold"
+        className="w-full bg-[var(--color-bg-panel)] border border-[var(--color-border-strong)] px-3 py-2 text-xs font-bold"
       >
         <option value="updated">UPDATED_DESC</option>
         <option value="name">NAME_ASC</option>
@@ -240,7 +240,7 @@ export default function DiscoverPage() {
 
       <div className="flex justify-between items-center mb-4">
         <span className="text-xs uppercase">RESULTS: {filteredBots.length}</span>
-        <span className="text-[10px] text-[var(--color-text-secondary)]">
+        <span className="text-xs text-[var(--color-text-secondary)]">
           FILTERS_ACTIVE: {activeFiltersCount}
         </span>
       </div>

@@ -19,7 +19,7 @@ export function DebugToggle({ enabled, onChange }: DebugToggleProps) {
         onChange={(e) => onChange(e.target.checked)}
         className="w-4 h-4 border border-[var(--color-border-strong)]"
       />
-      <label htmlFor={checkboxId} className="text-[10px] uppercase font-bold">
+      <label htmlFor={checkboxId} className="text-xs uppercase font-bold">
         DEBUG_MODE
       </label>
     </div>

@@ -38,7 +38,7 @@ export const Navigation = React.forwardRef<HTMLElement, NavigationProps>(
                 <span className="text-[var(--color-bg-panel)] text-sm">BA</span>
               </div>
               <span className="text-sm font-bold uppercase">BOTARENA</span>
-              <span className="text-[9px] font-bold uppercase">v0.1.0</span>
+              <span className="text-xs font-bold uppercase">v0.1.0</span>
             </Link>
 
             <nav className="hidden md:flex gap-4" aria-label="Main navigation">
@@ -46,7 +46,7 @@ export const Navigation = React.forwardRef<HTMLElement, NavigationProps>(
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="uppercase text-[10px] font-bold px-3 py-2 hover:bg-[var(--color-bg-primary)] transition-colors"
+                  className="uppercase text-xs font-bold px-3 py-2 hover:bg-[var(--color-bg-primary)] transition-colors"
                 >
                   {link.label}
                 </Link>
@@ -57,7 +57,7 @@ export const Navigation = React.forwardRef<HTMLElement, NavigationProps>(
               href="https://github.com/bot-arena/botarena"
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden md:block uppercase text-[10px] font-bold px-3 py-2 border border-[var(--color-border-strong)] hover:bg-[var(--color-accent-primary)] hover:text-white transition-colors"
+              className="hidden md:block uppercase text-xs font-bold px-3 py-2 border border-[var(--color-border-strong)] hover:bg-[var(--color-accent-primary)] hover:text-white transition-colors"
             >
               GITHUB
             </a>
@@ -110,7 +110,7 @@ export const Navigation = React.forwardRef<HTMLElement, NavigationProps>(
                 href={link.href}
                 className="flex flex-col items-center justify-center border-r border-[var(--color-border-strong)] last:border-r-0 hover:bg-[var(--color-bg-primary)] transition-colors"
               >
-                <span className="text-[9px] font-bold uppercase">{link.label}</span>
+                <span className="text-xs font-bold uppercase">{link.label}</span>
               </Link>
             ))}
           </div>

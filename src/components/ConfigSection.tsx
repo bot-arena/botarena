@@ -33,7 +33,7 @@ export const ConfigSection = React.forwardRef<HTMLElement, ConfigSectionProps>(
           aria-controls={`config-content-${title}`}
         >
           <span>{title}</span>
-          <span className="text-[10px]" aria-hidden="true">
+          <span className="text-xs" aria-hidden="true">
             {isOpen ? '[-]' : '[+]'}
           </span>
         </button>

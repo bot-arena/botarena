@@ -26,7 +26,7 @@ function TerminalLine({ type, text }: TerminalLineProps) {
   };
 
   return (
-    <div className={`text-[11px] mb-1 ${lineStyles[type]}`}>{text}</div>
+    <div className={`text-xs mb-1 ${lineStyles[type]}`}>{text}</div>
   );
 }
 

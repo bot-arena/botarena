@@ -70,7 +70,7 @@ export function FeaturedBotsSection() {
         <h2 className="text-sm font-bold uppercase">FEATURED_BOTS</h2>
         <Link
           href="/discover"
-          className="text-[10px] uppercase text-[var(--color-accent-primary)]"
+          className="text-xs uppercase text-[var(--color-accent-primary)]"
         >
           VIEW_ALL &gt;
         </Link>

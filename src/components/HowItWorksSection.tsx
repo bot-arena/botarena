@@ -14,10 +14,10 @@ function StepCard({ step, title, description }: StepCardProps) {
           </span>
         </div>
         <div className="flex-1">
-          <div className="uppercase text-[10px] font-bold text-[var(--color-accent-primary)] mb-1">
+          <div className="uppercase text-xs font-bold text-[var(--color-accent-primary)] mb-1">
             {title}
           </div>
-          <div className="text-[10px] leading-tight text-[var(--color-text-secondary)] uppercase">
+          <div className="text-xs leading-tight text-[var(--color-text-secondary)] uppercase">
             {description}
           </div>
         </div>
