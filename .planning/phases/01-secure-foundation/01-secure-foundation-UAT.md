@@ -41,7 +41,7 @@ expected: |
   CLI prompts user for bot description ("yearbook quote") interactively and includes it in the generated profile.
 result: issue
 reported: "asked me but the question is in interactive mode so will be hard for the bot. better that cli defaults to output the profile but says to rerun it with different command or flags so the bot can supply necessary info without needing to run tmux for interactive terminal. interactive mode can be non-default for humans"
-severity: minor
+severity: major
 
 ### 5. CLI Security - No Raw Config Access
 expected: |
@@ -129,41 +129,47 @@ skipped: 5
   reason: "User reported: it discovered the name but not skills (0) also it didnt ask the bot for its description, model, mcps clis"
   severity: major
   test: 3
-  root_cause: "Three issues: (1) Skills discovery only checks hardcoded paths, (2) LLM/CLIs hardcoded as 'Not specified' and [], (3) Description uses interactive prompt instead of SOUL.md extraction"
+  root_cause: "Dream CLI requirements from bot feedback: (1) Silence by default - CLI must never hang, auto-discover everything or exit with specific error, (2) Clean data streams - stdout=JSON only, stderr=logs, (3) Complete flag coverage for all fields (--description, --name, --skills, --mcps, etc.), (4) Interactive only with --human flag. Current CLI defaults to interactive prompts and mixes logs with output."
   artifacts:
     - path: "src/lib/clawdbot.ts:25-31"
       issue: "SKILL_DIRECTORIES hardcoded, doesn't search recursively"
     - path: "src/lib/clawdbot.ts:117-123"
       issue: "LLM and CLIs hardcoded, no discovery logic"
     - path: "src/cli/commands/generate.ts:84-94"
-      issue: "Uses inquirer.prompt() instead of extractDescriptionFromSoul()"
+      issue: "Uses inquirer.prompt() which blocks/hangs without --interactive flag"
+    - path: "src/cli/commands/generate.ts"
+      issue: "Console.log outputs pollute stdout, not separated to stderr"
     - path: "src/lib/discovery.ts:185-201"
       issue: "extractDescriptionFromSoul() exists but never called"
   missing:
-    - "Recursive skills directory discovery or custom path flag"
-    - "LLM model discovery from mcp.json, config files, or SOUL.md"
-    - "CLI discovery from package.json bin entries or manifest"
-    - "Integration of extractDescriptionFromSoul() into generate flow"
+    - "Auto-discovery with fallback chains (SOUL.md -> package.json -> error)"
+    - "Stdout/Stderr separation - JSON to stdout, logs to stderr"
+    - "Flags: --description, --name, --skills, --mcps, --llm, --clis"
+    - "Rename --interactive to --human for explicit opt-in"
+    - "Non-blocking flow: auto-discover or exit with actionable error"
+    - "Recursive skills discovery with --skills-path support"
+    - "LLM/CLI discovery from config files"
   debug_session: ".planning/debug/bot-discovery-skills-mcp-cli.md"
 
 - truth: "CLI prompts user for bot description ("yearbook quote") interactively and includes it in the generated profile"
   status: failed
   reason: "User reported: asked me but the question is in interactive mode so will be hard for the bot. better that cli defaults to output the profile but says to rerun it with different command or flags so the bot can supply necessary info without needing to run tmux for interactive terminal. interactive mode can be non-default for humans"
-  severity: minor
+  severity: major
   test: 4
-  root_cause: "Command defaults to --interactive=true, making interactive prompts the default. No --description flag exists for non-interactive usage. UX designed for humans first, not bot automation."
+  root_cause: "Golden Rule violation: CLI hangs by default waiting for interactive prompts. Dream CLI requires silence by default - never hang. Interactive mode only with --human flag. Current design inverts expected bot-friendly behavior."
   artifacts:
     - path: "src/cli/commands/generate.ts:22"
-      issue: "interactive flag defaults to true"
+      issue: "interactive flag defaults to true - causes hanging"
     - path: "src/cli/commands/generate.ts:85-94"
-      issue: "No --description flag, only inquirer prompts"
+      issue: "Inquirer prompts block execution without explicit --human flag"
     - path: "src/lib/clawdbot.ts:116"
-      issue: "Fallback to hardcoded 'A helpful AI assistant' when non-interactive"
+      issue: "Fallback to hardcoded 'A helpful AI assistant' instead of exiting with error"
   missing:
-    - "Change --interactive default from true to false"
-    - "Add --description flag for non-interactive description input"
-    - "Add --yes / -y flag for auto-confirm upload"
-    - "Update examples to show bot-friendly usage patterns"
+    - "--human flag (rename from --interactive) for explicit opt-in"
+    - "Silence by default: auto-discover or exit immediately with error"
+    - "Error message: 'Error: Missing description. Use --description or --human'"
+    - "All console.log moved to stderr to keep stdout pure JSON"
+    - "--yes flag for auto-confirm in non-interactive mode"
   debug_session: ".planning/debug/interactive-mode-ux-issue.md"
 
 
