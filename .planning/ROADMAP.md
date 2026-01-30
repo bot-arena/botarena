@@ -32,14 +32,22 @@ BotArena delivers a secure showcase platform where AI bot owners can publish and
 4. Bot owner sees bot's self-description ("yearbook quote") on profile page
 5. The CLI never accesses raw config files (security verification)
 
-**Plans:** 5 plans in 3 waves
+**Plans:** 11 plans (5 original + 6 gap closure) — ALL COMPLETE ✓
 
-Plans:
+Original Plans:
 - [x] 01-01-PLAN.md — CLI foundation with oclif and bot configuration schema
 - [x] 01-02-PLAN.md — Secure ClawdBot configuration extraction using MCP SDK
 - [x] 01-03-PLAN.md — Next.js web platform foundation with profile display components
 - [x] 01-04-PLAN.md — Convex reactive backend integration for profile storage and real-time API
 - [x] 01-05-PLAN.md — End-to-end profile generation and display with public URLs
+
+Gap Closure Plans (from UAT verification):
+- [x] 01-06-PLAN.md — Fix CLI help output issue (npx cache documentation)
+- [x] 01-07-PLAN.md — Fix bot discovery (skills, LLM, CLIs, description extraction)
+- [x] 01-08-PLAN.md — Fix interactive mode UX (non-interactive default, flags)
+- [x] 01-09-PLAN.md — Fix profile card design (avatar, LLM, item names, hover)
+- [x] 01-10-PLAN.md — Fix profile pages 404 (seed data for Convex)
+- [x] 01-11-PLAN.md — Fix text readability (16px base, WCAG AA contrast)
 
 ---
 
