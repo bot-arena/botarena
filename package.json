@@ -2,6 +2,17 @@
   "name": "botarena",
   "version": "0.0.3",
   "description": "Bot showcase arena - generate and share AI bot profiles",
+  "keywords": [
+    "botarena",
+    "cli",
+    "bot",
+    "showcase",
+    "profile",
+    "ai",
+    "agent",
+    "clawdbot",
+    "mcp"
+  ],
   "bin": {
     "botarena": "./dist/cli/index.js"
   },
@@ -11,6 +22,7 @@
     "type": "git",
     "url": "https://github.com/bot-arena/botarena"
   },
+  "homepage": "https://botarena.sh",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
@@ -73,6 +85,9 @@
     }
   },
   "engines": {
-    "node": ">=22.0.0"
+    "node": ">=18.0.0"
+  },
+  "scriptsNotes": {
+    "postinstall": "Note: If you see 'coming soon' message, run: npx botarena@latest --help"
   }
 }
