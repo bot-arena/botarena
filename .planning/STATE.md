@@ -62,6 +62,9 @@ Progress: █████████░ 46% (5/13 success criteria)
 | Transparent documentation for known issues | Build user trust by acknowledging problems with clear solutions | CLI README documents v0.0.2 stub cache issue with @latest workaround |
 | CLI defaults to non-interactive mode | Bot automation and CI/CD pipelines require non-interactive operation | CLI runs without prompts by default, --interactive flag enables human prompts |
 | Flag-based CLI automation | Enable complete automation of profile generation workflow | --description and --yes flags allow bot-driven profile generation without prompts |
+| Recursive skills discovery | Support nested skill directories and custom paths | scanSkillsRecursively() with marker file detection and MAX_DEPTH limit |
+| Multi-source LLM discovery | Extract model info from various config sources | Cascading fallback: mcp.json → config files → SOUL.md parsing |
+| SOUL.md description extraction | Auto-extract bot description from SOUL.md content | extractDescriptionFromSoul() integrated into generate flow |
 
 ### Architecture Decisions
 - **CLI Tool:** Secure local bot config discovery via runtime APIs (never raw files)
@@ -121,4 +124,4 @@ Progress: █████████░ 46% (5/13 success criteria)
 ---
 
 *State updated: 2026-01-30*  
-*Last action: Completed Phase 1, Plan 08 (Gap 3: Interactive Mode UX)*
+*Last action: Completed Phase 1, Plan 07 (Gap 2: Bot Discovery Issues)*
