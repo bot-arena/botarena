@@ -15,18 +15,18 @@ Phase 1 (Secure Foundation) is complete. Bot owners can now safely generate and 
 ## Current Position
 
 **Phase:** 1 of 3 (Secure Foundation)  
-**Plan:** 8 of 8 complete in current phase  
+**Plan:** 9 of 9 complete in current phase  
 **Status:** Phase 1 Complete ✓  
-**Last activity:** 2026-01-30 - Completed 01-09-PLAN.md (Gap 4: Profile Card Design)
+**Last activity:** 2026-01-30 - Completed 01-10-PLAN.md (Gap 5: Profile Database Seeding)
 
-Progress: █████████░ 46% (5/13 success criteria)
+Progress: ██████████ 50% (6/12 success criteria)
 
 ### Gap Closure Progress
 - ✅ **Gap 1:** CLI Help Output Issue - Documented npx cache troubleshooting
 - ✅ **Gap 2:** Bot Discovery (skills, MCP, CLI) - Recursive skills discovery, LLM/CLI extraction, SOUL.md description
 - ✅ **Gap 3:** Interactive Mode UX - CLI now defaults to non-interactive with --description and --yes flags
 - ✅ **Gap 4:** Profile Card Design - Complete with avatar, prominent LLM, item lists
-- ⏳ **Gap 5:** Bot Profile 404 (DB seeding) - Pending
+- ✅ **Gap 5:** Bot Profile 404 (DB seeding) - Seed mutations, CLI script, HTTP endpoints, documentation
 - ⏳ **Gap 6:** Text Readability/Accessibility - Pending
 
 ### Next Steps
@@ -65,6 +65,8 @@ Progress: █████████░ 46% (5/13 success criteria)
 | Recursive skills discovery | Support nested skill directories and custom paths | scanSkillsRecursively() with marker file detection and MAX_DEPTH limit |
 | Multi-source LLM discovery | Extract model info from various config sources | Cascading fallback: mcp.json → config files → SOUL.md parsing |
 | SOUL.md description extraction | Auto-extract bot description from SOUL.md content | extractDescriptionFromSoul() integrated into generate flow |
+| Convex seed mutations for development | Database needs sample data for development and testing | seedDevProfiles mutation with 4 diverse sample bots |
+| CLI database seeding | Developers need easy way to populate database | scripts/seed-profiles.ts with seed/clear/status commands |
 
 ### Architecture Decisions
 - **CLI Tool:** Secure local bot config discovery via runtime APIs (never raw files)
@@ -96,11 +98,12 @@ Progress: █████████░ 46% (5/13 success criteria)
 - Phase 1 complete with CLI generation, Convex backend, and profile pages
 
 ### What We're Working On
-- Phase 1 has 7 plans (5 original + 2 gap closures), 7/7 complete
+- Phase 1 has 9 plans (5 original + 4 gap closures), 9/9 complete
 - CLI documentation improved with npx cache troubleshooting
 - CLI now bot-friendly with non-interactive default and automation flags
+- Database seeding complete with seed mutations and CLI script
 - Gap closure in progress - addressing UAT findings from 01-secure-foundation-UAT.md
-- Remaining gaps: Bot discovery, Profile cards, DB seeding, Text readability
+- Remaining gap: Text readability/accessibility
 - Ready to begin Phase 2: Discovery & Basic Comparison after gap closure
 
 ### What We Need to Track
@@ -124,4 +127,4 @@ Progress: █████████░ 46% (5/13 success criteria)
 ---
 
 *State updated: 2026-01-30*  
-*Last action: Completed Phase 1, Plan 07 (Gap 2: Bot Discovery Issues)*
+*Last action: Completed Phase 1, Plan 10 (Gap 5: Profile Database Seeding)*
