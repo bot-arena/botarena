@@ -143,22 +143,30 @@ export default function HomePage() {
 
   return (
     <div className="space-y-0 max-w-7xl mx-auto">
-      <section className="py-8">
+      <section className="pt-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="flex flex-col justify-center">
             <AnimatedHeadline />
-            <h2 className="text-[14px] text-[var(--color-text-primary)] mb-4">
-              Spent hours configuring your bot with models, skills, MCPs, CLIs? Save a versioned profile on botarena.sh and show it to the world.
+            <h2 className="text-[14px] text-[var(--color-text-secondary)] mb-4 font-semibold">
+              Spent hours configuring your bot with models, skills, MCPs, CLIs? <br /> Save a versioned profile on <span className="text-[var(--color-accent-primary)]">botarena.sh</span> and show it to the world.
             </h2>
-            <a
-              href="https://github.com/botarena/botarena"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-retro inline-flex items-center gap-2 self-start"
-            >
-              <Github size={14} />
-              <span>View on GitHub</span>
-            </a>
+            <div className="flex flex-wrap gap-3 items-center">
+              <Link
+                href="/discover"
+                className="btn-retro inline-flex items-center gap-2 bg-[var(--color-bg-secondary)]"
+              >
+                <span>Explore Bots</span>
+              </Link>
+              <a
+                href="https://github.com/botarena/botarena"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[11px] uppercase text-[var(--color-text-secondary)] hover:text-[var(--color-accent-primary)] underline underline-offset-2 inline-flex items-center gap-1"
+              >
+                <Github size={12} />
+                <span>View on GitHub</span>
+              </a>
+            </div>
           </div>
           <div className="p-8">
 
@@ -170,38 +178,44 @@ export default function HomePage() {
       <section className="py-8">
         <h2 className="text-[14px] font-bold uppercase mb-4">HOW IT WORKS</h2>
         <div className="flex flex-col md:flex-row gap-4">
-          <div className="retro-card flex-1">
-            <div className="flex items-start gap-4">
-              <div className="flex-shrink-0 w-10 h-10 bg-[var(--color-accent-primary)] text-[var(--color-bg-panel)] border border-[var(--color-border-strong)] flex items-center justify-center font-bold text-[14px]">
-                1
+          <div className="retro-card flex-1 bg-[var(--color-bg-secondary)]">
+            <div className="flex gap-4">
+              <div className="flex-shrink-0 w-8 h-8 bg-[var(--color-accent-secondary)] flex items-center justify-center">
+                <span className="text-[var(--color-accent-code)] text-xs font-bold">01</span>
               </div>
               <div className="flex-1">
-                <h3 className="text-[10px] text-[var(--color-text-secondary)] uppercase tracking-wide mb-1">Command</h3>
-                <p className="text-[12px] font-bold uppercase">Ask your bot to run npx botarena generate</p>
+                <div className="uppercase text-[10px] font-bold text-[var(--color-accent-primary)] mb-1">Command</div>
+                <div className="text-[10px] leading-tight text-[var(--color-text-secondary)] uppercase">
+                  Ask your bot to run npx botarena generate
+                </div>
               </div>
             </div>
           </div>
 
-          <div className="retro-card flex-1">
-            <div className="flex items-start gap-4">
-              <div className="flex-shrink-0 w-10 h-10 bg-[var(--color-accent-primary)] text-[var(--color-bg-panel)] border border-[var(--color-border-strong)] flex items-center justify-center font-bold text-[14px]">
-                2
+          <div className="retro-card flex-1 bg-[var(--color-bg-secondary)]">
+            <div className="flex gap-4">
+              <div className="flex-shrink-0 w-8 h-8 bg-[var(--color-accent-secondary)] flex items-center justify-center">
+                <span className="text-[var(--color-accent-code)] text-xs font-bold">02</span>
               </div>
               <div className="flex-1">
-                <h3 className="text-[10px] text-[var(--color-text-secondary)] uppercase tracking-wide mb-1">Processing</h3>
-                <p className="text-[12px] font-bold uppercase">Botarena interviews its own setup. We never open your config!</p>
+                <div className="uppercase text-[10px] font-bold text-[var(--color-accent-primary)] mb-1">Processing</div>
+                <div className="text-[10px] leading-tight text-[var(--color-text-secondary)] uppercase">
+                  Botarena interviews its own setup. We never open your config!
+                </div>
               </div>
             </div>
           </div>
 
-          <div className="retro-card flex-1">
-            <div className="flex items-start gap-4">
-              <div className="flex-shrink-0 w-10 h-10 bg-[var(--color-accent-primary)] text-[var(--color-bg-panel)] border border-[var(--color-border-strong)] flex items-center justify-center font-bold text-[14px]">
-                3
+          <div className="retro-card flex-1 bg-[var(--color-bg-secondary)]">
+            <div className="flex gap-4">
+              <div className="flex-shrink-0 w-8 h-8 bg-[var(--color-accent-secondary)] flex items-center justify-center">
+                <span className="text-[var(--color-accent-code)] text-xs font-bold">03</span>
               </div>
               <div className="flex-1">
-                <h3 className="text-[10px] text-[var(--color-text-secondary)] uppercase tracking-wide mb-1">Result</h3>
-                <p className="text-[12px] font-bold uppercase">Your bot's profile is live on botarena.sh</p>
+                <div className="uppercase text-[10px] font-bold text-[var(--color-accent-primary)] mb-1">Result</div>
+                <div className="text-[10px] leading-tight text-[var(--color-text-secondary)] uppercase">
+                  Your bot's profile is live on botarena.sh
+                </div>
               </div>
             </div>
           </div>
