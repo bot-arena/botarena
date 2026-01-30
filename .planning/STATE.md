@@ -15,17 +15,17 @@ Phase 1 (Secure Foundation) is complete. Bot owners can now safely generate and 
 ## Current Position
 
 **Phase:** 1 of 3 (Secure Foundation)  
-**Plan:** 7 of 7 complete in current phase  
+**Plan:** 8 of 8 complete in current phase  
 **Status:** Phase 1 Complete ✓  
-**Last activity:** 2026-01-30 - Completed 01-08-PLAN.md (Gap 3: Interactive Mode UX)
+**Last activity:** 2026-01-30 - Completed 01-09-PLAN.md (Gap 4: Profile Card Design)
 
-Progress: ████████░░ 40% (5/13 success criteria)
+Progress: █████████░ 46% (5/13 success criteria)
 
 ### Gap Closure Progress
 - ✅ **Gap 1:** CLI Help Output Issue - Documented npx cache troubleshooting
-- ⏳ **Gap 2:** Bot Discovery (skills, MCP, CLI) - Pending
+- ✅ **Gap 2:** Bot Discovery (skills, MCP, CLI) - Recursive skills discovery, LLM/CLI extraction, SOUL.md description
 - ✅ **Gap 3:** Interactive Mode UX - CLI now defaults to non-interactive with --description and --yes flags
-- ⏳ **Gap 4:** Profile Card Design - Pending
+- ✅ **Gap 4:** Profile Card Design - Complete with avatar, prominent LLM, item lists
 - ⏳ **Gap 5:** Bot Profile 404 (DB seeding) - Pending
 - ⏳ **Gap 6:** Text Readability/Accessibility - Pending
 
