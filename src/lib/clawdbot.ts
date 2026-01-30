@@ -28,6 +28,9 @@ const SKILL_DIRECTORIES = [
   '.claude/skills',
   '.pi/skills',
   '~/.pi/agent/skills',
+  'src/skills',
+  'lib/skills',
+  'agents/skills',
 ];
 
 /**
@@ -38,9 +41,11 @@ const SKILL_DIRECTORIES = [
  */
 export class ClawdBotDiscovery {
   private basePath: string;
+  private skillsPath: string | undefined;
 
-  constructor(basePath: string = process.cwd()) {
+  constructor(basePath: string = process.cwd(), skillsPath?: string) {
     this.basePath = path.resolve(basePath);
+    this.skillsPath = skillsPath ? path.resolve(basePath, skillsPath) : undefined;
   }
 
   /**
@@ -131,11 +136,20 @@ export class ClawdBotDiscovery {
 
   /**
    * Discover skills from skills directories
+   * Supports recursive search and custom skills path
    * Only reads directory names, never skill configuration files
    */
   private async discoverSkills(): Promise<string[]> {
     const skills: string[] = [];
-    
+    const directoriesToScan: string[] = [];
+
+    // If custom skills path provided, scan it recursively
+    if (this.skillsPath) {
+      const customSkills = await this.scanSkillsRecursively(this.skillsPath);
+      skills.push(...customSkills);
+    }
+
+    // Also scan standard skill directories
     for (const skillDir of SKILL_DIRECTORIES) {
       // Expand ~ to home directory for absolute paths
       const expandedPath = skillDir.startsWith('~/')
@@ -144,27 +158,111 @@ export class ClawdBotDiscovery {
       const fullPath = path.isAbsolute(expandedPath)
         ? expandedPath
         : path.join(this.basePath, expandedPath);
+      directoriesToScan.push(fullPath);
+    }
+
+    // Scan all directories (both standard and discovered)
+    for (const fullPath of directoriesToScan) {
       try {
-        // Read directory entries and filter for subdirectories only
-        const entries = await fs.readdir(fullPath, { withFileTypes: true });
-        for (const entry of entries) {
-          if (entry.isDirectory()) {
-            const skillName = entry.name;
-            // Filter out hidden files and test directories
-            if (!skillName.startsWith('.') && 
-                !skillName.includes('test') && 
-                !skillName.includes('node_modules')) {
-              skills.push(skillName);
-            }
-          }
-        }
+        // Scan this directory recursively for skills
+        const discoveredSkills = await this.scanSkillsRecursively(fullPath);
+        skills.push(...discoveredSkills);
       } catch {
         // Directory doesn't exist, skip
       }
     }
-    
+
     // Deduplicate and sort
     return [...new Set(skills)].sort();
+  }
+
+  /**
+   * Recursively scan a directory for skills
+   * Looks for skill directories containing skill.md, README.md, or package.json
+   */
+  private async scanSkillsRecursively(dirPath: string, depth: number = 0): Promise<string[]> {
+    const skills: string[] = [];
+    const MAX_DEPTH = 3; // Prevent infinite recursion
+
+    if (depth > MAX_DEPTH) {
+      return skills;
+    }
+
+    try {
+      const entries = await fs.readdir(dirPath, { withFileTypes: true });
+
+      for (const entry of entries) {
+        if (!entry.isDirectory()) continue;
+
+        const entryName = entry.name;
+        const entryPath = path.join(dirPath, entryName);
+
+        // Filter out hidden files and test directories
+        if (entryName.startsWith('.') ||
+            entryName.includes('test') ||
+            entryName.includes('node_modules') ||
+            entryName.includes('__tests__') ||
+            entryName.includes('dist') ||
+            entryName.includes('build')) {
+          continue;
+        }
+
+        // Check if this directory is a skill root (contains skill.md, README.md, or package.json)
+        const isSkillRoot = await this.isSkillRoot(entryPath);
+
+        if (isSkillRoot) {
+          // Extract skill name from package.json if available, otherwise use directory name
+          const skillName = await this.extractSkillName(entryPath, entryName);
+          skills.push(skillName);
+        } else {
+          // Recursively search subdirectories
+          const subSkills = await this.scanSkillsRecursively(entryPath, depth + 1);
+          skills.push(...subSkills);
+        }
+      }
+    } catch {
+      // Directory doesn't exist or can't be read, skip
+    }
+
+    return skills;
+  }
+
+  /**
+   * Check if a directory is a skill root by looking for marker files
+   */
+  private async isSkillRoot(dirPath: string): Promise<boolean> {
+    const markerFiles = ['skill.md', 'README.md', 'package.json', 'skill.json'];
+
+    for (const marker of markerFiles) {
+      try {
+        const markerPath = path.join(dirPath, marker);
+        await fs.access(markerPath);
+        return true;
+      } catch {
+        // File doesn't exist, continue checking
+      }
+    }
+
+    return false;
+  }
+
+  /**
+   * Extract skill name from directory
+   * Tries package.json name field first, falls back to directory name
+   */
+  private async extractSkillName(dirPath: string, dirName: string): Promise<string> {
+    try {
+      const packageJsonPath = path.join(dirPath, 'package.json');
+      const content = await fs.readFile(packageJsonPath, 'utf-8');
+      const pkg = JSON.parse(content);
+      if (pkg.name) {
+        return pkg.name;
+      }
+    } catch {
+      // package.json doesn't exist or is invalid, use directory name
+    }
+
+    return dirName;
   }
 
   /**
