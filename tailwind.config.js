@@ -41,6 +41,16 @@ export default {
         sans: ['DM Sans', 'system-ui', 'sans-serif'],
         mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
       },
+      fontSize: {
+        '2xs': ['0.625rem', { lineHeight: '1.4' }],   /* 10px - absolute minimum, use sparingly */
+        'xs': ['0.75rem', { lineHeight: '1.4' }],     /* 12px - labels, badges, minimum UI text */
+        'sm': ['0.875rem', { lineHeight: '1.5' }],    /* 14px - small body text, secondary info */
+        'base': ['1rem', { lineHeight: '1.6' }],      /* 16px - body text, default */
+        'lg': ['1.125rem', { lineHeight: '1.5' }],    /* 18px - emphasis, lead text */
+        'xl': ['1.25rem', { lineHeight: '1.4' }],     /* 20px - headings, card titles */
+        '2xl': ['1.5rem', { lineHeight: '1.3' }],     /* 24px - section titles */
+        '3xl': ['1.875rem', { lineHeight: '1.2' }],   /* 30px - page titles */
+      },
       animation: {
         'gradient-shift': 'gradient-shift 15s ease infinite',
         'pulse-glow': 'pulse-glow 3s ease-in-out infinite',
