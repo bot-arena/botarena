@@ -38,6 +38,15 @@ export default class GenerateCommand extends Command {
       description: 'Path to bot directory',
       default: '.',
     }),
+    description: Flags.string({
+      char: 'd',
+      description: 'Bot description for the profile (yearbook quote style). Defaults to "A helpful AI assistant" if not provided.',
+    }),
+    yes: Flags.boolean({
+      char: 'y',
+      description: 'Auto-confirm upload without prompting',
+      default: false,
+    }),
   };
 
   static args = {
@@ -80,9 +89,9 @@ export default class GenerateCommand extends Command {
       this.log(`📦 Runtime: ${discovered.runtime}`);
       this.log(`🛠️  Skills detected: ${discovered.skills?.length || 0}`);
 
-      // Step 3: Get user description interactively
-      let userDescription = '';
-      if (flags.interactive) {
+      // Step 3: Get description from flag or interactively
+      let userDescription = flags.description || '';
+      if (flags.interactive && !userDescription) {
         const answers = await inquirer.prompt([{
           type: 'input',
           name: 'description',
@@ -91,6 +100,11 @@ export default class GenerateCommand extends Command {
           validate: (input: string) => input.length > 0 && input.length <= 500 || 'Description must be 1-500 characters'
         }]);
         userDescription = answers.description;
+      }
+
+      // Inform user about non-interactive mode
+      if (!flags.interactive && !userDescription) {
+        this.log('ℹ️  Running in non-interactive mode. Use --description to set a custom description.');
       }
 
       // Step 4: Extract public configuration
@@ -164,9 +178,9 @@ export default class GenerateCommand extends Command {
     this.log(`Description: "${profile.description}"`);
     this.log(`Skills: ${profile.skills.join(', ')}`);
 
-    // Ask for confirmation if interactive
+    // Ask for confirmation if interactive and not auto-confirmed
     let shouldUpload = true;
-    if (flags.interactive) {
+    if (flags.interactive && !flags.yes) {
       const { confirm } = await inquirer.prompt([
         {
           type: 'confirm',
