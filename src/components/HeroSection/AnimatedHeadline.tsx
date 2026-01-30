@@ -52,7 +52,7 @@ export function AnimatedHeadline() {
   }, [isDeleting, isPaused, displayText, typeNextChar, deleteLastChar]);
 
   return (
-    <h1 className="text-xl font-bold uppercase mb-2">
+    <h1 className="lg:text-4xl sm:text-3xl text-xl font-bold uppercase mb-2">
       SHOWCASE YOUR{' '}
       <span className="inline-block min-w-[140px]">
         {displayText}
