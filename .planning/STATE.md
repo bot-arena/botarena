@@ -57,7 +57,7 @@ Progress: ████████░░ 40% (5/13 success criteria)
 - **Web Platform:** Next.js with Convex reactive backend for profile hosting
 - **Security Pattern:** Dedicated Security Service with envelope encryption
 - **Data Structure:** Convex document-relational database with TypeScript schema for flexible bot profiles
-- **UI Pattern:** Gaming-inspired glassmorphism with Motion animations
+- **UI Pattern:** Gaming-inspired retro gaming style with Motion animations
 
 ### Security Constraints
 - Never read raw configuration files directly
