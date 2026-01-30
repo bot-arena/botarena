@@ -11,9 +11,13 @@ export default class GenerateCommand extends Command {
   static description = 'Generate a bot profile for BotArena showcase';
 
   static examples = [
-    '<%= config.bin %> <%= command.id %>',
+    // Bot-friendly (non-interactive) examples
+    '<%= config.bin %> <%= command.id %> --description "My awesome bot"',
+    '<%= config.bin %> <%= command.id %> --description "My bot" --yes',
+    '<%= config.bin %> <%= command.id %> --description "My bot" --dry-run',
+    // Interactive examples for humans
     '<%= config.bin %> <%= command.id %> --interactive',
-    '<%= config.bin %> <%= command.id %> --dry-run',
+    '<%= config.bin %> <%= command.id %> --interactive --dry-run',
   ];
 
   static flags = {
