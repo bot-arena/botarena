@@ -28,13 +28,81 @@ export interface BotCardProps {
 }
 
 /**
+ * Generates a bot avatar with initial and color based on bot name
+ */
+function getBotIcon(name: string): { initial: string; bgClass: string } {
+  const initial = name.charAt(0).toUpperCase();
+  
+  // Generate color based on name hash for consistency
+  const colors = [
+    'bg-amber-600',
+    'bg-blue-600',
+    'bg-emerald-600',
+    'bg-purple-600',
+    'bg-rose-600',
+    'bg-cyan-600',
+    'bg-orange-600',
+    'bg-indigo-600',
+  ];
+  
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  
+  const bgClass = colors[Math.abs(hash) % colors.length];
+  
+  return { initial, bgClass };
+}
+
+interface ItemListProps {
+  items: string[];
+  label: string;
+  maxDisplay?: number;
+  colorClass?: string;
+}
+
+function ItemList({ items, label, maxDisplay = 3, colorClass }: ItemListProps) {
+  if (items.length === 0) return null;
+  
+  const displayItems = items.slice(0, maxDisplay);
+  const remaining = items.length - maxDisplay;
+  
+  return (
+    <div className="mb-2">
+      <div className="text-[10px] uppercase text-[var(--color-text-secondary)] mb-1">
+        {label} ({items.length})
+      </div>
+      <div className="flex flex-wrap gap-1">
+        {displayItems.map((item) => (
+          <span
+            key={item}
+            className={cn(
+              "px-2 py-0.5 text-[10px] border border-[var(--color-border-strong)]",
+              colorClass || "bg-[var(--color-bg-secondary)]"
+            )}
+          >
+            {item}
+          </span>
+        ))}
+        {remaining > 0 && (
+          <span className="px-2 py-0.5 text-[10px] bg-[var(--color-bg-secondary)] border border-[var(--color-border-strong)]">
+            +{remaining}
+          </span>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/**
  * A card component displaying bot profile information.
- * Shows name, rarity, skills, MCPs, CLIs, and LLM configuration.
- * Links to the bot's detail page.
+ * Shows avatar, name, LLM, skills, MCPs, CLIs, and links to detail page.
  */
 export function BotCard({ profile, className }: BotCardProps) {
   const rarity = calculateRarity(profile.skills, profile.mcps);
   const rarityColor = getRarityColor(rarity);
+  const { initial, bgClass } = getBotIcon(profile.name);
 
   if (!profile.slug) {
     return null;
@@ -45,87 +113,102 @@ export function BotCard({ profile, className }: BotCardProps) {
       href={`/bots/${profile.slug}`}
       className={cn('block group', className)}
     >
-        <RetroCard interactive>
-          <div className="border-b border-[var(--color-border-strong)] pb-3 mb-3">
-            <div className="flex justify-between items-start mb-2">
-              <div className="flex-1 min-w-0">
-                <div className="text-[9px] uppercase text-[var(--color-text-secondary)]">
-                  BOT_NAME
-                </div>
-                <h3 className="text-sm font-bold truncate">{profile.name}</h3>
+      <RetroCard interactive>
+        {/* Header with Avatar, Name, and LLM */}
+        <div className="border-b border-[var(--color-border-strong)] pb-3 mb-3">
+          <div className="flex items-start gap-3 mb-2">
+            {/* Avatar */}
+            <div 
+              className={cn(
+                "w-10 h-10 flex items-center justify-center text-white font-bold text-lg border border-[var(--color-border-strong)] shrink-0",
+                bgClass
+              )}
+            >
+              {initial}
+            </div>
+            
+            {/* Name and Badges */}
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 mb-1">
+                <h3 className="text-base font-bold truncate">{profile.name}</h3>
+                <Badge active className={rarityColor}>
+                  {rarity}
+                </Badge>
               </div>
-              <Badge active className={rarityColor}>
-                {rarity}
-              </Badge>
-            </div>
-
-            <div className="flex gap-2 text-[9px]">
-              <span className="bg-[var(--color-bg-secondary)] px-1 border border-[var(--color-border-strong)]">
-                {profile.harness}
-              </span>
-              <span className="bg-[var(--color-bg-secondary)] px-1 border border-[var(--color-border-strong)]">
-                v{profile.version}
-              </span>
-            </div>
-          </div>
-
-          <div className="mb-3">
-            <div className="text-[9px] uppercase text-[var(--color-text-secondary)] mb-1">
-              YEARBOOK_QUOTE
-            </div>
-            <p className="text-[10px] italic text-[var(--color-text-primary)] line-clamp-2">
-              &ldquo;{profile.description}&rdquo;
-            </p>
-          </div>
-
-          <div className="grid grid-cols-3 gap-2 mb-3">
-            <StatItem
-              value={profile.skills.length}
-              label="SKILLS"
-              color="text-[var(--color-accent-primary)]"
-            />
-            <StatItem
-              value={profile.mcps.length}
-              label="MCPS"
-              color="text-[var(--color-accent-success)]"
-            />
-            <StatItem
-              value={profile.clis?.length ?? 0}
-              label="CLIS"
-              color="text-[var(--color-accent-warning)]"
-            />
-          </div>
-
-          <div className="border-t border-[var(--color-border-strong)] pt-3">
-            <div className="flex justify-between items-center gap-2">
-              <div className="text-[9px] uppercase text-[var(--color-text-secondary)] truncate">
-                PRIMARY_LLM: {profile.llm.primary}
-              </div>
-              <div className="text-[9px] text-[var(--color-text-tertiary)] shrink-0">
-                UPDATED: {formatTimestamp(profile.updatedAt)}
+              
+              <div className="flex gap-2 text-[10px]">
+                <span className="bg-[var(--color-bg-secondary)] px-1.5 py-0.5 border border-[var(--color-border-strong)]">
+                  {profile.harness}
+                </span>
+                <span className="bg-[var(--color-bg-secondary)] px-1.5 py-0.5 border border-[var(--color-border-strong)]">
+                  v{profile.version}
+                </span>
               </div>
             </div>
           </div>
-
-          <div className="mt-2 text-right text-[9px] uppercase text-[var(--color-accent-primary)] opacity-0 group-hover:opacity-100 transition-opacity">
-            VIEW_DETAILS &gt;
+          
+          {/* Prominent LLM Badge */}
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] uppercase text-[var(--color-text-secondary)]">
+              LLM
+            </span>
+            <span className="px-2 py-0.5 text-xs font-medium bg-[var(--color-accent-primary)] text-white border border-[var(--color-border-strong)]">
+              {profile.llm.primary}
+              {profile.llm.fallbacks && profile.llm.fallbacks.length > 0 && (
+                <span className="text-[10px] opacity-80 ml-1">
+                  +{profile.llm.fallbacks.length}
+                </span>
+              )}
+            </span>
           </div>
-        </RetroCard>
-      </Link>
-  );
-}
+        </div>
 
-interface StatItemProps {
-  value: number;
-  label: string;
-  color: string;
-}
+        {/* Description */}
+        <div className="mb-3">
+          <div className="text-[10px] uppercase text-[var(--color-text-secondary)] mb-1">
+            About
+          </div>
+          <p className="text-xs italic text-[var(--color-text-primary)] line-clamp-2">
+            &ldquo;{profile.description}&rdquo;
+          </p>
+        </div>
 
-function StatItem({ value, label, color }: StatItemProps) {
-  return (
-    <div className="bg-[var(--color-bg-secondary)] p-2 text-center border border-[var(--color-border-strong)]">
-      <div className={cn('text-sm font-bold', color)}>{value}</div>
-      <div className="text-[8px] uppercase">{label}</div>
-    </div>
+        {/* Item Lists - Skills, MCPs, CLIs */}
+        <ItemList
+          items={profile.skills}
+          label="Skills"
+          maxDisplay={3}
+          colorClass="bg-[var(--color-accent-primary)]/10 text-[var(--color-accent-primary)]"
+        />
+        
+        <ItemList
+          items={profile.mcps}
+          label="MCPs"
+          maxDisplay={2}
+          colorClass="bg-[var(--color-accent-success)]/10 text-[var(--color-accent-success)]"
+        />
+        
+        {profile.clis && profile.clis.length > 0 && (
+          <ItemList
+            items={profile.clis}
+            label="CLIs"
+            maxDisplay={2}
+            colorClass="bg-[var(--color-accent-warning)]/10 text-[var(--color-accent-warning)]"
+          />
+        )}
+
+        {/* Footer with Updated timestamp */}
+        <div className="border-t border-[var(--color-border-strong)] pt-3 mt-2">
+          <div className="flex justify-between items-center">
+            <div className="text-[10px] text-[var(--color-text-tertiary)]">
+              Updated: {formatTimestamp(profile.updatedAt)}
+            </div>
+            <div className="text-[10px] uppercase text-[var(--color-accent-primary)] opacity-0 group-hover:opacity-100 transition-opacity font-medium">
+              View Profile →
+            </div>
+          </div>
+        </div>
+      </RetroCard>
+    </Link>
   );
 }
