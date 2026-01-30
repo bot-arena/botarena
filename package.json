@@ -68,7 +68,11 @@
     "prepack": "npm run build:cli && npx oclif manifest",
     "test": "node --test",
     "lint": "eslint . --ext .ts --ext .tsx",
-    "lint:fix": "eslint . --ext .ts --ext .tsx --fix"
+    "lint:fix": "eslint . --ext .ts --ext .tsx --fix",
+    "seed": "tsx scripts/seed-profiles.ts seed",
+    "seed:clear": "tsx scripts/seed-profiles.ts clear",
+    "seed:status": "tsx scripts/seed-profiles.ts status",
+    "db:seed": "convex dev --once && tsx scripts/seed-profiles.ts seed"
   },
   "oclif": {
     "bin": "botarena",
