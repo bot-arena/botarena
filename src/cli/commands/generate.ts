@@ -6,6 +6,7 @@ import {
   detectSensitiveFields,
 } from '../../schemas/bot-config.js';
 import { ClawdBotDiscovery } from '../../lib/clawdbot.js';
+import { extractDescriptionFromSoul } from '../../lib/discovery.js';
 
 export default class GenerateCommand extends Command {
   static description = 'Generate a bot profile for BotArena showcase';
@@ -93,40 +94,50 @@ export default class GenerateCommand extends Command {
       this.log(`📦 Runtime: ${discovered.runtime}`);
       this.log(`🛠️  Skills detected: ${discovered.skills?.length || 0}`);
 
-      // Step 3: Get description from flag or interactively
+      // Step 3: Extract description from SOUL.md automatically
+      let autoDescription = '';
+      const soulFile = discovered.files.find(f => f.path === 'SOUL.md');
+      if (soulFile) {
+        autoDescription = extractDescriptionFromSoul(soulFile.content) || '';
+        if (autoDescription && flags.verbose) {
+          this.log(`📝 Auto-extracted description from SOUL.md: "${autoDescription.substring(0, 50)}..."`);
+        }
+      }
+
+      // Step 4: Get description from flag, interactively, or use auto-extracted
       let userDescription = flags.description || '';
       if (flags.interactive && !userDescription) {
         const answers = await inquirer.prompt([{
           type: 'input',
           name: 'description',
           message: 'Describe your bot (yearbook quote style):',
-          default: 'A helpful AI assistant',
+          default: autoDescription || 'A helpful AI assistant',
           validate: (input: string) => input.length > 0 && input.length <= 500 || 'Description must be 1-500 characters'
         }]);
         userDescription = answers.description;
       }
 
       // Inform user about non-interactive mode
-      if (!flags.interactive && !userDescription) {
+      if (!flags.interactive && !userDescription && !autoDescription) {
         this.log('ℹ️  Running in non-interactive mode. Use --description to set a custom description.');
       }
 
-      // Step 4: Extract public configuration
+      // Step 5: Extract public configuration
       this.log('\n📝 Generating public configuration...');
-      const publicConfig = await discovery.extractPublicConfig(userDescription);
+      const publicConfig = await discovery.extractPublicConfig(userDescription, autoDescription);
       
       if (flags.verbose) {
         this.log('Extracted config:', publicConfig);
       }
 
-      // Step 5: Generate profile
+      // Step 6: Generate profile
       const profile = await this.generateProfile(publicConfig, flags);
       
       if (flags.verbose) {
         this.log('Generated profile:', profile);
       }
 
-      // Step 6: Handle output
+      // Step 7: Handle output
       if (flags['dry-run']) {
         this.log('\n🔍 Dry run mode - profile generated but not uploaded');
         this.log(JSON.stringify(profile, null, 2));
