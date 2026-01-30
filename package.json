@@ -1,7 +1,7 @@
 {
   "name": "botarena",
-  "version": "0.0.2",
-  "description": "Bot showcase arena - coming soon",
+  "version": "0.0.3",
+  "description": "Bot showcase arena - generate and share AI bot profiles",
   "bin": {
     "botarena": "./dist/cli/index.js"
   },
@@ -38,6 +38,7 @@
     "@typescript-eslint/parser": "^6.21.0",
     "autoprefixer": "^10.4.20",
     "eslint": "^8.57.0",
+    "oclif": "^4.22.70",
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.17",
     "ts-node": "^10.9.2",
@@ -49,7 +50,7 @@
     "build:web": "next build",
     "dev": "tsc --watch",
     "dev:web": "next dev",
-    "prepack": "npm run build && oclif manifest",
+    "prepack": "npm run build:cli && npx oclif manifest",
     "test": "node --test",
     "lint": "eslint . --ext .ts --ext .tsx",
     "lint:fix": "eslint . --ext .ts --ext .tsx --fix"
