@@ -126,8 +126,18 @@
     z-index: -1;
   }
 
+  .retro-card {
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .retro-card:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 4px 4px 0 0 var(--color-accent-primary);
+  }
+
   .retro-card:hover::after {
-    background-color: var(--color-accent-secondary);
+    background-color: var(--color-accent-primary);
+    transform: translate(2px, 2px);
   }
 
   .btn-retro {
