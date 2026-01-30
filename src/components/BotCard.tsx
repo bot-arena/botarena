@@ -5,7 +5,6 @@ import { cn, calculateRarity, getRarityColor, formatTimestamp } from '@/lib/util
 import { RetroCard } from './RetroCard';
 import { Badge } from './Badge';
 import { Tag } from './Tag';
-import { TagList } from './TagList';
 
 export interface BotCardProfile {
   id?: string;
@@ -65,104 +64,155 @@ export function BotCard({ profile, className }: BotCardProps) {
   const rarity = calculateRarity(profile.skills, profile.mcps);
   const rarityColor = getRarityColor(rarity);
   const { initial, bgClass } = getBotIcon(profile.name);
+  const fallbackCount = profile.llm.fallbacks?.length ?? 0;
 
   if (!profile.slug) {
     return null;
   }
 
   return (
-    <Link
-      href={`/bots/${profile.slug}`}
-      className={cn('block group', className)}
-    >
-      <RetroCard interactive>
-        {/* Header with Avatar, Name, and LLM */}
-        <div className="border-b border-[var(--color-border-strong)] pb-3 mb-3">
-          <div className="flex items-start gap-3 mb-2">
-            {/* Avatar */}
-            <div
-              className={cn(
-                'w-10 h-10 flex items-center justify-center text-white font-bold text-lg border border-[var(--color-border-strong)] shrink-0',
-                bgClass
-              )}
-            >
-              {initial}
-            </div>
+    <Link href={`/bots/${profile.slug}`} className={cn('block group', className)}>
+      <RetroCard interactive className="px-4 py-3">
+        <div className="flex items-center justify-between border-b border-[var(--color-border-strong)] pb-2">
+          <span className="text-[10px] uppercase tracking-[0.2em] text-[var(--color-text-secondary)]">
+            Bot Dossier
+          </span>
+          <span className="text-[10px] uppercase text-[var(--color-text-tertiary)]">
+            Updated {formatTimestamp(profile.updatedAt)}
+          </span>
+        </div>
 
-            {/* Name and Badges */}
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 mb-1">
-                <h3 className="text-base font-bold truncate">{profile.name}</h3>
-                <Badge active className={rarityColor}>
-                  {rarity}
-                </Badge>
-              </div>
-
-              <div className="flex gap-2 text-xs">
-                <Tag>{profile.harness}</Tag>
-                <Tag>v{profile.version}</Tag>
-              </div>
+        <div className="divide-y divide-[var(--color-border-strong)]">
+          <div className="grid grid-cols-[96px_1fr] gap-2 py-2">
+            <span className="text-[10px] uppercase tracking-widest text-[var(--color-text-secondary)]">
+              Mark
+            </span>
+            <div className="flex items-center gap-2">
+              <span
+                className={cn(
+                  'w-8 h-8 flex items-center justify-center text-white font-bold text-sm border border-[var(--color-border-strong)]',
+                  bgClass
+                )}
+              >
+                {initial}
+              </span>
+              <span className="text-xs uppercase text-[var(--color-text-tertiary)]">
+                ID
+              </span>
             </div>
           </div>
 
-          {/* Prominent LLM Badge */}
-          <div className="flex items-center gap-2">
-            <span className="text-xs uppercase text-[var(--color-text-secondary)]">
+          <div className="grid grid-cols-[96px_1fr] gap-2 py-2">
+            <span className="text-[10px] uppercase tracking-widest text-[var(--color-text-secondary)]">
+              Name
+            </span>
+            <div className="flex items-center gap-2">
+              <h3 className="text-sm font-semibold tracking-wide text-[var(--color-text-primary)]">
+                {profile.name}
+              </h3>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-[96px_1fr] gap-2 py-2">
+            <span className="text-[10px] uppercase tracking-widest text-[var(--color-text-secondary)]">
+              Rarity
+            </span>
+            <div className="flex items-center gap-2">
+              <Badge active className={cn('text-[10px] uppercase', rarityColor)}>
+                {rarity}
+              </Badge>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-[96px_1fr] gap-2 py-2">
+            <span className="text-[10px] uppercase tracking-widest text-[var(--color-text-secondary)]">
               LLM
             </span>
-            <span className="px-2 py-0.5 text-sm font-medium bg-[var(--color-accent-primary)] text-white border border-[var(--color-border-strong)]">
-              {profile.llm.primary}
-              {profile.llm.fallbacks && profile.llm.fallbacks.length > 0 && (
-                <span className="text-xs opacity-80 ml-1">
-                  +{profile.llm.fallbacks.length}
-                </span>
-              )}
-            </span>
-          </div>
-        </div>
-
-        {/* Description */}
-        <div className="mb-3">
-          <div className="text-xs uppercase text-[var(--color-text-secondary)] mb-1">
-            About
-          </div>
-          <p className="text-sm italic text-[var(--color-text-primary)] line-clamp-2">
-            &ldquo;{profile.description}&rdquo;
-          </p>
-        </div>
-
-        {/* Item Lists - Skills, MCPs, CLIs */}
-        <TagList
-          items={profile.skills}
-          label="Skills"
-          maxDisplay={3}
-          variant="primary"
-        />
-
-        <TagList
-          items={profile.mcps}
-          label="MCPs"
-          maxDisplay={2}
-          variant="success"
-        />
-
-        {profile.clis && profile.clis.length > 0 && (
-          <TagList
-            items={profile.clis}
-            label="CLIs"
-            maxDisplay={2}
-            variant="warning"
-          />
-        )}
-
-        {/* Footer with Updated timestamp */}
-        <div className="border-t border-[var(--color-border-strong)] pt-3 mt-2">
-          <div className="flex justify-between items-center">
-            <div className="text-xs text-[var(--color-text-tertiary)]">
-              Updated: {formatTimestamp(profile.updatedAt)}
+            <div className="flex items-center flex-wrap gap-2">
+              <span className="text-sm font-semibold text-[var(--color-text-primary)]">
+                {profile.llm.primary}
+              </span>
+              <span className="text-xs text-[var(--color-text-tertiary)]">
+                {fallbackCount > 0 ? `+${fallbackCount} fallback${fallbackCount > 1 ? 's' : ''}` : 'Primary only'}
+              </span>
             </div>
-            <div className="text-xs uppercase text-[var(--color-accent-primary)] opacity-0 group-hover:opacity-100 transition-opacity font-medium">
-              View Profile →
+          </div>
+
+          <div className="grid grid-cols-[96px_1fr] gap-2 py-2">
+            <span className="text-[10px] uppercase tracking-widest text-[var(--color-text-secondary)]">
+              Quote
+            </span>
+            <p className="text-sm leading-snug text-[var(--color-text-primary)]">
+              &ldquo;{profile.description}&rdquo;
+            </p>
+          </div>
+
+          <div className="grid grid-cols-[96px_1fr] gap-2 py-2">
+            <span className="text-[10px] uppercase tracking-widest text-[var(--color-text-secondary)]">
+              Harness
+            </span>
+            <div className="flex flex-wrap gap-1">
+              <Tag className="text-[10px] px-1.5 py-0.5">{profile.harness}</Tag>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-[96px_1fr] gap-2 py-2">
+            <span className="text-[10px] uppercase tracking-widest text-[var(--color-text-secondary)]">
+              Version
+            </span>
+            <div className="flex flex-wrap gap-1">
+              <Tag className="text-[10px] px-1.5 py-0.5">v{profile.version}</Tag>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-[96px_1fr] gap-2 py-2">
+            <span className="text-[10px] uppercase tracking-widest text-[var(--color-text-secondary)]">
+              Skills
+            </span>
+            <div className="flex flex-wrap gap-1">
+              {profile.skills.length > 0 ? (
+                profile.skills.map((skill) => (
+                  <Tag key={skill} variant="primary" className="text-[10px] px-1.5 py-0.5">
+                    {skill}
+                  </Tag>
+                ))
+              ) : (
+                <span className="text-xs text-[var(--color-text-tertiary)]">None</span>
+              )}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-[96px_1fr] gap-2 py-2">
+            <span className="text-[10px] uppercase tracking-widest text-[var(--color-text-secondary)]">
+              MCPs
+            </span>
+            <div className="flex flex-wrap gap-1">
+              {profile.mcps.length > 0 ? (
+                profile.mcps.map((mcp) => (
+                  <Tag key={mcp} variant="success" className="text-[10px] px-1.5 py-0.5">
+                    {mcp}
+                  </Tag>
+                ))
+              ) : (
+                <span className="text-xs text-[var(--color-text-tertiary)]">None</span>
+              )}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-[96px_1fr] gap-2 py-2">
+            <span className="text-[10px] uppercase tracking-widest text-[var(--color-text-secondary)]">
+              CLIs
+            </span>
+            <div className="flex flex-wrap gap-1">
+              {profile.clis && profile.clis.length > 0 ? (
+                profile.clis.map((cli) => (
+                  <Tag key={cli} variant="warning" className="text-[10px] px-1.5 py-0.5">
+                    {cli}
+                  </Tag>
+                ))
+              ) : (
+                <span className="text-xs text-[var(--color-text-tertiary)]">None</span>
+              )}
             </div>
           </div>
         </div>
