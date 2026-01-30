@@ -11,9 +11,11 @@
       },
       "description": "Generate a bot profile for BotArena showcase",
       "examples": [
-        "<%= config.bin %> <%= command.id %>",
+        "<%= config.bin %> <%= command.id %> --description \"My awesome bot\"",
+        "<%= config.bin %> <%= command.id %> --description \"My bot\" --yes",
+        "<%= config.bin %> <%= command.id %> --description \"My bot\" --dry-run",
         "<%= config.bin %> <%= command.id %> --interactive",
-        "<%= config.bin %> <%= command.id %> --dry-run"
+        "<%= config.bin %> <%= command.id %> --interactive --dry-run"
       ],
       "flags": {
         "interactive": {
@@ -50,6 +52,21 @@
           "hasDynamicHelp": false,
           "multiple": false,
           "type": "option"
+        },
+        "description": {
+          "char": "d",
+          "description": "Bot description for the profile (yearbook quote style). Defaults to \"A helpful AI assistant\" if not provided.",
+          "name": "description",
+          "hasDynamicHelp": false,
+          "multiple": false,
+          "type": "option"
+        },
+        "yes": {
+          "char": "y",
+          "description": "Auto-confirm upload without prompting",
+          "name": "yes",
+          "allowNo": false,
+          "type": "boolean"
         }
       },
       "hasDynamicHelp": false,
@@ -120,5 +137,5 @@
       ]
     }
   },
-  "version": "0.0.3"
+  "version": "0.0.6"
 }

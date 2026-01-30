@@ -269,34 +269,43 @@ export class ClawdBotDiscovery {
   }
 
   /**
-   * Discover MCP servers from mcp.json
+   * Discover MCP servers from mcp.json and config/mcporter.json
    * Only extracts server names, never reads sensitive configuration
    */
   private async discoverMCPs(): Promise<string[]> {
     const mcps: string[] = [];
-    const mcpPath = path.join(this.basePath, 'mcp.json');
     
+    // 1. Check config/mcporter.json
     try {
+      const mcporterPath = path.join(this.basePath, 'config', 'mcporter.json');
+      const content = await safeReadFile(mcporterPath);
+      if (content) {
+        const config = JSON.parse(content);
+        if (config.mcpServers && typeof config.mcpServers === 'object') {
+          mcps.push(...Object.keys(config.mcpServers));
+        }
+      }
+    } catch { }
+
+    // 2. Check mcp.json
+    try {
+      const mcpPath = path.join(this.basePath, 'mcp.json');
       const content = await safeReadFile(mcpPath);
       if (content) {
         const config = JSON.parse(content);
-        // Extract only server names, not their configuration
         if (config.mcpServers && typeof config.mcpServers === 'object') {
           mcps.push(...Object.keys(config.mcpServers));
         } else if (config.servers && Array.isArray(config.servers)) {
           mcps.push(...config.servers.map((s: any) => s.name || s));
         }
       }
-    } catch {
-      // mcp.json doesn't exist or is invalid, skip
-    }
+    } catch { }
     
-    return mcps;
+    return [...new Set(mcps)].sort();
   }
 
   /**
-   * Discover LLM configuration from mcp.json and config files
-   * Extracts model info from various configuration sources
+   * Discover LLM configuration from global ~/.clawdbot/clawdbot.json and local files
    */
   private async discoverLLM(): Promise<{ primary: string; fallbacks: string[] }> {
     const result = {
@@ -304,89 +313,74 @@ export class ClawdBotDiscovery {
       fallbacks: [] as string[],
     };
 
-    // Try mcp.json first
+    // 1. Try global ~/.clawdbot/clawdbot.json (ClawdBot standard)
+    try {
+      const globalConfigPath = path.join(os.homedir(), '.clawdbot', 'clawdbot.json');
+      const content = await safeReadFile(globalConfigPath);
+      if (content) {
+        const config = JSON.parse(content);
+        if (config.agents?.defaults?.model?.primary) {
+          result.primary = config.agents.defaults.model.primary;
+        }
+        if (config.agents?.defaults?.model?.fallbacks) {
+          result.fallbacks = config.agents.defaults.model.fallbacks;
+        }
+        
+        if (result.primary !== 'Not specified') return result;
+      }
+    } catch { }
+
+    // 2. Try mcp.json/llm
     try {
       const mcpPath = path.join(this.basePath, 'mcp.json');
       const content = await safeReadFile(mcpPath);
       if (content) {
         const config = JSON.parse(content);
-        // Look for model, llm, or provider fields
-        if (config.model) {
-          result.primary = config.model;
-        } else if (config.llm?.model) {
-          result.primary = config.llm.model;
-        } else if (config.llm?.primary) {
-          result.primary = config.llm.primary;
-        } else if (config.provider) {
-          result.primary = config.provider;
-        }
-
-        // Extract fallbacks if available
-        if (config.llm?.fallbacks && Array.isArray(config.llm.fallbacks)) {
-          result.fallbacks = config.llm.fallbacks;
-        }
-
-        if (result.primary !== 'Not specified') {
-          return result;
-        }
+        if (config.model) result.primary = config.model;
+        if (config.llm?.model) result.primary = config.llm.model;
+        if (config.llm?.fallbacks) result.fallbacks = config.llm.fallbacks;
+        
+        if (result.primary !== 'Not specified') return result;
       }
-    } catch {
-      // mcp.json doesn't exist or is invalid
-    }
-
-    // Try .clawdbot/config.json
+    } catch { }
+    
+    // 3. Try .clawdbot/config.json
     try {
       const configPath = path.join(this.basePath, '.clawdbot', 'config.json');
       const content = await safeReadFile(configPath);
       if (content) {
         const config = JSON.parse(content);
-        if (config.model) {
-          result.primary = config.model;
-        } else if (config.llm?.model) {
-          result.primary = config.llm.model;
-        }
-
-        if (result.primary !== 'Not specified') {
-          return result;
-        }
+        if (config.model) result.primary = config.model;
+        if (config.llm?.model) result.primary = config.llm.model;
+        
+        if (result.primary !== 'Not specified') return result;
       }
-    } catch {
-      // config.json doesn't exist or is invalid
-    }
+    } catch { }
 
-    // Try claude.config.json
+    // 4. Try claude.config.json
     try {
       const configPath = path.join(this.basePath, 'claude.config.json');
       const content = await safeReadFile(configPath);
       if (content) {
         const config = JSON.parse(content);
-        if (config.model) {
-          result.primary = config.model;
-        } else if (config.llm?.model) {
-          result.primary = config.llm.model;
-        }
-
-        if (result.primary !== 'Not specified') {
-          return result;
-        }
+        if (config.model) result.primary = config.model;
+        if (config.llm?.model) result.primary = config.llm.model;
+        
+        if (result.primary !== 'Not specified') return result;
       }
-    } catch {
-      // claude.config.json doesn't exist
-    }
+    } catch { }
 
-    // Try to parse from SOUL.md
+    // 5. Try to parse from SOUL.md
     try {
       const soulPath = path.join(this.basePath, 'SOUL.md');
       const content = await safeReadFile(soulPath);
       if (content) {
-        // Look for LLM mentions in various formats
         const llmMatch = content.match(/(?:Model|LLM|AI Model):\s*(.+)/i);
         if (llmMatch) {
           result.primary = llmMatch[1].trim();
           return result;
         }
 
-        // Look for model references like "gpt-4", "claude-3", etc.
         const modelPatterns = [
           /\b(gpt-4[\w-]*)\b/i,
           /\b(gpt-3[\w-]*)\b/i,
@@ -404,9 +398,7 @@ export class ClawdBotDiscovery {
           }
         }
       }
-    } catch {
-      // SOUL.md doesn't exist
-    }
+    } catch { }
 
     return result;
   }
