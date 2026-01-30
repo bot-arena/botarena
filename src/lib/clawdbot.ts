@@ -9,6 +9,7 @@ import { validatePublicConfig } from '../schemas/bot-config.js';
 import type { PublicBotConfigType } from '../schemas/bot-config.js';
 import * as path from 'path';
 import * as fs from 'fs/promises';
+import * as os from 'os';
 
 /**
  * SECURITY NOTICE: ClawdBot Discovery
@@ -25,6 +26,8 @@ const SKILL_DIRECTORIES = [
   'skills',
   '.clawdbot/skills',
   '.claude/skills',
+  '.pi/skills',
+  '~/.pi/agent/skills',
 ];
 
 /**
@@ -134,7 +137,13 @@ export class ClawdBotDiscovery {
     const skills: string[] = [];
     
     for (const skillDir of SKILL_DIRECTORIES) {
-      const fullPath = path.join(this.basePath, skillDir);
+      // Expand ~ to home directory for absolute paths
+      const expandedPath = skillDir.startsWith('~/')
+        ? path.join(os.homedir(), skillDir.slice(2))
+        : skillDir;
+      const fullPath = path.isAbsolute(expandedPath)
+        ? expandedPath
+        : path.join(this.basePath, expandedPath);
       try {
         // Read directory entries and filter for subdirectories only
         const entries = await fs.readdir(fullPath, { withFileTypes: true });
@@ -205,7 +214,13 @@ export class ClawdBotDiscovery {
 
     // Check for skills directory with content
     for (const skillDir of SKILL_DIRECTORIES) {
-      const fullPath = path.join(this.basePath, skillDir);
+      // Expand ~ to home directory for absolute paths
+      const expandedPath = skillDir.startsWith('~/')
+        ? path.join(os.homedir(), skillDir.slice(2))
+        : skillDir;
+      const fullPath = path.isAbsolute(expandedPath)
+        ? expandedPath
+        : path.join(this.basePath, expandedPath);
       try {
         const entries = await fs.readdir(fullPath);
         if (entries.length > 0) {
