@@ -13,7 +13,7 @@ Requirements for initial ClawdBot-focused release. Each maps to roadmap phases.
 - [x] **PROF-02**: Provide public profile URLs for sharing bot configurations
 - [ ] **PROF-03**: Enable basic search and discovery of ClawdBots
 - [ ] **PROF-04**: Filter ClawdBots by specific capabilities (skills, models)
-- [ ] **PROF-05**: Implement gaming-inspired visualization (Dota 2 hero-style presentation)
+- [ ] **PROF-05**: Implement gaming-inspired visualization (retro gaming style presentation)
 - [x] **PROF-06**: Capture bot self-description (one-sentence "yearbook quote" style personality showcase)
 
 ### CLI Integration

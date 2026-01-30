@@ -24,13 +24,13 @@ Features that set product apart. Not expected, but valued.
 
 | Feature | Value Proposition | Complexity | Notes |
 |---------|-------------------|------------|-------|
-| Gaming-Inspired Visualization | Taps into emotional attachment people have with their AI agents | High | Dota 2 hero-style presentation with stats, abilities, tiers |
+| Gaming-Inspired Visualization | Taps into emotional attachment people have with their AI agents | High | retro gaming style presentation with stats, abilities, tiers |
 | Advanced Comparison Battles | Head-to-head bot competition with voting | Medium | Like Scale AI's Showdown - blind comparisons |
 | Real-time Performance Metrics | Shows bot effectiveness and optimization | High | Requires integration with bot runtime systems |
 | Secure Configuration Handling | Addresses security concerns for sensitive data | High | CLI asks bots for public config, never reads raw files |
 | Visual Identity Customization | Personalization creates attachment | Medium | Custom colors, badges, achievement system |
 | MCP Integration Showcase | Demonstrates Model Context Protocol capabilities | High | Shows MCP servers, tools, and workflows |
-| Leaderboard Rankings | Gamification and recognition drive engagement | Medium | Tier rankings (S/A/B/C) like Dota 2 heroes |
+| Leaderboard Rankings | Gamification and recognition drive engagement | Medium | Tier rankings (S/A/B/C) like retro gaming heroes |
 | Interactive Skill Trees | Visual representation of bot capabilities | High | Shows skill progression and dependencies |
 | Bot "Build Guides" | Community-driven optimization sharing | Medium | Users share successful configurations |
 | Achievement System | Recognition for milestones and capabilities | Medium | Badges for rare LLMs, complex skill setups |
@@ -89,7 +89,7 @@ For MVP, prioritize:
 4. **Basic Filtering** — Filter by LLM type and complexity
 
 Defer to post-MVP:
-- **Gaming-Inspired Visualization** — Start with simple profile pages, add Dota 2-style later
+- **Gaming-Inspired Visualization** — Start with simple profile pages, add retro gaming style later
 - **Advanced Comparison Battles** — Basic comparison first, battles later
 - **Real-time Performance Metrics** — Requires runtime integration complexity
 
@@ -121,7 +121,7 @@ Defer to post-MVP:
 | Comparison | Side-by-side view | Category filtering | Head-to-head battles | Interactive comparison with voting |
 | Search | Text search | Advanced filters | Model search | Category + capability search |
 | CLI Integration | None | None | None | Secure `npx botarena` tool |
-| Gamification | Minimal | Upvotes/ratings | Win rates | Dota 2-style tier system |
+| Gamification | Minimal | Upvotes/ratings | Win rates | retro gaming style tier system |
 | Security | Basic | No config display | N/A | Secure config extraction only |
 
 ## Sources
@@ -129,7 +129,7 @@ Defer to post-MVP:
 - AI Agents Directory analysis (MEDIUM confidence) - Comprehensive agent catalog features
 - AgentLocker.ai platform review (MEDIUM confidence) - 1000+ agents, category system
 - Scale AI Showdown research (HIGH confidence) - Head-to-head comparison model
-- Dota 2 hero presentation analysis (HIGH confidence) - Gaming visualization inspiration
+- retro gaming style presentation analysis (HIGH confidence) - Gaming visualization inspiration
 - CLI tool ecosystem survey (MEDIUM confidence) - npm packages, secure configuration patterns
 - MCP integration research (LOW confidence) - Emerging Model Context Protocol standards
 

@@ -147,7 +147,7 @@ export class SecureConfigCollector {
 
 ### Pattern 3: Game-Inspired Profile Display
 
-**What:** Present bot profiles using gaming hero card aesthetics similar to Dota 2.
+**What:** Present bot profiles using gaming hero card aesthetics similar to retro gaming.
 **When to use:** For the web platform's primary user interface.
 **Trade-offs:** Higher engagement vs. development complexity.
 

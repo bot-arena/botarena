@@ -78,7 +78,7 @@ Progress: ████████░░ 40% (5/13 success criteria)
 - Security-first architecture with "ask the bot" pattern
 - 3-phase roadmap delivering 9 v1 requirements
 - ClawdBot as initial integration target
-- Gaming-inspired visualization (Dota 2 hero style) as differentiator
+- Gaming-inspired visualization (retro gaming style) as differentiator
 - Phase 1 complete with CLI generation, Convex backend, and profile pages
 
 ### What We're Working On

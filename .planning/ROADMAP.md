@@ -69,10 +69,10 @@ Plans:
 **Dependencies:** Phase 2 (discovery and comparison functionality)
 
 **Requirements:**
-- PROF-05: Implement gaming-inspired visualization (Dota 2 hero-style presentation)
+- PROF-05: Implement gaming-inspired visualization (retro gaming style presentation)
 
 **Success Criteria:**
-1. User sees Dota 2 hero-style visual presentation on bot profiles
+1. User sees retro gaming style visual presentation on bot profiles
 2. Bot stats are displayed with gaming-inspired animations and styling
 3. The visual design maintains data clarity while adding emotional engagement
 4. Profile presentation creates memorable, shareable bot representations

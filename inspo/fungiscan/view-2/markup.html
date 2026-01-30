@@ -1,0 +1,200 @@
+<html vid="0">
+
+<head vid="1">
+    <meta charset="UTF-8" vid="2">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" vid="3">
+    <script src="https://cdn.tailwindcss.com" vid="4"></script>
+    <style vid="5">
+        @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&display=swap');
+
+        body {
+            font-family: 'Roboto Mono', monospace;
+            background-color: #d1d5db;
+        }
+
+        .grid-lines {
+            background-image: linear-gradient(to right, rgba(165, 42, 42, 0.1) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(165, 42, 42, 0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        .offset-box {
+            position: relative;
+        }
+
+        .offset-box:after {
+            content: '';
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            right: -4px;
+            bottom: -4px;
+            border: 1px solid #4a4a4a;
+            background-color: #b45309;
+            z-index: -1;
+        }
+
+        .filter-tag {
+            border: 1px solid #4a4a4a;
+            padding: 2px 6px;
+            font-size: 9px;
+            text-transform: uppercase;
+            background: #e5e7eb;
+        }
+
+        .filter-tag.active {
+            background: #4a4a4a;
+            color: #eab308;
+        }
+    </style>
+</head>
+
+<body class="bg-[#d1d5db]" vid="6">
+    <div class="relative min-h-screen grid-lines text-[#2d2d2d] flex flex-col" vid="7">
+
+        <header class="fixed top-0 left-0 right-0 bg-[#e5e7eb] z-10" vid="8">
+            <div class="px-4 py-3 border-b-2 border-[#4a4a4a] flex justify-between items-center" vid="9">
+                <div class="uppercase text-xs font-bold tracking-wide text-[#b45309]" vid="10">
+                    FUNGISCAN
+                </div>
+                <div class="uppercase text-xs font-bold tracking-wide text-[#4a4a4a]" vid="11">
+                    ARCHIVE_v1.0
+                </div>
+            </div>
+        </header>
+
+        <main class="pt-16 pb-24 px-4 flex-1" vid="12">
+
+            <div class="mb-6" vid="13">
+                <div class="uppercase text-xs font-bold tracking-wide mb-3 text-[#4a4a4a]" vid="14">
+                    FILTER_PARAMETERS
+                </div>
+                <div class="flex flex-wrap gap-2" vid="15">
+                    <button class="filter-tag active" vid="16">ALL SCANS</button>
+                    <button class="filter-tag" vid="17">HIGH RISK</button>
+                    <button class="filter-tag" vid="18">BATHROOM</button>
+                    <button class="filter-tag" vid="19">KITCHEN</button>
+                    <button class="filter-tag" vid="20">BASEMENT</button>
+                    <button class="filter-tag" vid="21">LATEST 30D</button>
+                </div>
+            </div>
+
+            <div class="space-y-6" vid="22">
+
+                <div class="offset-box bg-[#fefce8] border border-[#4a4a4a] p-3" vid="23">
+                    <div class="flex justify-between items-start mb-2" vid="24">
+                        <div vid="25">
+                            <div class="uppercase text-[10px] font-bold text-[#b45309]" vid="26">LOCATION</div>
+                            <div class="text-xs font-bold" vid="27">BATHROOM_PRIMARY</div>
+                        </div>
+                        <div class="text-right" vid="28">
+                            <div class="uppercase text-[10px] font-bold text-[#4a4a4a]" vid="29">DATE</div>
+                            <div class="text-[10px]" vid="30">10/12/23</div>
+                        </div>
+                    </div>
+                    <div class="border-t border-[#4a4a4a] pt-2 mt-2" vid="31">
+                        <div class="flex justify-between items-center" vid="32">
+                            <span class="text-[10px] uppercase font-bold text-[#4a4a4a]" vid="33">THREAT_LEVEL:</span>
+                            <span class="text-[10px] font-bold text-[#b45309]" vid="34">MEDIUM [67%]</span>
+                        </div>
+                        <div class="w-full h-1 bg-[#d1d5db] mt-1" vid="35">
+                            <div class="h-full bg-[#b45309] w-[67%]" vid="36"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="offset-box bg-[#fefce8] border border-[#4a4a4a] p-3" vid="37">
+                    <div class="flex justify-between items-start mb-2" vid="38">
+                        <div vid="39">
+                            <div class="uppercase text-[10px] font-bold text-[#b45309]" vid="40">LOCATION</div>
+                            <div class="text-xs font-bold" vid="41">KITCHEN_SINK</div>
+                        </div>
+                        <div class="text-right" vid="42">
+                            <div class="uppercase text-[10px] font-bold text-[#4a4a4a]" vid="43">DATE</div>
+                            <div class="text-[10px]" vid="44">10/10/23</div>
+                        </div>
+                    </div>
+                    <div class="border-t border-[#4a4a4a] pt-2 mt-2" vid="45">
+                        <div class="flex justify-between items-center" vid="46">
+                            <span class="text-[10px] uppercase font-bold text-[#4a4a4a]" vid="47">THREAT_LEVEL:</span>
+                            <span class="text-[10px] font-bold text-[#166534]" vid="48">LOW [12%]</span>
+                        </div>
+                        <div class="w-full h-1 bg-[#d1d5db] mt-1" vid="49">
+                            <div class="h-full bg-[#166534] w-[12%]" vid="50"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="offset-box bg-[#fefce8] border border-[#4a4a4a] p-3" vid="51">
+                    <div class="flex justify-between items-start mb-2" vid="52">
+                        <div vid="53">
+                            <div class="uppercase text-[10px] font-bold text-[#b45309]" vid="54">LOCATION</div>
+                            <div class="text-xs font-bold" vid="55">BASEMENT_STORAGE</div>
+                        </div>
+                        <div class="text-right" vid="56">
+                            <div class="uppercase text-[10px] font-bold text-[#4a4a4a]" vid="57">DATE</div>
+                            <div class="text-[10px]" vid="58">10/05/23</div>
+                        </div>
+                    </div>
+                    <div class="border-t border-[#4a4a4a] pt-2 mt-2" vid="59">
+                        <div class="flex justify-between items-center" vid="60">
+                            <span class="text-[10px] uppercase font-bold text-[#4a4a4a]" vid="61">THREAT_LEVEL:</span>
+                            <span class="text-[10px] font-bold text-red-700" vid="62">CRITICAL [92%]</span>
+                        </div>
+                        <div class="w-full h-1 bg-[#d1d5db] mt-1" vid="63">
+                            <div class="h-full bg-red-700 w-[92%]" vid="64"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="offset-box bg-[#fefce8] border border-[#4a4a4a] p-3 opacity-60" vid="65">
+                    <div class="flex justify-between items-start mb-2" vid="66">
+                        <div vid="67">
+                            <div class="uppercase text-[10px] font-bold text-[#b45309]" vid="68">LOCATION</div>
+                            <div class="text-xs font-bold" vid="69">ATTIC_EAST</div>
+                        </div>
+                        <div class="text-right" vid="70">
+                            <div class="uppercase text-[10px] font-bold text-[#4a4a4a]" vid="71">DATE</div>
+                            <div class="text-[10px]" vid="72">09/28/23</div>
+                        </div>
+                    </div>
+                    <div class="border-t border-[#4a4a4a] pt-2 mt-2" vid="73">
+                        <div class="flex justify-between items-center" vid="74">
+                            <span class="text-[10px] uppercase font-bold text-[#4a4a4a]" vid="75">THREAT_LEVEL:</span>
+                            <span class="text-[10px] font-bold text-[#166534]" vid="76">SAFE [05%]</span>
+                        </div>
+                        <div class="w-full h-1 bg-[#d1d5db] mt-1" vid="77">
+                            <div class="h-full bg-[#166534] w-[5%]" vid="78"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-8 mb-4 flex justify-center" vid="79">
+                <button
+                    class="border border-[#4a4a4a] bg-[#e5e7eb] px-4 py-2 text-[10px] font-bold uppercase tracking-widest hover:bg-[#d1d5db]"
+                    vid="80">
+                    LOAD_OLDER_RECORDS
+                </button>
+            </div>
+        </main>
+
+        <footer class="fixed bottom-0 left-0 right-0 bg-[#e5e7eb] border-t-2 border-[#4a4a4a] z-10" vid="81">
+            <div class="grid grid-cols-3 uppercase text-[10px] font-bold tracking-wide" vid="82">
+                <button class="py-4 border-r border-[#4a4a4a] flex flex-col items-center hover:bg-[#d1d5db]" vid="83">
+                    <span vid="84">SCAN</span>
+                </button>
+                <button class="py-4 border-r border-[#4a4a4a] flex flex-col items-center bg-[#fefce8] text-[#b45309]"
+                    vid="85">
+                    <span vid="86">HISTORY</span>
+                </button>
+                <button class="py-4 flex flex-col items-center hover:bg-[#d1d5db]" vid="87">
+                    <span vid="88">REPORT</span>
+                </button>
+            </div>
+        </footer>
+    </div>
+
+</body>
+
+</html>

@@ -17,7 +17,7 @@ Bot owners can proudly showcase their meticulously crafted AI agent configuratio
 ### Active
 
 - [ ] Safe profile generation via `npx botarena` command that asks bots for their public config
-- [ ] Web platform at botarena.sh hosting bot profiles with Dota 2 hero-style presentation
+- [ ] Web platform at botarena.sh hosting bot profiles with retro gaming style presentation
 - [ ] Display core stats: LLM (primary + fallbacks), Skills, MCPs, CLIs, Harness/Runtime
 - [ ] Filtering and comparison system across all stat dimensions
 - [ ] Visual identity options (avatars/skins) while prioritizing data presentation
@@ -44,7 +44,7 @@ Bot owners can proudly showcase their meticulously crafted AI agent configuratio
 - **Privacy**: All showcased profiles are public — no private sharing mechanisms
 - **Runtime Support**: Must support various bot runtimes (ClawdBot first, then expand)
 - **Data Structure**: No existing standard — must handle varied config formats via "ask the bot" approach
-- **Visual Quality**: Game-inspired presentation (Dota 2 hero style) while keeping data focus
+- **Visual Quality**: Game-inspired presentation (retro gaming style) while keeping data focus
 
 ## Key Decisions
 
