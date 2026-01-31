@@ -9,6 +9,7 @@ export interface BotCardProfile {
   id?: string;
   slug?: string;
   name: string;
+  owner?: string | null;
   harness: string;
   version: string;
   description: string;
@@ -94,9 +95,11 @@ export function BotCard({ profile, className }: BotCardProps) {
               <h3 className="text-lg font-semibold leading-tight tracking-[0.08em] text-[var(--color-text-primary)]">
                 {profile.name}
               </h3>
-              <p className="text-[11px] font-semibold tracking-[0.18em] text-[var(--color-text-tertiary)]">
-                by @archiboi69
-              </p>
+              {profile.owner && (
+                <p className="text-[11px] font-semibold tracking-[0.18em] text-[var(--color-text-tertiary)]">
+                  by @{profile.owner}
+                </p>
+              )}
               <p className="mt-1 text-[13px] leading-snug text-[var(--color-text-secondary)]">
                 &ldquo;{profile.description}&rdquo;
               </p>
@@ -112,7 +115,7 @@ export function BotCard({ profile, className }: BotCardProps) {
                 {profile.llm.primary}
               </span>
               <span className="text-xs text-[var(--color-text-tertiary)]">
-                {fallbackCount > 0 ? `+${fallbackCount} fallback${fallbackCount > 1 ? 's' : ''}` : 'Primary only'}
+                {fallbackCount > 0 ? `+${fallbackCount} fallback${fallbackCount > 1 ? 's' : ''}` : 'No fallbacks'}
               </span>
             </div>
           </div>

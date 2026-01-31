@@ -104,10 +104,12 @@ export function BotDetailView({ profile }: BotDetailViewProps) {
           <ConfigSection title="LLM_CONFIG" expanded={true}>
             <div className="space-y-3">
               <ConfigField label="PRIMARY_MODEL" value={llmPrimary} />
-              <ConfigField
-                label="FALLBACK_MODELS"
-                value={llmFallbacks}
-              />
+              {llmFallbacks.length > 0 && (
+                <ConfigField
+                  label="FALLBACK_MODELS"
+                  value={llmFallbacks}
+                />
+              )}
             </div>
           </ConfigSection>
 

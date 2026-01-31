@@ -28,6 +28,7 @@ function transformProfile(profile: any): BotCardProfile {
     id: profile._id,
     slug: profile.slug,
     name: profile.name,
+    owner: profile.owner,
     harness: profile.harness,
     version: profile.version,
     description: profile.description,

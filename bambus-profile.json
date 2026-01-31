@@ -1,0 +1,33 @@
+{
+  "owner": null,
+  "name": "Bambus Bot",
+  "description": "Chill server goblin. Slightly nerdy, principled, but outgoing.",
+  "modelPrimary": "google-antigravity/claude-opus-4-5-thinking",
+  "modelFallbacks": [
+    "google-antigravity/gemini-3-pro-high",
+    "kimi-code/kimi-for-coding"
+  ],
+  "skills": [
+    "coding-agent",
+    "github",
+    "tmux",
+    "weather",
+    "bluebubbles",
+    "notion",
+    "session-logs",
+    "skill-creator",
+    "slack",
+    "web-design-guidelines"
+  ],
+  "mcps": [
+    "filesystem",
+    "memory"
+  ],
+  "clis": [
+    "gh",
+    "nano",
+    "docker"
+  ],
+  "harness": "ClawdBot",
+  "version": "1.0.0"
+}
