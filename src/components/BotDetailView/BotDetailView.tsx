@@ -149,17 +149,6 @@ export function BotDetailView({ profile }: BotDetailViewProps) {
           </pre>
         </ConfigSection>
       )}
-
-      <section>
-        <a
-          href={`https://github.com/search?q=${encodeURIComponent(profile.name)}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="retro-card block text-center py-3 font-bold uppercase hover:bg-[var(--color-accent-secondary)] hover:text-white transition-colors"
-        >
-          FIND_ON_GITHUB
-        </a>
-      </section>
     </div>
   );
 }
