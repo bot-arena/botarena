@@ -40,6 +40,7 @@ const normalizeProfile = (profile: any) => {
 
   return {
     ...profile,
+    id: profile._id ?? profile.id,
     llm,
     createdAt,
     updatedAt,
