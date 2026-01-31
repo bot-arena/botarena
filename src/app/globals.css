@@ -384,6 +384,189 @@
     background-color: var(--color-accent-secondary);
     color: var(--color-accent-code);
   }
+
+  /* ============================================
+     BEAUTIFUL BADGE STYLES - Retro Gaming Aesthetic
+     ============================================ */
+
+  .badge-beautiful {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    background-color: var(--color-bg-panel);
+    border: 1px solid var(--color-border-strong);
+    padding: 8px 10px;
+    box-shadow: 3px 3px 0 0 var(--color-accent-primary);
+    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+    cursor: default;
+  }
+
+  .badge-beautiful:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 4px 4px 0 0 var(--color-accent-primary);
+  }
+
+  .badge-beautiful:focus-visible {
+    outline: 2px solid var(--color-accent-primary);
+    outline-offset: 2px;
+  }
+
+  /* Badge Icon Container */
+  .badge-icon {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    margin-top: 1px;
+  }
+
+  .badge-icon svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  /* Badge Content Layout */
+  .badge-content {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .badge-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .badge-name {
+    font-size: 0.8125rem; /* 13px */
+    font-weight: 700;
+    line-height: 1.3;
+    color: var(--color-text-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+
+  .badge-description {
+    font-size: 0.75rem; /* 12px */
+    line-height: 1.4;
+    color: var(--color-text-secondary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+
+  .badge-version {
+    flex-shrink: 0;
+    font-size: 0.6875rem; /* 11px - exception for version pill */
+    font-weight: 600;
+    padding: 1px 6px;
+    border: 1px solid var(--color-border-strong);
+    background-color: var(--color-bg-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  .badge-meta {
+    font-size: 0.6875rem; /* 11px */
+    color: var(--color-text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  /* --- SKILL BADGE VARIANT --- */
+  .badge-skill {
+    box-shadow: 3px 3px 0 0 var(--color-accent-primary);
+  }
+
+  .badge-skill:hover {
+    box-shadow: 4px 4px 0 0 var(--color-accent-primary);
+    border-color: var(--color-accent-primary);
+  }
+
+  .badge-skill .badge-icon {
+    color: var(--color-accent-primary);
+  }
+
+  .badge-skill .badge-version {
+    background-color: rgba(180, 83, 9, 0.1);
+    border-color: var(--color-accent-primary);
+    color: var(--color-accent-primary);
+  }
+
+  /* --- MCP BADGE VARIANT --- */
+  .badge-mcp {
+    box-shadow: 3px 3px 0 0 var(--color-accent-success);
+  }
+
+  .badge-mcp:hover {
+    box-shadow: 4px 4px 0 0 var(--color-accent-success);
+    border-color: var(--color-accent-success);
+  }
+
+  .badge-mcp .badge-icon {
+    color: var(--color-accent-success);
+  }
+
+  .badge-mcp .badge-version {
+    background-color: rgba(22, 101, 52, 0.1);
+    border-color: var(--color-accent-success);
+    color: var(--color-accent-success);
+  }
+
+  .badge-mcp .badge-meta {
+    color: var(--color-accent-success);
+  }
+
+  /* --- CLI BADGE VARIANT --- */
+  .badge-cli {
+    box-shadow: 3px 3px 0 0 var(--color-accent-warning);
+  }
+
+  .badge-cli:hover {
+    box-shadow: 4px 4px 0 0 var(--color-accent-warning);
+    border-color: var(--color-accent-warning);
+  }
+
+  .badge-cli .badge-icon {
+    color: var(--color-accent-warning);
+  }
+
+  .badge-cli .badge-name {
+    font-size: 0.75rem; /* 12px for CLI grid layout */
+  }
+
+  /* CLI Simple Variant (for grid layout) */
+  .badge-cli-simple {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 6px 10px;
+  }
+
+  .badge-cli-simple .badge-icon {
+    width: 14px;
+    height: 14px;
+    margin-top: 0;
+  }
+
+  .badge-cli-simple .badge-icon svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  .badge-cli-simple .badge-name {
+    font-size: 0.75rem; /* 12px */
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
