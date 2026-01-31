@@ -1,17 +1,45 @@
-import { Panel } from '@/components/Panel';
+import { Server } from 'lucide-react';
 import { Mcp } from './types';
 
 interface McpRowProps {
   mcp: Mcp;
 }
 
+/**
+ * Beautiful MCP badge component with retro gaming aesthetic.
+ * Displays MCP name, version, and optional transport with Server icon.
+ */
 export function McpRow({ mcp }: McpRowProps) {
+  // Handle string MCPs (backward compatibility)
+  if (typeof mcp === 'string') {
+    return (
+      <div className="badge-beautiful badge-mcp">
+        <div className="badge-icon">
+          <Server aria-hidden="true" />
+        </div>
+        <div className="badge-content">
+          <div className="badge-header">
+            <span className="badge-name">{mcp}</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <Panel className="flex justify-between p-2">
-      <span className="text-xs font-bold">{mcp.name}</span>
-      <span className="text-xs text-[var(--color-text-secondary)]">
-        {mcp.version || 'UNKNOWN'}
-      </span>
-    </Panel>
+    <div className="badge-beautiful badge-mcp">
+      <div className="badge-icon">
+        <Server aria-hidden="true" />
+      </div>
+      <div className="badge-content">
+        <div className="badge-header">
+          <span className="badge-name">{mcp.name}</span>
+          {mcp.version && (
+            <span className="badge-version">{mcp.version}</span>
+          )}
+        </div>
+
+      </div>
+    </div>
   );
 }

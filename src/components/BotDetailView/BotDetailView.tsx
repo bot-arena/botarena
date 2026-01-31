@@ -12,6 +12,7 @@ import { CopyableUrl } from './CopyableUrl';
 import { DebugToggle } from './DebugToggle';
 import { SkillCard } from './SkillCard';
 import { McpRow } from './McpRow';
+import { CliBadge } from './CliBadge';
 import { NoiseAvatar } from './NoiseAvatar';
 
 /**
@@ -131,12 +132,10 @@ export function BotDetailView({ profile }: BotDetailViewProps) {
         <ConfigSection title="CLI_TOOLS" expanded={true}>
           <div className="grid grid-cols-3 gap-2">
             {clisData.map((cli, index) => (
-              <Panel
-                key={`${cli.name}-${index}`}
-                className="p-2 text-center"
-              >
-                <div className="text-xs font-bold">{cli.name}</div>
-              </Panel>
+              <CliBadge
+                key={`${typeof cli === 'string' ? cli : cli.name}-${index}`}
+                cli={cli}
+              />
             ))}
           </div>
         </ConfigSection>
