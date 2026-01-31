@@ -180,11 +180,19 @@ export function extractAvatarFromSoul(content: string): string | undefined {
 
 /**
  * Extract description from SOUL.md content
- * Looks for frontmatter first, then first paragraph
+ * Looks for frontmatter first, then "Description:" or "Vibe:", then first paragraph
  */
 export function extractDescriptionFromSoul(content: string): string | undefined {
   const frontmatter = parseFrontmatter(content);
   if (frontmatter.description) return frontmatter.description;
+
+  // Look for "Description:" line
+  const descMatch = content.match(/Description:\s*(.+)/i);
+  if (descMatch?.[1]?.trim()) return descMatch[1].trim();
+  
+  // Look for "Vibe:" line (common in SOUL.md)
+  const vibeMatch = content.match(/Vibe:\s*(.+)/i);
+  if (vibeMatch?.[1]?.trim()) return vibeMatch[1].trim();
   
   // Fallback: extract first non-empty paragraph after frontmatter
   const contentWithoutFrontmatter = content.replace(/^---\n[\s\S]*?\n---/, '').trim();
