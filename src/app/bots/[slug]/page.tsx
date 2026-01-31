@@ -12,9 +12,8 @@ export async function generateStaticParams() {
   return [];
 }
 
-// Force static generation with dynamic params allowed
+// Force static generation
 export const dynamic = 'force-static';
-export const dynamicParams = true;
 
 export async function generateMetadata(
   { params }: BotProfilePageProps

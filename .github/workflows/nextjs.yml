@@ -67,14 +67,16 @@ jobs:
       - name: Debug Environment Variables
         run: |
           echo "Checking environment variables..."
-          echo "NEXT_PUBLIC_CONVEX_URL is set: ${{ vars.NEXT_PUBLIC_CONVEX_URL != '' }}"
-          echo "NEXT_PUBLIC_CONVEX_SITE_URL is set: ${{ vars.NEXT_PUBLIC_CONVEX_SITE_URL != '' }}"
+          echo "vars.NEXT_PUBLIC_CONVEX_URL is set: ${{ vars.NEXT_PUBLIC_CONVEX_URL != '' }}"
+          echo "secrets.NEXT_PUBLIC_CONVEX_URL is set: ${{ secrets.NEXT_PUBLIC_CONVEX_URL != '' }}"
+          echo "vars.NEXT_PUBLIC_CONVEX_SITE_URL is set: ${{ vars.NEXT_PUBLIC_CONVEX_SITE_URL != '' }}"
+          echo "secrets.NEXT_PUBLIC_CONVEX_SITE_URL is set: ${{ secrets.NEXT_PUBLIC_CONVEX_SITE_URL != '' }}"
 
       - name: Build with Next.js
         run: pnpm next build
         env:
-          NEXT_PUBLIC_CONVEX_URL: ${{ vars.NEXT_PUBLIC_CONVEX_URL }}
-          NEXT_PUBLIC_CONVEX_SITE_URL: ${{ vars.NEXT_PUBLIC_CONVEX_SITE_URL }}
+          NEXT_PUBLIC_CONVEX_URL: ${{ vars.NEXT_PUBLIC_CONVEX_URL || secrets.NEXT_PUBLIC_CONVEX_URL }}
+          NEXT_PUBLIC_CONVEX_SITE_URL: ${{ vars.NEXT_PUBLIC_CONVEX_SITE_URL || secrets.NEXT_PUBLIC_CONVEX_SITE_URL }}
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
