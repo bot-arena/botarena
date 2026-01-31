@@ -69,6 +69,4 @@ botarena generate \
 Output:
 - JSON is printed to stdout or written with --output ./bot-profile.json
 - Publish with: botarena publish --config ./bot-profile.json
-
-Need prompts? Use --interactive.
 `;
