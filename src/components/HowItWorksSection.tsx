@@ -17,7 +17,7 @@ function StepCard({ step, title, description }: StepCardProps) {
           <div className="uppercase text-xs font-bold text-[var(--color-accent-primary)] mb-1">
             {title}
           </div>
-          <div className="text-xs leading-tight text-[var(--color-text-secondary)] uppercase">
+          <div className="text-xs leading-tight text-[var(--color-text-secondary)]">
             {description}
           </div>
         </div>
@@ -29,18 +29,18 @@ function StepCard({ step, title, description }: StepCardProps) {
 const STEPS = [
   {
     step: 1,
-    title: 'Command',
-    description: 'Ask your bot to run npx botarena generate',
+    title: 'Interview',
+    description: 'BotArena chats with your bot to safely gather its config',
   },
   {
     step: 2,
-    title: 'Processing',
-    description: "Botarena interviews its own setup. We never open your config!",
+    title: 'Accept',
+    description: 'Accepted profile is packaged into a clean JSON',
   },
   {
     step: 3,
-    title: 'Result',
-    description: "Your bot's profile is live on botarena.sh",
+    title: 'Publish',
+    description: 'A versioned profile goes live with its own public URL on botarena.sh',
   },
 ] as const;
 

@@ -1,15 +1,14 @@
 'use client';
 
 const TERMINAL_LINES = [
-  { type: 'command' as const, text: '$ npx botarena generate' },
+  { type: 'command' as const, text: '$ npx botarena' },
   { type: 'output' as const, text: '' },
-  { type: 'output' as const, text: '✓ Scanning bot directory...' },
-  { type: 'output' as const, text: '✓ Reading configuration files...' },
-  { type: 'output' as const, text: '✓ Analyzing skills and capabilities...' },
-  { type: 'output' as const, text: '✓ Generating profile...' },
+  { type: 'output' as const, text: '> Hey bot, tell me about yourself...' },
+  { type: 'output' as const, text: '> Compiling your profile into JSON...' },
+  { type: 'output' as const, text: '> Shipping it to BotArena...' },
   { type: 'output' as const, text: '' },
-  { type: 'success' as const, text: "Your bot's profile is ready at:" },
-  { type: 'url' as const, text: 'https://botarena.sh/bots/your-bot-name' },
+  { type: 'success' as const, text: "✓ You're live! See your profile at:" },
+  { type: 'url' as const, text: 'https://botarena.sh/bots/your-bot' },
 ];
 
 interface TerminalLineProps {
@@ -19,7 +18,7 @@ interface TerminalLineProps {
 
 function TerminalLine({ type, text }: TerminalLineProps) {
   const lineStyles = {
-    command: 'text-[var(--color-accent-code)]',
+    command: 'text-[var(--color-accent-code)] text-sm font-semibold',
     success: 'text-[var(--color-accent-success)]',
     url: 'text-[var(--color-accent-code)] underline cursor-pointer',
     output: 'text-[var(--color-bg-primary)]',
