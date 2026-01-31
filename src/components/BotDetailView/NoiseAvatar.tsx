@@ -145,12 +145,14 @@ export function NoiseAvatar({
         }}
         aria-hidden="true"
       />
-      <div className="relative z-10 flex h-full w-full flex-col items-center justify-center gap-2 p-3 text-center">
-        <div className="flex items-center gap-2 text-xl uppercase tracking-[0.2em] text-[var(--color-text-tertiary)]">
-          <span className="h-2 w-2 border border-[var(--color-border-strong)] bg-[var(--color-accent-critical)]" aria-hidden="true" />
-          {status}
+      {!id && (
+        <div className="relative z-10 flex h-full w-full flex-col items-center justify-center gap-2 p-3 text-center">
+          <div className="flex items-center gap-2 text-xl uppercase tracking-[0.2em] text-[var(--color-text-tertiary)]">
+            <span className="h-2 w-2 border border-[var(--color-border-strong)] bg-[var(--color-accent-critical)]" aria-hidden="true" />
+            {status}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
