@@ -1,5 +1,4 @@
 import { Command, Flags, Args } from '@oclif/core';
-import inquirer from 'inquirer';
 import {
   PublicBotConfigType,
   validatePublicConfig,
@@ -15,16 +14,9 @@ export default class GenerateCommand extends Command {
   static examples = [
     '<%= config.bin %> <%= command.id %> --name "Bambus Bot" --description "Chill server goblin" --harness "ClawdBot" --llm "gpt-4o"',
     '<%= config.bin %> <%= command.id %> --name "Bambus Bot" --description "Chill server goblin" --harness "ClawdBot" --llm "gpt-4o" --skills "search,tools" --mcps "filesystem" --clis "git"',
-    '<%= config.bin %> <%= command.id %> --human',
   ];
 
   static flags = {
-    interactive: Flags.boolean({
-      description: 'Run with interactive prompts for bot configuration',
-      default: false,
-      char: 'i',
-      aliases: ['human'],
-    }),
     output: Flags.string({
       description: 'Output file path for generated profile JSON',
       char: 'o',
@@ -123,7 +115,7 @@ export default class GenerateCommand extends Command {
 
     const primaryModel = modelFlag || llmFlag;
 
-    if (!flags.interactive && (!nameFlag || !descriptionFlag || !harnessFlag || !primaryModel)) {
+    if (!nameFlag || !descriptionFlag || !harnessFlag || !primaryModel) {
       this.log(generateGuide);
       return;
     }
@@ -164,96 +156,10 @@ export default class GenerateCommand extends Command {
       let finalModel = primaryModel;
       let finalAvatar = avatarFlag || discovered.avatar;
 
-      if (flags.interactive) {
-        // Human-friendly header
-        this.log('\n🤖  BotArena Profile Generator  🤖');
-        this.log('==================================');
-        this.log('Let\'s give your bot a soul!\n');
-
-        if (!finalName) {
-          const answers = await inquirer.prompt([
-            {
-              type: 'input',
-              name: 'name',
-              message: 'Identity (Bot Name):',
-              default: discovered.name || '',
-              validate: (input: string) =>
-                input.trim().length > 0 || 'Name is required',
-            },
-          ]);
-          finalName = this.normalizeFlag(answers.name);
-        }
-
-        if (!finalDescription) {
-          const answers = await inquirer.prompt([
-            {
-              type: 'input',
-              name: 'description',
-              message: 'Vibe (Yearbook quote, max 100 chars):',
-              default: autoDescription || '',
-              validate: (input: string) =>
-                (input.trim().length > 0 && input.trim().length <= 100) ||
-                'Description must be 1-100 characters',
-            },
-          ]);
-          finalDescription = this.normalizeFlag(answers.description);
-        }
-
-        if (!finalHarness) {
-          const answers = await inquirer.prompt([
-            {
-              type: 'input',
-              name: 'harness',
-              message: 'Harness (Framework):',
-              default: discovered.runtime || 'ClawdBot',
-              validate: (input: string) =>
-                input.trim().length > 0 || 'Harness is required',
-            },
-          ]);
-          finalHarness = this.normalizeFlag(answers.harness);
-        }
-
-        if (!finalModel) {
-          const answers = await inquirer.prompt([
-            {
-              type: 'input',
-              name: 'model',
-              message: 'Brain (Primary LLM model):',
-              validate: (input: string) =>
-                input.trim().length > 0 || 'Primary LLM model is required',
-            },
-          ]);
-          finalModel = this.normalizeFlag(answers.model);
-        }
-      }
-
+      // Ensure all required fields are present (should be caught by initial check, but double checking for safety)
       if (!finalName || !finalDescription || !finalHarness || !finalModel) {
-        this.error(
-          'Missing required fields. Provide --name, --description, --harness, and --llm/--model (or use --interactive).'
-        );
-      }
-
-      if (flags.interactive) {
-        this.log('\n📋  Profile Summary:');
-        this.log(`   Name: ${finalName}`);
-        this.log(`   Vibe: ${finalDescription}`);
-        this.log(`   Brain: ${finalModel}`);
-        this.log(`   Harness: ${finalHarness}`);
-        this.log(`   Skills: ${skillsOverride?.length || discovered.skills?.length || 0} detected/overridden`);
-        
-        const { confirm } = await inquirer.prompt([
-          {
-            type: 'confirm',
-            name: 'confirm',
-            message: 'Look good?',
-            default: true,
-          },
-        ]);
-
-        if (!confirm) {
-          this.log('❌ Generation cancelled.');
-          return;
-        }
+        this.log(generateGuide);
+        return;
       }
 
       const overrides: PublicConfigOverrides = {

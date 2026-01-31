@@ -19,6 +19,6 @@ await execute({
   loadOptions: {
     root: path.resolve(__dirname, '../../'),
     name: 'botarena',
-    version: '0.0.11'
+    version: '0.0.12'
   }
 });
