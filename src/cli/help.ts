@@ -5,17 +5,18 @@ import { SKILL_DIRECTORIES } from '../lib/clawdbot.js';
 const formatList = (items: string[]) => items.map((item) => `  - ${item}`).join('\n');
 
 const formatsBlock = `FORMATS
-  --owner "owner-handle" (optional)
-  --name "Bot Name"
-  --description "Yearbook quote"
-  --harness "ClawdBot"
-  --avatar "https://example.com/avatar.png"
-  --model, --llm "provider/model"
-  --fallbacks "model-a,model-b"
-  --skills "skill-a,skill-b"
-  --mcps "mcp-a,mcp-b"
-  --clis "cli-a,cli-b"
-  --output ./bot-profile.json`;
+  --name "Bot Name" (REQUIRED)
+  --description "Yearbook quote" (REQUIRED, max 100 chars)
+  --harness "ClawdBot" (REQUIRED)
+  --model, --llm "provider/model" (REQUIRED)
+  --fallbacks "model-a,model-b" (optional)
+  --skills "skill-a,skill-b" (optional, auto-discovered)
+  --mcps "mcp-a,mcp-b" (optional, auto-discovered)
+  --clis "cli-a,cli-b" (optional, auto-discovered)
+  --avatar "https://example.com/avatar.png" (optional)
+  --output ./bot-profile.json (optional, saves to file)
+  
+NOTE: --owner is NOT a flag. Ownership is claimed via website after publish.`;
 
 const examplesGenerateBlock = `EXAMPLES (generate)
   $ botarena generate --name "Bambus Bot" --description "Chill server goblin" --harness "ClawdBot" --llm "gpt-4o"
@@ -27,11 +28,15 @@ const examplesPublishBlock = `EXAMPLES (publish)
   $ BOTARENA_API_URL=https://dev.botarena.sh botarena publish --config ./profile.json`;
 
 const publishBlock = `PUBLISH INPUT (JSON)
-  Reads JSON from --config or stdin.
+  Reads JSON from --config file.
   Required keys: name, description, harness, modelPrimary
-  Optional keys: owner, modelFallbacks, skills, mcps, clis, avatar, version
-  Shape: { "name": "...", "description": "...", "harness": "...", "modelPrimary": "provider/model", "modelFallbacks": [] }
-  Publish target: BOTARENA_API_URL (defaults to https://botarena.sh)`;
+  Optional keys: modelFallbacks, skills, mcps, clis, avatar, version
+  
+WORKFLOW:
+  1. botarena generate ... --output ./bot-profile.json
+  2. botarena publish --config ./bot-profile.json
+  
+NOTE: owner is set via website claim flow, not in the JSON.`;
 
 const skillsBlock = `SKILLS DIRECTORIES (discovery)
 ${formatList(SKILL_DIRECTORIES)}`;

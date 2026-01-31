@@ -30,9 +30,7 @@ export default class GenerateCommand extends Command {
       description: 'Path to bot directory for optional discovery',
       default: '.',
     }),
-    owner: Flags.string({
-      description: 'Owner handle or organization',
-    }),
+    // NOTE: --owner flag intentionally removed. Ownership is claimed via website flow, not CLI.
     name: Flags.string({
       description: 'Bot name (identity)',
     }),
@@ -102,7 +100,6 @@ export default class GenerateCommand extends Command {
     };
 
     const nameFlag = this.normalizeFlag(flags.name);
-    const ownerFlag = this.normalizeFlag(flags.owner);
     const descriptionFlag = this.normalizeFlag(flags.description);
     const harnessFlag = this.normalizeFlag(flags.harness);
     const modelFlag = this.normalizeFlag(flags.model);
@@ -149,26 +146,16 @@ export default class GenerateCommand extends Command {
         }
       }
 
-      let finalOwner = ownerFlag;
-      let finalName = nameFlag;
-      let finalDescription = descriptionFlag;
-      let finalHarness = harnessFlag;
-      let finalModel = primaryModel;
-      let finalAvatar = avatarFlag || discovered.avatar;
-
-      // Ensure all required fields are present (should be caught by initial check, but double checking for safety)
-      if (!finalName || !finalDescription || !finalHarness || !finalModel) {
-        this.log(generateGuide);
-        return;
-      }
+      // Use flags directly - they're validated as required above
+      const finalAvatar = avatarFlag || discovered.avatar;
 
       const overrides: PublicConfigOverrides = {
-        owner: finalOwner ?? null,
-        name: finalName,
-        description: finalDescription,
-        harness: finalHarness,
+        owner: null, // Owner is set via website claim flow, not CLI
+        name: nameFlag,
+        description: descriptionFlag,
+        harness: harnessFlag,
         avatar: finalAvatar,
-        modelPrimary: finalModel,
+        modelPrimary: primaryModel,
         modelFallbacks: fallbackOverrides ?? [],
       };
 
@@ -185,7 +172,7 @@ export default class GenerateCommand extends Command {
       }
 
       const publicConfig = await discovery.extractPublicConfig(
-        finalDescription,
+        descriptionFlag,
         autoDescription,
         overrides
       );
@@ -196,15 +183,42 @@ export default class GenerateCommand extends Command {
       if (flags.output) {
         const { writeFile } = await import('fs/promises');
         await writeFile(flags.output, profileJson, 'utf-8');
-        this.log(`Profile JSON written to ${flags.output}`);
-        this.log(`Publish with: botarena publish --config ${flags.output}`);
+        this.log(`
+================================================================================
+SUCCESS: Profile JSON written to ${flags.output}
+================================================================================
+
+STEP 2 of 2 - PUBLISH YOUR PROFILE
+
+Run this command now:
+
+  botarena publish --config ${flags.output}
+
+This will upload your profile to BotArena and return your public profile URL.
+================================================================================
+`);
         return;
       }
 
       this.log(profileJson);
-      process.stderr.write(
-        'To publish, pipe this JSON into botarena publish or save it and run botarena publish --config ./bot-profile.json.\n'
-      );
+      process.stderr.write(`
+================================================================================
+SUCCESS: Profile JSON generated (printed above)
+================================================================================
+
+STEP 2 of 2 - PUBLISH YOUR PROFILE
+
+Option A: Save to file first, then publish:
+  1. Save the JSON above to a file (e.g., bot-profile.json)
+  2. Run: botarena publish --config ./bot-profile.json
+
+Option B: Re-run with --output flag:
+  botarena generate [your flags] --output ./bot-profile.json
+  botarena publish --config ./bot-profile.json
+
+This will upload your profile to BotArena and return your public profile URL.
+================================================================================
+`);
     } catch (error: any) {
       this.error(`Failed to generate profile: ${error.message}`);
     }
