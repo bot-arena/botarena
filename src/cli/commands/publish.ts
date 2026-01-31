@@ -2,8 +2,8 @@ import { Command, Flags } from '@oclif/core';
 import { validatePublicConfig } from '../../schemas/bot-config.js';
 import type { PublicBotConfigType } from '../../schemas/bot-config.js';
 
-export default class Upload extends Command {
-  static description = 'Upload bot profile to BotArena platform';
+export default class Publish extends Command {
+  static description = 'Publish bot profile to BotArena platform';
 
   static examples = [
     '<%= config.bin %> <%= command.id %> --config ./profile.json',
@@ -29,7 +29,7 @@ export default class Upload extends Command {
   };
 
   async run(): Promise<void> {
-    const { flags } = await this.parse(Upload);
+    const { flags } = await this.parse(Publish);
 
     try {
       // Load configuration (from file or stdin)
@@ -60,7 +60,7 @@ export default class Upload extends Command {
 
       // Validate configuration
       const validatedConfig = validatePublicConfig(config);
-      this.log(`🤖 Uploading profile: ${validatedConfig.name}`);
+      this.log(`Publishing profile: ${validatedConfig.name}`);
 
       if (flags.verbose) {
         this.log('Configuration:', validatedConfig);
@@ -81,22 +81,20 @@ export default class Upload extends Command {
       if (response.ok && result.success) {
         const profileUrl = `${flags.url}/bots/${result.data.slug}`;
 
-        this.log('✅ Profile uploaded successfully!');
-        this.log(`📊 Name: ${result.data.name}`);
-        this.log(`🔗 Profile URL: ${profileUrl}`);
-        this.log(`🆔 Profile ID: ${result.data._id}`);
-        this.log(
-          `📅 Created: ${new Date(result.data._creationTime).toLocaleDateString()}`
-        );
-        this.log('\n🎉 Share your bot profile with the world!');
+        this.log('Profile published successfully!');
+        this.log(`Name: ${result.data.name}`);
+        this.log(`Profile URL: ${profileUrl}`);
+        this.log(`Profile ID: ${result.data._id}`);
+        this.log(`Created: ${new Date(result.data._creationTime).toLocaleDateString()}`);
+        this.log('\nShare your bot profile with the world!');
       } else {
-        throw new Error(result.error || 'Upload failed');
+        throw new Error(result.error || 'Publish failed');
       }
     } catch (error: any) {
       if (error instanceof SyntaxError) {
-        this.error('❌ Invalid JSON configuration format');
+        this.error('Invalid JSON configuration format');
       } else {
-        this.error(`❌ Upload failed: ${error.message}`);
+        this.error(`Publish failed: ${error.message}`);
       }
     }
   }

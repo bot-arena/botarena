@@ -22,16 +22,22 @@ import * as os from 'os';
  */
 
 // Directories to scan for skills
-const SKILL_DIRECTORIES = [
+export const SKILL_DIRECTORIES = [
   'skills',
+  '.agents/skills',
   '.clawdbot/skills',
   '.claude/skills',
   '.pi/skills',
+  '~/.agents/skills',
   '~/.pi/agent/skills',
   'src/skills',
   'lib/skills',
   'agents/skills',
 ];
+
+export type PublicConfigOverrides = Partial<Omit<PublicBotConfigType, 'llm'>> & {
+  llm?: Partial<PublicBotConfigType['llm']>;
+};
 
 /**
  * ClawdBot Discovery Class
@@ -110,7 +116,11 @@ export class ClawdBotDiscovery {
    * Extract public configuration from discovered files
    * User provides description interactively - never auto-extracted from sensitive files
    */
-  async extractPublicConfig(userDescription?: string, autoDescription?: string): Promise<PublicBotConfigType> {
+  async extractPublicConfig(
+    userDescription?: string,
+    autoDescription?: string,
+    overrides: PublicConfigOverrides = {}
+  ): Promise<PublicBotConfigType> {
     const discovery = await this.discover();
 
     // Build public config from discovered files + user input
@@ -120,17 +130,23 @@ export class ClawdBotDiscovery {
     const clis = await this.discoverCLIs();
 
     // Use auto-extracted description as fallback if user didn't provide one
-    const finalDescription = userDescription || autoDescription || 'A helpful AI assistant';
+    const finalDescription = overrides.description || userDescription || autoDescription || '';
+
+    const llmOverrides = overrides.llm ?? {};
 
     const publicConfig = {
-      name: discovery.name || 'Unnamed Bot',
+      name: overrides.name || discovery.name || 'Unnamed Bot',
       description: finalDescription,
-      llm: llm,
-      skills: discovery.skills || [],
-      mcps: mcps,
-      clis: clis,
-      harness: 'ClawdBot',
-      version: '1.0.0',
+      llm: {
+        primary: llmOverrides.primary || llm.primary,
+        fallbacks: llmOverrides.fallbacks ?? llm.fallbacks ?? [],
+      },
+      skills: overrides.skills ?? discovery.skills ?? [],
+      mcps: overrides.mcps ?? mcps,
+      clis: overrides.clis ?? clis,
+      harness: overrides.harness || discovery.runtime || 'ClawdBot',
+      version: overrides.version || '1.0.0',
+      avatar: overrides.avatar || discovery.avatar,
     };
 
     // Validate against schema - this ensures only safe fields are included

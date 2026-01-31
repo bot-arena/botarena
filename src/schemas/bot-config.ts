@@ -32,7 +32,7 @@ export const PublicBotConfig = z.object({
   // LLM configuration (public info only - no API keys)
   llm: z.object({
     primary: z.string().min(1, 'Primary LLM is required'),
-    fallbacks: z.array(z.string()).optional(),
+    fallbacks: z.array(z.string()).default([]),
   }),
   
   // Skills/tools the bot has access to (names only, no config)

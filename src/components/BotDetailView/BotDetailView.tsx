@@ -2,16 +2,9 @@
 
 import * as React from 'react';
 import { Panel } from '@/components/Panel';
-import { RetroCardLink } from '@/components/RetroCard';
 import { ConfigSection } from '@/components/ConfigSection';
 import { ConfigField } from '@/components/ConfigField';
-import {
-  getBotIcon,
-  calculateRarity,
-  getRarityColor,
-  formatFullDate,
-  cn,
-} from '@/lib/utils';
+import { getBotIcon, formatFullDate } from '@/lib/utils';
 import { BotDetailViewProps } from './types';
 import { normalizeSkills, normalizeMcps, normalizeClis } from './utils';
 import { InfoItem } from './InfoItem';
@@ -40,11 +33,6 @@ export function BotDetailView({ profile }: BotDetailViewProps) {
   );
 
   // Calculate derived values
-  const rarity = React.useMemo(
-    () => calculateRarity(skillsData.map((s) => s.name), mcpsData.map((m) => m.name)),
-    [skillsData, mcpsData]
-  );
-  const rarityColor = getRarityColor(rarity);
   const llmPrimary = profile.llm?.primary ?? 'UNKNOWN';
   const llmFallbacks = profile.llm?.fallbacks ?? [];
   const icon = getBotIcon(llmPrimary);
@@ -66,14 +54,17 @@ export function BotDetailView({ profile }: BotDetailViewProps) {
         <div className="grid md:grid-cols-3 gap-6">
           <div className="md:col-span-1">
             <Panel className="w-full aspect-square overflow-hidden mb-2">
-              <NoiseAvatar icon={icon} model={llmPrimary} />
+              {profile.avatar ? (
+                <img
+                  src={profile.avatar}
+                  alt={`${profile.name} avatar`}
+                  className="h-full w-full object-cover"
+                  loading="lazy"
+                />
+              ) : (
+                <NoiseAvatar icon={icon} model={llmPrimary} />
+              )}
             </Panel>
-            <div className="text-center">
-              <div className="text-xs uppercase text-[var(--color-text-secondary)]">
-                RANK
-              </div>
-              <div className={cn('text-base font-bold', rarityColor)}>{rarity}</div>
-            </div>
           </div>
 
           <div className="md:col-span-2 space-y-4">
@@ -114,11 +105,6 @@ export function BotDetailView({ profile }: BotDetailViewProps) {
             label="FALLBACK_MODELS"
             value={llmFallbacks}
           />
-          <ConfigField
-            label="TEMPERATURE"
-            value={profile.llm?.temperature ?? 'N/A'}
-          />
-          <ConfigField label="MAX_TOKENS" value={profile.llm?.maxTokens ?? 'N/A'} />
         </div>
       </ConfigSection>
 
@@ -165,24 +151,14 @@ export function BotDetailView({ profile }: BotDetailViewProps) {
       )}
 
       <section>
-        <div className="grid grid-cols-2 gap-4">
-          {profile.slug && (
-            <RetroCardLink
-              href={`/compare?base=${profile.slug}`}
-              className="text-center py-3 font-bold uppercase hover:bg-[var(--color-accent-primary)] hover:text-white transition-colors"
-            >
-              ADD_TO_COMPARISON
-            </RetroCardLink>
-          )}
-          <a
-            href={`https://github.com/search?q=${encodeURIComponent(profile.name)}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="retro-card block text-center py-3 font-bold uppercase hover:bg-[var(--color-accent-secondary)] hover:text-white transition-colors"
-          >
-            FIND_ON_GITHUB
-          </a>
-        </div>
+        <a
+          href={`https://github.com/search?q=${encodeURIComponent(profile.name)}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="retro-card block text-center py-3 font-bold uppercase hover:bg-[var(--color-accent-secondary)] hover:text-white transition-colors"
+        >
+          FIND_ON_GITHUB
+        </a>
       </section>
     </div>
   );

@@ -21,6 +21,7 @@ export default defineSchema({
     name: v.string(),
     slug: v.string(),
     description: v.string(), // "yearbook quote"
+    avatar: v.optional(v.string()),
     
     // LLM configuration
     llmPrimary: v.string(),
@@ -32,6 +33,10 @@ export default defineSchema({
     mcps: v.array(v.string()),
     clis: v.array(v.string()),
     version: v.string(),
+
+    // Metadata
+    createdAt: v.string(),
+    updatedAt: v.string(),
     
     // Full config as JSON for flexibility
     config: v.any(),

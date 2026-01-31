@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { cn, formatTimestamp } from '@/lib/utils';
 import { RetroCard } from './RetroCard';
-import { Tag, type TagProps } from './Tag';
+import { Tag } from './Tag';
 
 export interface BotCardProfile {
   id?: string;
@@ -19,6 +19,7 @@ export interface BotCardProfile {
     primary: string;
     fallbacks?: string[];
   };
+  avatar?: string;
   updatedAt: Date | string;
 }
 
@@ -36,7 +37,10 @@ const MAX_BADGE_DISPLAY = 6;
 export function BotCard({ profile, className }: BotCardProps) {
   const fallbackCount = profile.llm.fallbacks?.length ?? 0;
 
-  const renderBadges = (items: string[] | undefined, variant: TagProps['variant']) => {
+  const renderBadges = (
+    items: string[] | undefined,
+    variant: 'default' | 'primary' | 'success' | 'warning'
+  ) => {
     if (!items || items.length === 0) {
       return <span className="text-xs text-[var(--color-text-tertiary)]">None</span>;
     }
@@ -77,7 +81,16 @@ export function BotCard({ profile, className }: BotCardProps) {
         <div className="divide-y divide-[var(--color-border-strong)]">
           <div className="flex items-start gap-4 py-3">
             <div className="flex h-[6.25rem] w-[6.25rem] items-center justify-center border border-[var(--color-border-strong)] bg-[var(--color-bg-secondary)] text-[10px] font-semibold uppercase tracking-[0.25em] text-[var(--color-text-tertiary)]">
-              Avatar
+              {profile.avatar ? (
+                <img
+                  src={profile.avatar}
+                  alt={`${profile.name} avatar`}
+                  className="h-full w-full object-cover"
+                  loading="lazy"
+                />
+              ) : (
+                <span>Avatar</span>
+              )}
             </div>
             <div className="min-w-0">
               <h3 className="text-lg font-semibold leading-tight tracking-[0.08em] text-[var(--color-text-primary)]">

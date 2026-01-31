@@ -94,7 +94,7 @@ export default async function BotProfilePage({ params }: BotProfilePageProps) {
   }
   
   const result = await response.json();
-  const profile = result.data;
+  const profile = normalizeProfile(result.data);
   
   if (!profile) {
     notFound();

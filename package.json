@@ -80,6 +80,7 @@
     "bin": "botarena",
     "dirname": "cli",
     "commands": "./dist/cli/commands",
+    "helpClass": "./dist/cli/help",
     "plugins": [
       "@oclif/plugin-help"
     ],

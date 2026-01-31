@@ -5,20 +5,17 @@ import {
   validatePublicConfig,
   detectSensitiveFields,
 } from '../../schemas/bot-config.js';
-import { ClawdBotDiscovery } from '../../lib/clawdbot.js';
+import { ClawdBotDiscovery, PublicConfigOverrides } from '../../lib/clawdbot.js';
 import { extractDescriptionFromSoul } from '../../lib/discovery.js';
+import { generateGuide } from '../guides.js';
 
 export default class GenerateCommand extends Command {
-  static description = 'Generate a bot profile for BotArena showcase';
+  static description = 'Generate a bot profile JSON for BotArena showcase';
 
   static examples = [
-    // Bot-friendly (non-interactive) examples
-    '<%= config.bin %> <%= command.id %> --description "My awesome bot"',
-    '<%= config.bin %> <%= command.id %> --description "My bot" --yes',
-    '<%= config.bin %> <%= command.id %> --description "My bot" --dry-run',
-    // Interactive examples for humans
+    '<%= config.bin %> <%= command.id %> --name "Bambus Bot" --description "Chill server goblin" --harness "ClawdBot" --llm "gpt-4o"',
+    '<%= config.bin %> <%= command.id %> --name "Bambus Bot" --description "Chill server goblin" --harness "ClawdBot" --llm "gpt-4o" --skills "search,tools" --mcps "filesystem" --clis "git"',
     '<%= config.bin %> <%= command.id %> --interactive',
-    '<%= config.bin %> <%= command.id %> --interactive --dry-run',
   ];
 
   static flags = {
@@ -26,12 +23,8 @@ export default class GenerateCommand extends Command {
       description: 'Run with interactive prompts for bot configuration',
       default: false,
     }),
-    'dry-run': Flags.boolean({
-      description: 'Generate profile without uploading to BotArena',
-      default: false,
-    }),
     output: Flags.string({
-      description: 'Output file path for generated profile',
+      description: 'Output file path for generated profile JSON',
       char: 'o',
     }),
     verbose: Flags.boolean({
@@ -40,208 +33,262 @@ export default class GenerateCommand extends Command {
     }),
     path: Flags.string({
       char: 'p',
-      description: 'Path to bot directory',
+      description: 'Path to bot directory for optional discovery',
       default: '.',
+    }),
+    name: Flags.string({
+      description: 'Bot name (identity)',
+    }),
+    avatar: Flags.string({
+      description: 'Avatar URL (optional)',
     }),
     description: Flags.string({
       char: 'd',
-      description: 'Bot description for the profile (yearbook quote style). Defaults to "A helpful AI assistant" if not provided.',
+      description: 'Bot description for the profile (yearbook quote style)',
     }),
-    yes: Flags.boolean({
-      char: 'y',
-      description: 'Auto-confirm upload without prompting',
-      default: false,
+    harness: Flags.string({
+      description: 'Bot harness/framework (ex: ClawdBot)',
+    }),
+    model: Flags.string({
+      description: 'Primary LLM model string (alias: --llm)',
+    }),
+    llm: Flags.string({
+      description: 'Primary LLM model string (alias: --model)',
+    }),
+    fallbacks: Flags.string({
+      description: 'Comma-separated list of fallback models',
+    }),
+    skills: Flags.string({
+      description: 'Comma-separated list of skills',
+    }),
+    mcps: Flags.string({
+      description: 'Comma-separated list of MCP servers',
+    }),
+    clis: Flags.string({
+      description: 'Comma-separated list of CLI tools',
     }),
   };
 
   static args = {
     botPath: Args.string({
-      description: 'Path to bot directory for configuration discovery',
+      description: 'Path to bot directory for optional discovery',
       required: false,
     }),
   };
 
+  private normalizeFlag(value: string | undefined): string | undefined {
+    if (typeof value !== 'string') return undefined;
+    const trimmed = value.trim();
+    return trimmed.length > 0 ? trimmed : undefined;
+  }
+
+  private parseCommaList(value: string | undefined, label: string): string[] | undefined {
+    if (value === undefined) return undefined;
+    const trimmed = value.trim();
+    if (!trimmed) {
+      this.error(`${label} must be a comma-separated list with at least one value`);
+    }
+    const items = trimmed.split(',').map((item) => item.trim());
+    if (items.some((item) => item.length === 0)) {
+      this.error(`${label} must be a comma-separated list with no empty values`);
+    }
+    return [...new Set(items)];
+  }
+
   async run(): Promise<void> {
     const { flags, args } = await this.parse(GenerateCommand);
 
-    if (flags.verbose) {
-      this.log('BotArena Profile Generator');
-      this.log('============================');
+    const logVerbose = (message: string) => {
+      if (flags.verbose) {
+        process.stderr.write(`${message}\n`);
+      }
+    };
+
+    const nameFlag = this.normalizeFlag(flags.name);
+    const descriptionFlag = this.normalizeFlag(flags.description);
+    const harnessFlag = this.normalizeFlag(flags.harness);
+    const modelFlag = this.normalizeFlag(flags.model);
+    const llmFlag = this.normalizeFlag(flags.llm);
+    const avatarFlag = this.normalizeFlag(flags.avatar);
+
+    if (modelFlag && llmFlag && modelFlag !== llmFlag) {
+      this.error('Provide only one of --model or --llm (they are aliases).');
     }
 
+    const primaryModel = modelFlag || llmFlag;
+
+    if (!flags.interactive && (!nameFlag || !descriptionFlag || !harnessFlag || !primaryModel)) {
+      this.log(generateGuide);
+      return;
+    }
+
+    const fallbackOverrides = this.parseCommaList(flags.fallbacks, 'fallbacks');
+    const skillsOverride = this.parseCommaList(flags.skills, 'skills');
+    const mcpsOverride = this.parseCommaList(flags.mcps, 'mcps');
+    const clisOverride = this.parseCommaList(flags.clis, 'clis');
+
     try {
-      // Step 1: Initialize discovery
       const botPath = args.botPath || flags.path || process.cwd();
-      if (flags.verbose) {
-        this.log(`Scanning bot directory: ${botPath}`);
-      }
+      logVerbose('BotArena Profile Generator');
+      logVerbose('============================');
+      logVerbose(`Scanning bot directory: ${botPath}`);
 
       const discovery = new ClawdBotDiscovery(botPath);
-      
-      // Detect if this is a ClawdBot instance
-      const isClawdBot = await discovery.isClawdBot();
-      if (!isClawdBot) {
-        this.warn('⚠️  No ClawdBot instance detected. Run from a bot directory with SOUL.md or skills/ folder.');
-        return;
-      }
-      
-      // Show progress
-      this.log('🔍 Discovering bot configuration from safe files...');
-      
-      // Step 2: Discover bot info from files
       const discovered = await discovery.discover();
-      this.log(`✅ Found bot: ${discovered.name || 'Unnamed'}`);
-      this.log(`📦 Runtime: ${discovered.runtime}`);
-      this.log(`🛠️  Skills detected: ${discovered.skills?.length || 0}`);
 
-      // Step 3: Extract description from SOUL.md automatically
+      logVerbose(`Found bot: ${discovered.name || 'Unnamed'}`);
+      logVerbose(`Runtime: ${discovered.runtime}`);
+      logVerbose(`Skills detected: ${discovered.skills?.length || 0}`);
+
       let autoDescription = '';
-      const soulFile = discovered.files.find(f => f.path === 'SOUL.md');
+      const soulFile = discovered.files.find((file) => file.path === 'SOUL.md');
       if (soulFile) {
         autoDescription = extractDescriptionFromSoul(soulFile.content) || '';
-        if (autoDescription && flags.verbose) {
-          this.log(`📝 Auto-extracted description from SOUL.md: "${autoDescription.substring(0, 50)}..."`);
+        if (autoDescription) {
+          logVerbose(
+            `Auto-extracted description from SOUL.md: "${autoDescription.substring(0, 50)}..."`
+          );
         }
       }
 
-      // Step 4: Get description from flag, interactively, or use auto-extracted
-      let userDescription = flags.description || '';
-      if (flags.interactive && !userDescription) {
-        const answers = await inquirer.prompt([{
-          type: 'input',
-          name: 'description',
-          message: 'Describe your bot (yearbook quote style):',
-          default: autoDescription || 'A helpful AI assistant',
-          validate: (input: string) => input.length > 0 && input.length <= 500 || 'Description must be 1-500 characters'
-        }]);
-        userDescription = answers.description;
+      let finalName = nameFlag;
+      let finalDescription = descriptionFlag;
+      let finalHarness = harnessFlag;
+      let finalModel = primaryModel;
+      let finalAvatar = avatarFlag || discovered.avatar;
+
+      if (flags.interactive) {
+        if (!finalName) {
+          const answers = await inquirer.prompt([
+            {
+              type: 'input',
+              name: 'name',
+              message: 'Bot name:',
+              default: discovered.name || '',
+              validate: (input: string) =>
+                input.trim().length > 0 || 'Name is required',
+            },
+          ]);
+          finalName = this.normalizeFlag(answers.name);
+        }
+
+        if (!finalDescription) {
+          const answers = await inquirer.prompt([
+            {
+              type: 'input',
+              name: 'description',
+              message: 'Yearbook quote (one sentence):',
+              default: autoDescription || '',
+              validate: (input: string) =>
+                (input.trim().length > 0 && input.trim().length <= 500) ||
+                'Description must be 1-500 characters',
+            },
+          ]);
+          finalDescription = this.normalizeFlag(answers.description);
+        }
+
+        if (!finalHarness) {
+          const answers = await inquirer.prompt([
+            {
+              type: 'input',
+              name: 'harness',
+              message: 'Harness/framework:',
+              default: discovered.runtime || 'ClawdBot',
+              validate: (input: string) =>
+                input.trim().length > 0 || 'Harness is required',
+            },
+          ]);
+          finalHarness = this.normalizeFlag(answers.harness);
+        }
+
+        if (!finalModel) {
+          const answers = await inquirer.prompt([
+            {
+              type: 'input',
+              name: 'model',
+              message: 'Primary LLM model:',
+              validate: (input: string) =>
+                input.trim().length > 0 || 'Primary LLM model is required',
+            },
+          ]);
+          finalModel = this.normalizeFlag(answers.model);
+        }
       }
 
-      // Inform user about non-interactive mode
-      if (!flags.interactive && !userDescription && !autoDescription) {
-        this.log('ℹ️  Running in non-interactive mode. Use --description to set a custom description.');
+      if (!finalName || !finalDescription || !finalHarness || !finalModel) {
+        this.error(
+          'Missing required fields. Provide --name, --description, --harness, and --llm/--model (or use --interactive).'
+        );
       }
 
-      // Step 5: Extract public configuration
-      this.log('\n📝 Generating public configuration...');
-      const publicConfig = await discovery.extractPublicConfig(userDescription, autoDescription);
-      
-      if (flags.verbose) {
-        this.log('Extracted config:', publicConfig);
+      const overrides: PublicConfigOverrides = {
+        name: finalName,
+        description: finalDescription,
+        harness: finalHarness,
+        avatar: finalAvatar,
+        llm: {
+          primary: finalModel,
+        },
+      };
+
+      if (fallbackOverrides) {
+        overrides.llm = {
+          primary: finalModel,
+          fallbacks: fallbackOverrides,
+        };
       }
 
-      // Step 6: Generate profile
-      const profile = await this.generateProfile(publicConfig, flags);
-      
-      if (flags.verbose) {
-        this.log('Generated profile:', profile);
+      if (skillsOverride) {
+        overrides.skills = skillsOverride;
       }
 
-      // Step 7: Handle output
-      if (flags['dry-run']) {
-        this.log('\n🔍 Dry run mode - profile generated but not uploaded');
-        this.log(JSON.stringify(profile, null, 2));
-      } else {
-        await this.uploadProfile(profile, flags);
-        this.log('✅ Profile successfully generated and uploaded to BotArena!');
+      if (mcpsOverride) {
+        overrides.mcps = mcpsOverride;
       }
 
+      if (clisOverride) {
+        overrides.clis = clisOverride;
+      }
+
+      const publicConfig = await discovery.extractPublicConfig(
+        finalDescription,
+        autoDescription,
+        overrides
+      );
+
+      const profile = this.generateProfile(publicConfig);
+      const profileJson = JSON.stringify(profile, null, 2);
+
+      if (flags.output) {
+        const { writeFile } = await import('fs/promises');
+        await writeFile(flags.output, profileJson, 'utf-8');
+        this.log(`Profile JSON written to ${flags.output}`);
+        this.log(`Publish with: botarena publish --config ${flags.output}`);
+        return;
+      }
+
+      this.log(profileJson);
+      process.stderr.write(
+        'To publish, pipe this JSON into botarena publish or save it and run botarena publish --config ./bot-profile.json.\n'
+      );
     } catch (error: any) {
       this.error(`Failed to generate profile: ${error.message}`);
     }
   }
 
-  private async generateProfile(botConfig: PublicBotConfigType, flags: any): Promise<PublicBotConfigType & { id: string; generatedAt: string; platform: string }> {
-    if (flags.verbose) {
-      this.log('📝 Generating BotArena profile...');
-    }
-
-    // Security check: Detect any sensitive fields in the config
+  private generateProfile(botConfig: PublicBotConfigType): PublicBotConfigType {
     const sensitiveFields = detectSensitiveFields(botConfig);
     if (sensitiveFields.length > 0) {
-      this.warn(`⚠️  Warning: Potentially sensitive fields detected: ${sensitiveFields.join(', ')}`);
-      this.warn('These fields will be excluded from the public profile.');
+      process.stderr.write(
+        `Warning: Potentially sensitive fields detected: ${sensitiveFields.join(', ')}\n`
+      );
+      process.stderr.write('These fields will be excluded from the public profile.\n');
     }
 
-    // Validate against PublicBotConfig schema
-    // This ensures only safe, public fields are included
-    let validatedConfig: PublicBotConfigType;
     try {
-      validatedConfig = validatePublicConfig(botConfig);
+      return validatePublicConfig(botConfig);
     } catch (error: any) {
       throw new Error(`Configuration validation failed: ${error.message}`);
-    }
-
-    // Generate the final profile
-    return {
-      id: `bot-${Date.now()}`,
-      ...validatedConfig,
-      generatedAt: new Date().toISOString(),
-      platform: 'botarena',
-    };
-  }
-
-  private async uploadProfile(profile: PublicBotConfigType & { id: string; generatedAt: string; platform: string }, flags: any): Promise<void> {
-    if (flags.verbose) {
-      this.log('🚀 Uploading profile to BotArena...');
-    }
-
-    // Show configuration summary
-    this.log('\n📋 Profile Summary:');
-    this.log(`Name: ${profile.name}`);
-    this.log(`LLM: ${profile.llm.primary}`);
-    this.log(`Description: "${profile.description}"`);
-    this.log(`Skills: ${profile.skills.join(', ')}`);
-
-    // Ask for confirmation if interactive and not auto-confirmed
-    let shouldUpload = true;
-    if (flags.interactive && !flags.yes) {
-      const { confirm } = await inquirer.prompt([
-        {
-          type: 'confirm',
-          name: 'confirm',
-          message: 'Upload this profile to BotArena?',
-          default: true
-        }
-      ]);
-      shouldUpload = confirm;
-    }
-
-    if (shouldUpload) {
-      this.log('\n🚀 Uploading to BotArena...');
-
-      // Get API URL from environment or use default
-      const apiUrl = process.env.BOTARENA_API_URL || 'https://botarena.sh';
-
-      try {
-        const response = await fetch(`${apiUrl}/api/profiles`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'User-Agent': 'botarena-cli/1.0.0',
-          },
-          body: JSON.stringify(profile),
-        });
-
-        const result = await response.json();
-
-        if (response.ok && result.success) {
-          const profileUrl = `${apiUrl}/bots/${result.data.slug}`;
-
-          this.log('✅ Profile uploaded successfully!');
-          this.log(`📊 Name: ${result.data.name}`);
-          this.log(`🔗 Profile URL: ${profileUrl}`);
-          this.log(`🆔 Profile ID: ${result.data._id}`);
-          this.log(`📅 Created: ${new Date(result.data._creationTime).toLocaleDateString()}`);
-          this.log('\n🎉 Share your bot profile with the world!');
-        } else {
-          throw new Error(result.error || 'Upload failed');
-        }
-      } catch (error: any) {
-        this.error(`❌ Upload failed: ${error.message}`);
-      }
-    } else {
-      this.log('❌ Upload cancelled');
     }
   }
 }

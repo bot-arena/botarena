@@ -26,6 +26,7 @@ export interface BotProfile {
   harness: string;
   version: string;
   description: string;
+  avatar?: string;
   skills: Skill[] | string[];
   mcps: Mcp[] | string[];
   clis?: Cli[] | string[];

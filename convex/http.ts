@@ -28,13 +28,14 @@ http.route({
       const profile = await ctx.runMutation(api.botProfiles.createProfile, {
         name: body.name,
         description: body.description,
+        avatar: body.avatar,
         llmPrimary: body.llm?.primary || body.llmPrimary || "Not specified",
         llmFallbacks: body.llm?.fallbacks || body.llmFallbacks || [],
         harness: body.harness,
         skills: body.skills || [],
         mcps: body.mcps || [],
         clis: body.clis || [],
-        version: body.version,
+        version: body.version || "1.0.0",
         config: body,
       });
 

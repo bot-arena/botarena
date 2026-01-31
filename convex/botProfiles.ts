@@ -63,6 +63,7 @@ export const createProfile = mutation({
   args: {
     name: v.string(),
     description: v.string(),
+    avatar: v.optional(v.string()),
     llmPrimary: v.string(),
     llmFallbacks: v.optional(v.array(v.string())),
     harness: v.string(),
@@ -73,6 +74,7 @@ export const createProfile = mutation({
     config: v.any(),
   },
   handler: async (ctx, args) => {
+    const now = new Date().toISOString();
     // Generate unique slug from name
     const baseSlug = args.name
       .toLowerCase()
@@ -87,6 +89,7 @@ export const createProfile = mutation({
       name: args.name,
       slug,
       description: args.description,
+      avatar: args.avatar,
       llmPrimary: args.llmPrimary,
       llmFallbacks: args.llmFallbacks,
       harness: args.harness,
@@ -94,6 +97,8 @@ export const createProfile = mutation({
       mcps: args.mcps,
       clis: args.clis,
       version: args.version,
+      createdAt: now,
+      updatedAt: now,
       config: args.config,
     });
 
@@ -111,11 +116,15 @@ export const updateProfile = mutation({
   args: {
     id: v.id("botProfiles"),
     description: v.optional(v.string()),
+    avatar: v.optional(v.string()),
     config: v.optional(v.any()),
   },
   handler: async (ctx, args) => {
     const { id, ...updates } = args;
-    await ctx.db.patch(id, updates);
+    await ctx.db.patch(id, {
+      ...updates,
+      updatedAt: new Date().toISOString(),
+    });
     return await ctx.db.get(id);
   },
 });
