@@ -1,5 +1,4 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -29,7 +28,7 @@
   --color-text-tertiary: #71717a;
   --color-border-strong: #4a4a4a;
   --color-border-weak: #9ca3af;
-  --font-mono: 'Roboto Mono', monospace;
+  --font-mono: var(--font-geist-mono, 'Roboto Mono', monospace);
 }
 
 @layer base {

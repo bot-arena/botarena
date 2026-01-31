@@ -39,7 +39,7 @@ export default {
       },
       fontFamily: {
         sans: ['DM Sans', 'system-ui', 'sans-serif'],
-        mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
+        mono: ['var(--font-mono)'],
       },
       fontSize: {
         '2xs': ['0.625rem', { lineHeight: '1.4' }],   /* 10px - absolute minimum, use sparingly */

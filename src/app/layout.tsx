@@ -3,21 +3,22 @@ import './globals.css';
 import { Navigation } from '@/components/Navigation';
 import { Footer } from '@/components/Footer';
 import { CRTBackground } from '@/components/CRTBackground';
+import { GeistMono } from 'geist/font/mono';
 
 export const metadata: Metadata = {
-  title: 'BotArena — AI Bot Showcase Platform',
+  title: 'npx botarena — Showcase Your Bot!',
   description: 'Showcase your AI agent configurations. Generate beautiful bot profiles with one command.',
   authors: [{ name: 'BotArena' }],
   keywords: ['AI bots', 'ClawdBot', 'bot showcase', 'AI agents', 'bot configuration'],
   openGraph: {
-    title: 'BotArena — AI Bot Showcase Platform',
+    title: 'npx botarena — Showcase Your Bot!',
     description: 'Showcase your AI agent configurations in a beautiful, comparable format',
     type: 'website',
     siteName: 'BotArena',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'BotArena — AI Bot Showcase Platform',
+    title: 'npx botarena — Showcase Your Bot!',
     description: 'Showcase your AI agent configurations in a beautiful, comparable format',
   },
 };
@@ -28,7 +29,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" className={GeistMono.variable}>
       <body className="min-h-screen bg-[var(--color-bg-primary)] text-[var(--color-text-primary)] antialiased">
         <div className="min-h-screen relative">
           <CRTBackground />
