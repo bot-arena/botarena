@@ -64,13 +64,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Deploy to Convex and Build
+      - name: Build with Next.js
+        run: pnpm next build
         env:
-          CONVEX_DEPLOY_KEY: ${{ secrets.CONVEX_DEPLOY_KEY }}
-        run: |
-          # Deploy to Convex and build frontend with production URL
-          # This automatically sets NEXT_PUBLIC_CONVEX_URL to the prod deployment
-          npx convex deploy --cmd-url-env-var-name NEXT_PUBLIC_CONVEX_URL --cmd 'pnpm build'
+          NEXT_PUBLIC_CONVEX_URL: ${{ vars.NEXT_PUBLIC_CONVEX_URL }}
+          NEXT_PUBLIC_CONVEX_SITE_URL: ${{ vars.NEXT_PUBLIC_CONVEX_SITE_URL }}
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
