@@ -76,12 +76,23 @@ export const createProfile = mutation({
   },
   handler: async (ctx, args) => {
     const now = new Date().toISOString();
+    
+    // Validate description length (max 50 chars)
+    if (args.description.length > 50) {
+      throw new Error("Description must be 50 characters or less");
+    }
+
+    // Basic sanitization (strip HTML tags) - though React escapes by default
+    const sanitizedDescription = args.description
+      .replace(/<[^>]*>?/gm, "")
+      .trim();
+
     const profileId = await ctx.db.insert("botProfiles", {
       owner: args.owner ?? null,
       name: args.name,
       slug: "pending",
       version: args.version,
-      description: args.description,
+      description: sanitizedDescription,
       harness: args.harness,
       modelPrimary: args.modelPrimary,
       modelFallbacks: args.modelFallbacks ?? [],
