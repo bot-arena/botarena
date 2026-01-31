@@ -22,7 +22,7 @@ function cyrb128(str: string): number {
 
 // Mulberry32 PRNG - produces deterministic output for same seed
 function mulberry32(a: number) {
-  return function() {
+  return function () {
     let t = a += 0x6D2B79F5;
     t = Math.imul(t ^ (t >>> 15), t | 1);
     t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
@@ -121,9 +121,7 @@ interface NoiseAvatarProps {
 }
 
 export function NoiseAvatar({
-  icon,
-  model,
-  status = 'SIGNAL_LOCK',
+  status = 'NO_SIGNAL',
   className,
   id,
 }: NoiseAvatarProps) {
@@ -148,15 +146,9 @@ export function NoiseAvatar({
         aria-hidden="true"
       />
       <div className="relative z-10 flex h-full w-full flex-col items-center justify-center gap-2 p-3 text-center">
-        <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-[var(--color-text-tertiary)]">
-          <span className="h-2 w-2 border border-[var(--color-border-strong)] bg-[var(--color-accent-success)]" aria-hidden="true" />
+        <div className="flex items-center gap-2 text-xl uppercase tracking-[0.2em] text-[var(--color-text-tertiary)]">
+          <span className="h-2 w-2 border border-[var(--color-border-strong)] bg-[var(--color-accent-critical)]" aria-hidden="true" />
           {status}
-        </div>
-        <span className="text-5xl" aria-hidden="true">
-          {icon}
-        </span>
-        <div className="text-[10px] uppercase tracking-[0.2em] text-[var(--color-text-secondary)] max-w-full truncate">
-          {model ?? 'UNKNOWN_MODEL'}
         </div>
       </div>
     </div>
