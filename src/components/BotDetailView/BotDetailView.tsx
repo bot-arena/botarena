@@ -36,7 +36,7 @@ export function BotDetailView({ profile }: BotDetailViewProps) {
   // Calculate derived values
   const llmPrimary = profile.llm?.primary ?? 'UNKNOWN';
   const llmFallbacks = profile.llm?.fallbacks ?? [];
-  
+
   // Split primary model into provider and model
   const [llmProvider, llmModelName] = React.useMemo(() => {
     const parts = llmPrimary.split('/');
@@ -45,7 +45,7 @@ export function BotDetailView({ profile }: BotDetailViewProps) {
     }
     return [llmPrimary, 'UNKNOWN'];
   }, [llmPrimary]);
-  
+
   const icon = getBotIcon(llmPrimary);
   const createdAtLabel = profile.createdAt
     ? formatFullDate(profile.createdAt)
@@ -129,9 +129,6 @@ export function BotDetailView({ profile }: BotDetailViewProps) {
               {skillsData.map((skill, index) => (
                 <SkillCard key={`${skill.name}-${index}`} skill={skill} />
               ))}
-            </div>
-            <div className="mt-2 text-xs text-[var(--color-text-secondary)]">
-              TOTAL_SKILLS: {skillsData.length}
             </div>
           </ConfigSection>
 

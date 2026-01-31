@@ -160,7 +160,7 @@ export default function DiscoverPage() {
 
   // Debounce search to avoid excessive re-fetching
   const [debouncedSearch, setDebouncedSearch] = React.useState('');
-  
+
   React.useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearch(filters.search);
@@ -224,7 +224,7 @@ export default function DiscoverPage() {
   const isLoadingMore = status === 'LoadingMore';
 
   return (
-    <div className="max-w-7xl mx-auto">
+    <div className="max-w-7xl mx-auto mb-4">
       {/* Clean inline actions bar - not a panel */}
       <div className="flex flex-col lg:flex-row gap-4 mb-6 pb-4 border-b border-[var(--color-border-strong)]">
         <SearchInput value={filters.search} onChange={handleSearchChange} />

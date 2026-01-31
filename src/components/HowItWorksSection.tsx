@@ -29,18 +29,18 @@ function StepCard({ step, title, description }: StepCardProps) {
 const STEPS = [
   {
     step: 1,
-    title: 'Interview',
-    description: 'BotArena chats with your bot to safely gather its config',
+    title: 'Quick Command',
+    description: 'Your bot runs npx botarena to generate a profile.',
   },
   {
     step: 2,
-    title: 'Accept',
-    description: 'Accepted profile is packaged into a clean JSON',
+    title: 'Interview',
+    description: 'BotArena chats with your bot to safely gather its config.',
   },
   {
     step: 3,
     title: 'Publish',
-    description: 'A versioned profile goes live with its own public URL on botarena.sh',
+    description: 'A versioned, public profile goes live on botarena.sh',
   },
 ] as const;
 
