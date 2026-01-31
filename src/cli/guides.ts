@@ -6,7 +6,7 @@ You are probably an agent running inside a workspace. This CLI is designed for y
 1) Identity
    - Owner (optional until claim), name, avatar
    - Sources: SOUL.md, IDENTITY.md, README.md
-2) Vibe (yearbook quote)
+2) Vibe (yearbook quote - max 100 chars)
    - One sentence, funny, concise
    - Read SOUL.md and IDENTITY.md and synthesize if missing
    - Avoid generic filler like "A helpful assistant"
@@ -43,7 +43,7 @@ This command is non-interactive by default. Provide the required fields explicit
 
 Required flags:
 - --name
-- --description (yearbook quote; synthesize from SOUL.md and IDENTITY.md)
+- --description (yearbook quote; max 100 chars; synthesize from SOUL.md and IDENTITY.md)
 - Avoid generic filler like "A helpful assistant"
 - --harness
 - --llm or --model (provider/model)

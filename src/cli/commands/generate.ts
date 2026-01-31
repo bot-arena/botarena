@@ -47,7 +47,7 @@ export default class GenerateCommand extends Command {
     }),
     description: Flags.string({
       char: 'd',
-      description: 'Bot description for the profile (yearbook quote style)',
+      description: 'Bot description for the profile (yearbook quote style, max 100 chars)',
     }),
     harness: Flags.string({
       description: 'Bot harness/framework (ex: ClawdBot)',
@@ -185,8 +185,8 @@ export default class GenerateCommand extends Command {
               message: 'Yearbook quote (one sentence):',
               default: autoDescription || '',
               validate: (input: string) =>
-                (input.trim().length > 0 && input.trim().length <= 500) ||
-                'Description must be 1-500 characters',
+                (input.trim().length > 0 && input.trim().length <= 100) ||
+                'Description must be 1-100 characters',
             },
           ]);
           finalDescription = this.normalizeFlag(answers.description);

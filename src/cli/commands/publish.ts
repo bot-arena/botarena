@@ -55,6 +55,12 @@ export default class Publish extends Command {
 
       // Validate configuration
       const validatedConfig = validatePublicConfig(config);
+      
+      // Additional validation
+      if (validatedConfig.description.length > 100) {
+        throw new Error(`Description is too long (${validatedConfig.description.length} chars). Max is 100 characters.`);
+      }
+
       this.log(`Publishing profile: ${validatedConfig.name}`);
 
       if (flags.verbose) {

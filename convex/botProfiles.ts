@@ -77,9 +77,9 @@ export const createProfile = mutation({
   handler: async (ctx, args) => {
     const now = new Date().toISOString();
     
-    // Validate description length (max 50 chars)
-    if (args.description.length > 50) {
-      throw new Error("Description must be 50 characters or less");
+    // Validate description length (max 100 chars)
+    if (args.description.length > 100) {
+      throw new Error("Description must be 100 characters or less");
     }
 
     // Basic sanitization (strip HTML tags) - though React escapes by default
