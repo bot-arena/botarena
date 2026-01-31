@@ -36,6 +36,16 @@ export function BotDetailView({ profile }: BotDetailViewProps) {
   // Calculate derived values
   const llmPrimary = profile.llm?.primary ?? 'UNKNOWN';
   const llmFallbacks = profile.llm?.fallbacks ?? [];
+  
+  // Split primary model into provider and model
+  const [llmProvider, llmModelName] = React.useMemo(() => {
+    const parts = llmPrimary.split('/');
+    if (parts.length >= 2) {
+      return [parts[0], parts.slice(1).join('/')];
+    }
+    return [llmPrimary, 'UNKNOWN'];
+  }, [llmPrimary]);
+  
   const icon = getBotIcon(llmPrimary);
   const createdAtLabel = profile.createdAt
     ? formatFullDate(profile.createdAt)
@@ -103,11 +113,14 @@ export function BotDetailView({ profile }: BotDetailViewProps) {
         <>
           <ConfigSection title="LLM_CONFIG" expanded={true}>
             <div className="space-y-3">
-              <ConfigField label="PRIMARY_MODEL" value={llmPrimary} />
-              <ConfigField
-                label="FALLBACK_MODELS"
-                value={llmFallbacks}
-              />
+              <ConfigField label="PROVIDER" value={llmProvider} />
+              <ConfigField label="MODEL" value={llmModelName} />
+              {llmFallbacks.length > 0 && (
+                <ConfigField
+                  label="FALLBACK_MODELS"
+                  value={llmFallbacks}
+                />
+              )}
             </div>
           </ConfigSection>
 

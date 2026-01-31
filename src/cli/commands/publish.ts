@@ -61,6 +61,10 @@ export default class Publish extends Command {
         throw new Error(`Description is too long (${validatedConfig.description.length} chars). Max is 100 characters.`);
       }
 
+      if (!validatedConfig.modelFallbacks || validatedConfig.modelFallbacks.length === 0) {
+        this.warn('No fallback models configured. Consider adding --fallbacks for resilience.');
+      }
+
       this.log(`Publishing profile: ${validatedConfig.name}`);
 
       if (flags.verbose) {
