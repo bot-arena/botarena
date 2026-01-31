@@ -175,12 +175,13 @@ export const listProfilesPaginated = query({
     const startIndex = cursor ? parseInt(cursor, 10) : 0;
     const endIndex = startIndex + numItems;
     const pageItems = profiles.slice(startIndex, endIndex);
-    const nextCursor = endIndex < profiles.length ? String(endIndex) : null;
+    const hasMore = endIndex < profiles.length;
+    const nextCursor = hasMore ? String(endIndex) : String(startIndex + pageItems.length);
     
     return {
       page: pageItems,
-      continueCursor: nextCursor ?? undefined,
-      isDone: !nextCursor,
+      continueCursor: nextCursor,
+      isDone: !hasMore,
     };
   },
 });
