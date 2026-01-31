@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { query, mutation } from "./_generated/server";
+import { paginationOptsValidator } from "convex/server";
 
 /**
  * Bot Profile Queries and Mutations
@@ -116,5 +117,70 @@ export const updateProfile = mutation({
       updateTime: new Date().toISOString(),
     });
     return await ctx.db.get(id);
+  },
+});
+
+/**
+ * Query: List profiles with pagination, search, filter, and sort
+ * Supports cursor-based pagination for efficient infinite scroll
+ */
+export const listProfilesPaginated = query({
+  args: {
+    paginationOpts: paginationOptsValidator,
+    searchQuery: v.optional(v.string()),
+    harness: v.optional(v.string()),
+    sortBy: v.optional(v.union(v.literal("updated"), v.literal("name"), v.literal("skills"))),
+  },
+  handler: async (ctx, args) => {
+    const { paginationOpts, searchQuery, harness, sortBy } = args;
+    
+    // Normalize search query for case-insensitive filtering
+    const normalizedSearch = searchQuery?.toLowerCase().trim();
+    const normalizedHarness = harness?.toLowerCase().trim();
+    
+    // Determine sort order
+    const sortField = sortBy ?? "updated";
+    
+    // Fetch profiles with filtering
+    let profiles = await ctx.db
+      .query("botProfiles")
+      .order(sortField === "name" ? "asc" : "desc")
+      .collect();
+    
+    // Apply search filter (case-insensitive substring match on name)
+    if (normalizedSearch) {
+      profiles = profiles.filter((p) =>
+        p.name.toLowerCase().includes(normalizedSearch)
+      );
+    }
+    
+    // Apply harness filter
+    if (normalizedHarness && normalizedHarness !== "all") {
+      profiles = profiles.filter((p) =>
+        p.harness.toLowerCase() === normalizedHarness
+      );
+    }
+    
+    // Apply skills sort (sort by skills count, descending)
+    if (sortField === "skills") {
+      profiles = profiles.sort((a, b) => b.skills.length - a.skills.length);
+    } else if (sortField === "name") {
+      // Already sorted by name ascending from the query
+      profiles = profiles.sort((a, b) => a.name.localeCompare(b.name));
+    }
+    // For "updated", we use the default desc order from the query
+    
+    // Manual pagination since we're doing in-memory filtering
+    const { cursor, numItems } = paginationOpts;
+    const startIndex = cursor ? parseInt(cursor, 10) : 0;
+    const endIndex = startIndex + numItems;
+    const pageItems = profiles.slice(startIndex, endIndex);
+    const nextCursor = endIndex < profiles.length ? String(endIndex) : null;
+    
+    return {
+      page: pageItems,
+      continueCursor: nextCursor ?? undefined,
+      isDone: !nextCursor,
+    };
   },
 });
