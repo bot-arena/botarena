@@ -143,6 +143,40 @@ src/components/BotDetailView/BotDetailView.tsx   |  15 +-
 
 None - plan executed exactly as written. All tasks completed successfully.
 
+## Follow-up Improvement
+
+User requested badges fit tightly around skill names. Implemented inline compact badges:
+
+### CSS Enhancements (globals.css)
+
+- **`.badge-inline`** - New compact inline badge class with `width: fit-content`
+- **`.badge-inline-skill/mcp/cli`** - Color variants for each badge type
+- **`.badge-inline-container`** - Flex wrap container for badge layout
+- Smaller padding (4px 10px vs 8px 10px) for tighter fit
+- Smaller shadow offset (2px vs 3px) for subtlety
+
+### Component Updates
+
+**SkillCard.tsx, McpRow.tsx, CliBadge.tsx**
+- Changed from `badge-beautiful` to `badge-inline badge-inline-*` classes
+- Removed description support (inline badges are compact)
+- Version pills still supported inline for MCPs
+
+**BotDetailView.tsx**
+- Changed from grid layouts to `badge-inline-container` flex wrap
+- All badge types now flow naturally and wrap as needed
+
+### Result
+
+Badges now fit tightly around content with proper whitespace wrapping:
+- Skills wrap: TECHNICAL-WRITING, MARKDOWN, API-DOCS, TUTORIALS
+- MCPs wrap: FILESYSTEM, WEB-SEARCH
+- CLIs wrap: MDBOOK, VITEPRESS
+
+## Additional Commits
+
+5. `2705d58` - feat(quick-005): make badges fit inline around skill names
+
 ## Next Steps
 
 None - quick task complete. The badge components are ready for use and the design can be referenced for future badge implementations.
