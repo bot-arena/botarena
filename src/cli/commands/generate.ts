@@ -15,13 +15,15 @@ export default class GenerateCommand extends Command {
   static examples = [
     '<%= config.bin %> <%= command.id %> --name "Bambus Bot" --description "Chill server goblin" --harness "ClawdBot" --llm "gpt-4o"',
     '<%= config.bin %> <%= command.id %> --name "Bambus Bot" --description "Chill server goblin" --harness "ClawdBot" --llm "gpt-4o" --skills "search,tools" --mcps "filesystem" --clis "git"',
-    '<%= config.bin %> <%= command.id %> --interactive',
+    '<%= config.bin %> <%= command.id %> --human',
   ];
 
   static flags = {
     interactive: Flags.boolean({
       description: 'Run with interactive prompts for bot configuration',
       default: false,
+      char: 'i',
+      aliases: ['human'],
     }),
     output: Flags.string({
       description: 'Output file path for generated profile JSON',
