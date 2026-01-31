@@ -14,7 +14,13 @@ out
 # Build infos
 *.tsbuildinfo
 
-# AI Agents
+# Convex generated JS
+convex/*.js
+convex/*.js.map
+convex/*.d.ts
+convex/*.d.ts.map
+!convex/_generated/**
+
 .agents
 .claude
 .codex

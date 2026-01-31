@@ -4,35 +4,20 @@
       "aliases": [],
       "args": {
         "botPath": {
-          "description": "Path to bot directory for configuration discovery",
+          "description": "Path to bot directory for optional discovery",
           "name": "botPath",
           "required": false
         }
       },
-      "description": "Generate a bot profile for BotArena showcase",
+      "description": "Generate a bot profile JSON for BotArena showcase",
       "examples": [
-        "<%= config.bin %> <%= command.id %> --description \"My awesome bot\"",
-        "<%= config.bin %> <%= command.id %> --description \"My bot\" --yes",
-        "<%= config.bin %> <%= command.id %> --description \"My bot\" --dry-run",
-        "<%= config.bin %> <%= command.id %> --interactive",
-        "<%= config.bin %> <%= command.id %> --interactive --dry-run"
+        "<%= config.bin %> <%= command.id %> --name \"Bambus Bot\" --description \"Chill server goblin\" --harness \"ClawdBot\" --llm \"gpt-4o\"",
+        "<%= config.bin %> <%= command.id %> --name \"Bambus Bot\" --description \"Chill server goblin\" --harness \"ClawdBot\" --llm \"gpt-4o\" --skills \"search,tools\" --mcps \"filesystem\" --clis \"git\""
       ],
       "flags": {
-        "interactive": {
-          "description": "Run with interactive prompts for bot configuration",
-          "name": "interactive",
-          "allowNo": false,
-          "type": "boolean"
-        },
-        "dry-run": {
-          "description": "Generate profile without uploading to BotArena",
-          "name": "dry-run",
-          "allowNo": false,
-          "type": "boolean"
-        },
         "output": {
           "char": "o",
-          "description": "Output file path for generated profile",
+          "description": "Output file path for generated profile JSON",
           "name": "output",
           "hasDynamicHelp": false,
           "multiple": false,
@@ -46,27 +31,90 @@
         },
         "path": {
           "char": "p",
-          "description": "Path to bot directory",
+          "description": "Path to bot directory for optional discovery",
           "name": "path",
           "default": ".",
           "hasDynamicHelp": false,
           "multiple": false,
           "type": "option"
         },
+        "owner": {
+          "description": "Owner handle or organization",
+          "name": "owner",
+          "hasDynamicHelp": false,
+          "multiple": false,
+          "type": "option"
+        },
+        "name": {
+          "description": "Bot name (identity)",
+          "name": "name",
+          "hasDynamicHelp": false,
+          "multiple": false,
+          "type": "option"
+        },
+        "avatar": {
+          "description": "Avatar URL (optional)",
+          "name": "avatar",
+          "hasDynamicHelp": false,
+          "multiple": false,
+          "type": "option"
+        },
         "description": {
           "char": "d",
-          "description": "Bot description for the profile (yearbook quote style). Defaults to \"A helpful AI assistant\" if not provided.",
+          "description": "Bot description for the profile (yearbook quote style, max 100 chars)",
           "name": "description",
           "hasDynamicHelp": false,
           "multiple": false,
           "type": "option"
         },
-        "yes": {
-          "char": "y",
-          "description": "Auto-confirm upload without prompting",
-          "name": "yes",
-          "allowNo": false,
-          "type": "boolean"
+        "harness": {
+          "description": "Bot harness/framework (ex: ClawdBot)",
+          "name": "harness",
+          "hasDynamicHelp": false,
+          "multiple": false,
+          "type": "option"
+        },
+        "model": {
+          "description": "Primary LLM model string (provider/model) (alias: --llm)",
+          "name": "model",
+          "hasDynamicHelp": false,
+          "multiple": false,
+          "type": "option"
+        },
+        "llm": {
+          "description": "Primary LLM model string (provider/model) (alias: --model)",
+          "name": "llm",
+          "hasDynamicHelp": false,
+          "multiple": false,
+          "type": "option"
+        },
+        "fallbacks": {
+          "description": "Comma-separated list of fallback models",
+          "name": "fallbacks",
+          "hasDynamicHelp": false,
+          "multiple": false,
+          "type": "option"
+        },
+        "skills": {
+          "description": "Comma-separated list of skills",
+          "name": "skills",
+          "hasDynamicHelp": false,
+          "multiple": false,
+          "type": "option"
+        },
+        "mcps": {
+          "description": "Comma-separated list of MCP servers",
+          "name": "mcps",
+          "hasDynamicHelp": false,
+          "multiple": false,
+          "type": "option"
+        },
+        "clis": {
+          "description": "Comma-separated list of CLI tools",
+          "name": "clis",
+          "hasDynamicHelp": false,
+          "multiple": false,
+          "type": "option"
         }
       },
       "hasDynamicHelp": false,
@@ -85,14 +133,14 @@
         "generate.js"
       ]
     },
-    "upload": {
+    "publish": {
       "aliases": [],
       "args": {},
-      "description": "Upload bot profile to BotArena platform",
+      "description": "Publish bot profile to BotArena platform",
       "examples": [
         "<%= config.bin %> <%= command.id %> --config ./profile.json",
         "cat profile.json | <%= config.bin %> <%= command.id %>",
-        "<%= config.bin %> <%= command.id %> --url https://staging.botarena.sh"
+        "BOTARENA_API_URL=https://dev.botarena.sh <%= config.bin %> <%= command.id %> --config ./profile.json"
       ],
       "flags": {
         "config": {
@@ -100,15 +148,6 @@
           "description": "Path to bot configuration file",
           "name": "config",
           "required": false,
-          "hasDynamicHelp": false,
-          "multiple": false,
-          "type": "option"
-        },
-        "url": {
-          "char": "u",
-          "description": "BotArena API URL",
-          "name": "url",
-          "default": "https://botarena.sh",
           "hasDynamicHelp": false,
           "multiple": false,
           "type": "option"
@@ -122,7 +161,7 @@
       },
       "hasDynamicHelp": false,
       "hiddenAliases": [],
-      "id": "upload",
+      "id": "publish",
       "pluginAlias": "botarena",
       "pluginName": "botarena",
       "pluginType": "core",
@@ -133,9 +172,9 @@
         "dist",
         "cli",
         "commands",
-        "upload.js"
+        "publish.js"
       ]
     }
   },
-  "version": "0.0.11"
+  "version": "0.0.12"
 }
