@@ -17,7 +17,7 @@ Phase 1 (Secure Foundation) is complete. Bot owners can now safely generate and 
 **Phase:** 1 of 3 (Secure Foundation)  
 **Plan:** 11 of 11 complete in current phase  
 **Status:** Phase 1 Complete ✓  
-**Last activity:** 2026-01-31 - Completed quick task 005 (Make badges beautiful on bot detail view)
+**Last activity:** 2026-01-31 - Completed quick task 006 (improvements to bot detail view)
 
 Progress: ██████████ 52% (7/13 success criteria)
 
@@ -123,6 +123,7 @@ Progress: ██████████ 52% (7/13 success criteria)
 
 | # | Description | Date | Commit | Directory |
 |---|-------------|------|--------|-----------|
+| 006 | improvements to bot detail view - debug mode, share button, section counts, deterministic noise | 2026-01-31 | e249af4 | [006-improvements-to-bot-detail-view-debug-mo](./quick/006-improvements-to-bot-detail-view-debug-mo/) |
 | 005 | Make badges beautiful on bot detail view - badges now fit tightly around skill names | 2026-01-31 | cf3e634 | [005-make-badges-beautiful-bot-detail-view](./quick/005-make-badges-beautiful-bot-detail-view/) |
 | 004 | Discover page doesn't use the records from Convex | 2026-01-31 | 42d4ff5 | [004-discover-page-doesnt-use-the-records-fro](./quick/004-discover-page-doesnt-use-the-records-fro/) |
 | 003 | Refactor BotArena CLI for a "World-Class" AI Agent Experience | 2026-01-31 | 996a77c | [003-refactor-botarena-cli-for-a-world-class-](./quick/003-refactor-botarena-cli-for-a-world-class-/) |
