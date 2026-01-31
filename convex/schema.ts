@@ -32,6 +32,13 @@ export default defineSchema({
 
     updateTime: v.string(),
     deleteTime: v.optional(v.string()),
+
+    // Claim system fields
+    claimVerificationCode: v.optional(v.string()),
+    claimGistUrl: v.optional(v.string()),
+    claimExpiresAt: v.optional(v.number()),
+    claimedBy: v.optional(v.string()),
+    claimedAt: v.optional(v.number()),
   })
     .index("by_slug", ["slug"])
     .searchIndex("search_profiles", {

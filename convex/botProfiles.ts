@@ -196,3 +196,140 @@ export const listProfilesPaginated = query({
     };
   },
 });
+
+/**
+ * Generate a random verification code for claiming
+ */
+function generateVerificationCode(): string {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let code = '';
+  for (let i = 0; i < 12; i++) {
+    code += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return `BA_${code}`;
+}
+
+/**
+ * Mutation: Initiate claim process for a bot
+ * Generates a verification code that must be placed in a GitHub Gist
+ */
+export const initiateClaim = mutation({
+  args: {
+    slug: v.string(),
+    gistUrl: v.string(),
+    githubHandle: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const profile = await ctx.db
+      .query("botProfiles")
+      .withIndex("by_slug", (q) => q.eq("slug", args.slug))
+      .first();
+
+    if (!profile) {
+      throw new Error("Bot profile not found");
+    }
+
+    // Check if already claimed
+    if (profile.claimedBy) {
+      throw new Error("Bot is already claimed");
+    }
+
+    // Validate gist URL format
+    if (!args.gistUrl.match(/^https:\/\/gist\.github\.com\/.+\/.+/)) {
+      throw new Error("Invalid Gist URL format");
+    }
+
+    // Generate verification code
+    const verificationCode = generateVerificationCode();
+    const expiresAt = Date.now() + 24 * 60 * 60 * 1000; // 24 hours
+
+    await ctx.db.patch(profile._id, {
+      claimVerificationCode: verificationCode,
+      claimGistUrl: args.gistUrl,
+      claimExpiresAt: expiresAt,
+    });
+
+    return {
+      verificationCode,
+      expiresAt,
+      instructions: `Create a secret GitHub Gist at ${args.gistUrl} containing the verification code: ${verificationCode}`,
+    };
+  },
+});
+
+/**
+ * Mutation: Verify claim by checking Gist content
+ */
+export const verifyClaim = mutation({
+  args: {
+    slug: v.string(),
+    githubHandle: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const profile = await ctx.db
+      .query("botProfiles")
+      .withIndex("by_slug", (q) => q.eq("slug", args.slug))
+      .first();
+
+    if (!profile) {
+      throw new Error("Bot profile not found");
+    }
+
+    if (profile.claimedBy) {
+      throw new Error("Bot is already claimed");
+    }
+
+    if (!profile.claimVerificationCode || !profile.claimExpiresAt) {
+      throw new Error("No pending claim found. Initiate claim first.");
+    }
+
+    if (Date.now() > profile.claimExpiresAt) {
+      throw new Error("Claim request expired. Please initiate a new claim.");
+    }
+
+    // Note: Actual Gist verification happens via GitHub API from the frontend/API route
+    // This mutation finalizes the claim after external verification
+    await ctx.db.patch(profile._id, {
+      owner: args.githubHandle,
+      claimedBy: args.githubHandle,
+      claimedAt: Date.now(),
+      claimVerificationCode: undefined,
+      claimGistUrl: undefined,
+      claimExpiresAt: undefined,
+      updateTime: new Date().toISOString(),
+    });
+
+    return {
+      success: true,
+      owner: args.githubHandle,
+      claimedAt: Date.now(),
+    };
+  },
+});
+
+/**
+ * Query: Get claim status for a bot
+ */
+export const getClaimStatus = query({
+  args: { slug: v.string() },
+  handler: async (ctx, args) => {
+    const profile = await ctx.db
+      .query("botProfiles")
+      .withIndex("by_slug", (q) => q.eq("slug", args.slug))
+      .first();
+
+    if (!profile) {
+      return null;
+    }
+
+    return {
+      isClaimed: !!profile.claimedBy,
+      claimedBy: profile.claimedBy,
+      claimedAt: profile.claimedAt,
+      hasPendingClaim: !!profile.claimVerificationCode && 
+        profile.claimExpiresAt && 
+        Date.now() < profile.claimExpiresAt,
+      pendingClaimExpiresAt: profile.claimExpiresAt,
+    };
+  },
+});
