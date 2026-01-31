@@ -64,19 +64,13 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Debug Environment Variables
-        run: |
-          echo "Checking environment variables..."
-          echo "vars.NEXT_PUBLIC_CONVEX_URL is set: ${{ vars.NEXT_PUBLIC_CONVEX_URL != '' }}"
-          echo "secrets.NEXT_PUBLIC_CONVEX_URL is set: ${{ secrets.NEXT_PUBLIC_CONVEX_URL != '' }}"
-          echo "vars.NEXT_PUBLIC_CONVEX_SITE_URL is set: ${{ vars.NEXT_PUBLIC_CONVEX_SITE_URL != '' }}"
-          echo "secrets.NEXT_PUBLIC_CONVEX_SITE_URL is set: ${{ secrets.NEXT_PUBLIC_CONVEX_SITE_URL != '' }}"
-
-      - name: Build with Next.js
-        run: pnpm next build
+      - name: Deploy to Convex and Build
         env:
-          NEXT_PUBLIC_CONVEX_URL: ${{ vars.NEXT_PUBLIC_CONVEX_URL || secrets.NEXT_PUBLIC_CONVEX_URL }}
-          NEXT_PUBLIC_CONVEX_SITE_URL: ${{ vars.NEXT_PUBLIC_CONVEX_SITE_URL || secrets.NEXT_PUBLIC_CONVEX_SITE_URL }}
+          CONVEX_DEPLOY_KEY: ${{ secrets.CONVEX_DEPLOY_KEY }}
+        run: |
+          # Deploy to Convex and build frontend with production URL
+          # This automatically sets NEXT_PUBLIC_CONVEX_URL to the prod deployment
+          npx convex deploy --cmd-url-env-var-name NEXT_PUBLIC_CONVEX_URL --cmd 'pnpm build'
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
