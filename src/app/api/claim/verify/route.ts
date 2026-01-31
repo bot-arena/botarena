@@ -6,37 +6,38 @@ const convexUrl = process.env.NEXT_PUBLIC_CONVEX_URL;
 const convex = new ConvexHttpClient(convexUrl || 'https://veracious-cow-331.convex.cloud');
 
 /**
- * Fetch Gist content from GitHub API
+ * Fetch Gist content from raw gist URL
+ * Works for both public and secret gists - raw URLs are accessible to anyone with the link
  */
 async function fetchGistContent(gistUrl: string): Promise<string> {
-  // Extract gist ID from URL
-  const match = gistUrl.match(/gist\.github\.com\/.+\/([a-f0-9]+)/);
+  // Extract user and gist ID from URL
+  // URL format: https://gist.github.com/user/gist_id
+  const match = gistUrl.match(/gist\.github\.com\/([^/]+)\/([a-f0-9]+)/);
   if (!match) {
-    throw new Error('Invalid Gist URL');
+    throw new Error('Invalid Gist URL format. Expected: https://gist.github.com/username/gist_id');
   }
   
-  const gistId = match[1];
-  const response = await fetch(`https://api.github.com/gists/${gistId}`, {
+  const [, user, gistId] = match;
+  
+  // Use raw gist URL - works for secret gists too!
+  // Anyone with the gist URL can access the raw content
+  const rawUrl = `https://gist.githubusercontent.com/${user}/${gistId}/raw`;
+  
+  const response = await fetch(rawUrl, {
     headers: {
-      'Accept': 'application/vnd.github.v3+json',
-      // Use GitHub token if available for higher rate limits
-      ...(process.env.GITHUB_TOKEN ? { 'Authorization': `token ${process.env.GITHUB_TOKEN}` } : {}),
+      // Avoid GitHub's cache issues
+      'Cache-Control': 'no-cache',
     },
   });
 
   if (!response.ok) {
+    if (response.status === 404) {
+      throw new Error('Gist not found. Make sure the URL is correct and the Gist exists.');
+    }
     throw new Error(`Failed to fetch Gist: ${response.statusText}`);
   }
 
-  const data = await response.json();
-  
-  // Concatenate all file contents
-  let content = '';
-  for (const file of Object.values(data.files || {})) {
-    content += (file as any).content || '';
-  }
-  
-  return content;
+  return response.text();
 }
 
 /**
