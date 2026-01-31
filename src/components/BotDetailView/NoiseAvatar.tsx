@@ -30,6 +30,190 @@ function mulberry32(a: number) {
   }
 }
 
+interface CellularCanvasProps {
+  className?: string;
+  fps?: number;
+  size?: number;
+  seed?: string | undefined;
+}
+
+function CellularCanvas({ className, fps = 6, size = 96, seed }: CellularCanvasProps) {
+  const canvasRef = React.useRef<HTMLCanvasElement | null>(null);
+
+  React.useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const context = canvas.getContext('2d');
+    if (!context) return;
+
+    const devicePixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+    const dimension = Math.round(size * devicePixelRatio);
+    canvas.width = dimension;
+    canvas.height = dimension;
+
+    // Grid size - number of cellular automata cells
+    const gridSize = 16;
+    const cellSize = Math.floor(dimension / gridSize);
+    
+    // Generate multiple hash values from seed for different parameters
+    const baseHash = seed ? cyrb128(seed) : 0;
+    const hueHash = seed ? cyrb128(seed + 'hue') : 0;
+    const speedHash = seed ? cyrb128(seed + 'speed') : 0;
+    const densityHash = seed ? cyrb128(seed + 'density') : 0;
+    
+    // ID-derived parameters
+    const hue = (hueHash % 360); // Hue 0-359
+    const saturation = 70 + (hueHash % 30); // 70-100%
+    const lightness = 45 + (hueHash % 25); // 45-70%
+    const cellColor = `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+    const animationFps = 3 + (speedHash % 8); // 3-10 FPS
+    const initialDensity = 0.2 + (densityHash % 100) / 200; // 0.2-0.7 (20-70% cells alive initially)
+    
+    // Create PRNGs for grid initialization
+    const random = mulberry32(baseHash);
+    
+    // Initialize grid with seed-derived random state
+    let grid: boolean[][] = [];
+    for (let y = 0; y < gridSize; y++) {
+      const row: boolean[] = [];
+      for (let x = 0; x < gridSize; x++) {
+        row.push(random() < initialDensity);
+      }
+      grid.push(row);
+    }
+
+    // Count live neighbors (with toroidal wrapping)
+    const countNeighbors = (x: number, y: number): number => {
+      let count = 0;
+      for (let dy = -1; dy <= 1; dy++) {
+        for (let dx = -1; dx <= 1; dx++) {
+          if (dx === 0 && dy === 0) continue;
+          const nx = (x + dx + gridSize) % gridSize;
+          const ny = (y + dy + gridSize) % gridSize;
+          if (grid[ny][nx]) count++;
+        }
+      }
+      return count;
+    };
+
+    // Update grid one generation
+    const updateGrid = () => {
+      const newGrid: boolean[][] = [];
+      let aliveCount = 0;
+      
+      for (let y = 0; y < gridSize; y++) {
+        const newRow: boolean[] = [];
+        for (let x = 0; x < gridSize; x++) {
+          const neighbors = countNeighbors(x, y);
+          const isAlive = grid[y][x];
+          
+          // Conway's Game of Life rules
+          let nextState: boolean;
+          if (isAlive) {
+            nextState = neighbors === 2 || neighbors === 3;
+          } else {
+            nextState = neighbors === 3;
+          }
+          
+          newRow.push(nextState);
+          if (nextState) aliveCount++;
+        }
+        newGrid.push(newRow);
+      }
+      
+      // If pattern dies completely, re-seed from ID
+      if (aliveCount === 0 && seed) {
+        const reseedRandom = mulberry32(cyrb128(seed + Date.now()));
+        for (let y = 0; y < gridSize; y++) {
+          for (let x = 0; x < gridSize; x++) {
+            newGrid[y][x] = reseedRandom() < initialDensity;
+          }
+        }
+      }
+      
+      // If pattern stabilizes (no change), perturb slightly
+      let changed = false;
+      for (let y = 0; y < gridSize; y++) {
+        for (let x = 0; x < gridSize; x++) {
+          if (grid[y][x] !== newGrid[y][x]) {
+            changed = true;
+            break;
+          }
+        }
+        if (changed) break;
+      }
+      
+      if (!changed && aliveCount > 0 && seed) {
+        // Perturb a few random cells to prevent stagnation
+        const perturbRandom = mulberry32(cyrb128(seed + 'perturb'));
+        const perturbCount = 2 + Math.floor(perturbRandom() * 4);
+        for (let i = 0; i < perturbCount; i++) {
+          const px = Math.floor(perturbRandom() * gridSize);
+          const py = Math.floor(perturbRandom() * gridSize);
+          newGrid[py][px] = !newGrid[py][px];
+        }
+      }
+      
+      grid = newGrid;
+    };
+
+    // Render the grid to canvas
+    const renderGrid = () => {
+      // Clear canvas
+      context.clearRect(0, 0, dimension, dimension);
+      
+      // Draw live cells
+      context.fillStyle = cellColor;
+      for (let y = 0; y < gridSize; y++) {
+        for (let x = 0; x < gridSize; x++) {
+          if (grid[y][x]) {
+            context.fillRect(
+              x * cellSize,
+              y * cellSize,
+              cellSize,
+              cellSize
+            );
+          }
+        }
+      }
+    };
+
+    // Animation loop
+    let animationId = 0;
+    let lastTime = 0;
+    const frameDuration = 1000 / animationFps;
+
+    const animate = (time: number) => {
+      if (time - lastTime >= frameDuration) {
+        lastTime = time;
+        updateGrid();
+        renderGrid();
+      }
+      animationId = window.requestAnimationFrame(animate);
+    };
+
+    // Initial render
+    renderGrid();
+    
+    // Start animation
+    animationId = window.requestAnimationFrame(animate);
+
+    return () => {
+      window.cancelAnimationFrame(animationId);
+    };
+  }, [fps, size, seed]);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      className={cn('h-full w-full', className)}
+      style={{ imageRendering: 'pixelated' }}
+      aria-hidden="true"
+    />
+  );
+}
+
 interface NoiseCanvasProps {
   className?: string;
   fps?: number;
@@ -127,7 +311,12 @@ export function NoiseAvatar({
 }: NoiseAvatarProps) {
   return (
     <div className={cn('relative h-full w-full overflow-hidden', className)}>
-      <NoiseCanvas className="absolute inset-0 opacity-40" seed={id} />
+      {/* Use Cellular Automata when ID is present, otherwise animated noise */}
+      {id ? (
+        <CellularCanvas className="absolute inset-0 opacity-60" seed={id} />
+      ) : (
+        <NoiseCanvas className="absolute inset-0 opacity-40" seed={id} />
+      )}
       <div
         className="absolute inset-0 opacity-40"
         style={{
