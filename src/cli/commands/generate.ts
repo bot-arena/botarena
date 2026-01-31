@@ -165,12 +165,17 @@ export default class GenerateCommand extends Command {
       let finalAvatar = avatarFlag || discovered.avatar;
 
       if (flags.interactive) {
+        // Human-friendly header
+        this.log('\n🤖  BotArena Profile Generator  🤖');
+        this.log('==================================');
+        this.log('Let\'s give your bot a soul!\n');
+
         if (!finalName) {
           const answers = await inquirer.prompt([
             {
               type: 'input',
               name: 'name',
-              message: 'Bot name:',
+              message: 'Identity (Bot Name):',
               default: discovered.name || '',
               validate: (input: string) =>
                 input.trim().length > 0 || 'Name is required',
@@ -184,7 +189,7 @@ export default class GenerateCommand extends Command {
             {
               type: 'input',
               name: 'description',
-              message: 'Yearbook quote (one sentence):',
+              message: 'Vibe (Yearbook quote, max 100 chars):',
               default: autoDescription || '',
               validate: (input: string) =>
                 (input.trim().length > 0 && input.trim().length <= 100) ||
@@ -199,7 +204,7 @@ export default class GenerateCommand extends Command {
             {
               type: 'input',
               name: 'harness',
-              message: 'Harness/framework:',
+              message: 'Harness (Framework):',
               default: discovered.runtime || 'ClawdBot',
               validate: (input: string) =>
                 input.trim().length > 0 || 'Harness is required',
@@ -213,7 +218,7 @@ export default class GenerateCommand extends Command {
             {
               type: 'input',
               name: 'model',
-              message: 'Primary LLM model:',
+              message: 'Brain (Primary LLM model):',
               validate: (input: string) =>
                 input.trim().length > 0 || 'Primary LLM model is required',
             },
@@ -226,6 +231,29 @@ export default class GenerateCommand extends Command {
         this.error(
           'Missing required fields. Provide --name, --description, --harness, and --llm/--model (or use --interactive).'
         );
+      }
+
+      if (flags.interactive) {
+        this.log('\n📋  Profile Summary:');
+        this.log(`   Name: ${finalName}`);
+        this.log(`   Vibe: ${finalDescription}`);
+        this.log(`   Brain: ${finalModel}`);
+        this.log(`   Harness: ${finalHarness}`);
+        this.log(`   Skills: ${skillsOverride?.length || discovered.skills?.length || 0} detected/overridden`);
+        
+        const { confirm } = await inquirer.prompt([
+          {
+            type: 'confirm',
+            name: 'confirm',
+            message: 'Look good?',
+            default: true,
+          },
+        ]);
+
+        if (!confirm) {
+          this.log('❌ Generation cancelled.');
+          return;
+        }
       }
 
       const overrides: PublicConfigOverrides = {
