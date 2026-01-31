@@ -11,7 +11,6 @@ interface NavLink {
 const navLinks: NavLink[] = [
   { href: '/', label: 'HOME' },
   { href: '/discover', label: 'DISCOVER' },
-  { href: '/compare', label: 'COMPARE' },
   { href: '/docs', label: 'DOCS' },
 ];
 
@@ -103,7 +102,7 @@ export const Navigation = React.forwardRef<HTMLElement, NavigationProps>(
           className="fixed bottom-0 left-0 right-0 h-20 bg-[var(--color-bg-secondary)] border-t-2 border-[var(--color-border-strong)] z-50 md:hidden"
           aria-label="Mobile navigation"
         >
-          <div className="grid grid-cols-4 h-full">
+          <div className="grid grid-cols-3 h-full">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
