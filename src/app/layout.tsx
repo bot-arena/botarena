@@ -33,16 +33,16 @@ export default function RootLayout({
     <html lang="en" className={GeistMono.variable}>
       <body className="min-h-screen bg-[var(--color-bg-primary)] text-[var(--color-text-primary)] antialiased">
         <Providers>
-          <div className="min-h-screen relative">
-            <CRTBackground />
-            <div className="relative z-10">
-              <Navigation />
-              <main className="pt-[60px] pb-[80px] md:pb-0 px-4">
-                {children}
-              </main>
-              <Footer />
-            </div>
+        <div className="min-h-screen relative flex flex-col">
+          <CRTBackground />
+          <div className="relative z-10 flex flex-col flex-grow">
+            <Navigation />
+            <main className="flex-grow pt-[60px] pb-[80px] md:pb-0 px-4">
+              {children}
+            </main>
+            <Footer />
           </div>
+        </div>
         </Providers>
       </body>
     </html>
