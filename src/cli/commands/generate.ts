@@ -36,6 +36,9 @@ export default class GenerateCommand extends Command {
       description: 'Path to bot directory for optional discovery',
       default: '.',
     }),
+    owner: Flags.string({
+      description: 'Owner handle or organization',
+    }),
     name: Flags.string({
       description: 'Bot name (identity)',
     }),
@@ -50,10 +53,10 @@ export default class GenerateCommand extends Command {
       description: 'Bot harness/framework (ex: ClawdBot)',
     }),
     model: Flags.string({
-      description: 'Primary LLM model string (alias: --llm)',
+      description: 'Primary LLM model string (provider/model) (alias: --llm)',
     }),
     llm: Flags.string({
-      description: 'Primary LLM model string (alias: --model)',
+      description: 'Primary LLM model string (provider/model) (alias: --model)',
     }),
     fallbacks: Flags.string({
       description: 'Comma-separated list of fallback models',
@@ -105,6 +108,7 @@ export default class GenerateCommand extends Command {
     };
 
     const nameFlag = this.normalizeFlag(flags.name);
+    const ownerFlag = this.normalizeFlag(flags.owner);
     const descriptionFlag = this.normalizeFlag(flags.description);
     const harnessFlag = this.normalizeFlag(flags.harness);
     const modelFlag = this.normalizeFlag(flags.model);
@@ -151,6 +155,7 @@ export default class GenerateCommand extends Command {
         }
       }
 
+      let finalOwner = ownerFlag;
       let finalName = nameFlag;
       let finalDescription = descriptionFlag;
       let finalHarness = harnessFlag;
@@ -222,21 +227,14 @@ export default class GenerateCommand extends Command {
       }
 
       const overrides: PublicConfigOverrides = {
+        owner: finalOwner ?? null,
         name: finalName,
         description: finalDescription,
         harness: finalHarness,
         avatar: finalAvatar,
-        llm: {
-          primary: finalModel,
-        },
+        modelPrimary: finalModel,
+        modelFallbacks: fallbackOverrides ?? [],
       };
-
-      if (fallbackOverrides) {
-        overrides.llm = {
-          primary: finalModel,
-          fallbacks: fallbackOverrides,
-        };
-      }
 
       if (skillsOverride) {
         overrides.skills = skillsOverride;

@@ -5,6 +5,7 @@ import { SKILL_DIRECTORIES } from '../lib/clawdbot.js';
 const formatList = (items: string[]) => items.map((item) => `  - ${item}`).join('\n');
 
 const formatsBlock = `FORMATS
+  --owner "owner-handle" (optional)
   --name "Bot Name"
   --description "Yearbook quote"
   --harness "ClawdBot"
@@ -23,13 +24,14 @@ const examplesGenerateBlock = `EXAMPLES (generate)
 const examplesPublishBlock = `EXAMPLES (publish)
   $ botarena publish --config ./bot-profile.json
   $ cat profile.json | botarena publish
-  $ botarena publish --config ./profile.json --url https://staging.botarena.sh`;
+  $ BOTARENA_API_URL=https://dev.botarena.sh botarena publish --config ./profile.json`;
 
 const publishBlock = `PUBLISH INPUT (JSON)
   Reads JSON from --config or stdin.
-  Required keys: name, description, harness, llm.primary
-  Optional keys: llm.fallbacks, skills, mcps, clis, avatar, version
-  Shape: { "name": "...", "description": "...", "harness": "...", "llm": { "primary": "...", "fallbacks": [] } }`;
+  Required keys: name, description, harness, modelPrimary
+  Optional keys: owner, modelFallbacks, skills, mcps, clis, avatar, version
+  Shape: { "name": "...", "description": "...", "harness": "...", "modelPrimary": "provider/model", "modelFallbacks": [] }
+  Publish target: BOTARENA_API_URL (defaults to https://botarena.sh)`;
 
 const skillsBlock = `SKILLS DIRECTORIES (discovery)
 ${formatList(SKILL_DIRECTORIES)}`;

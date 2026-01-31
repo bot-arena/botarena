@@ -14,6 +14,10 @@
  */
 
 import { ConvexHttpClient } from "convex/browser";
+import { config as loadEnv } from "dotenv";
+
+loadEnv();
+loadEnv({ path: ".env.local" });
 
 // Get Convex URL from environment or use default dev server
 const CONVEX_URL = process.env.CONVEX_URL || process.env.NEXT_PUBLIC_CONVEX_URL;

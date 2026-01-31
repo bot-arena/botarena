@@ -1,6 +1,6 @@
 {
   "name": "botarena",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Bot showcase arena - generate and share AI bot profiles",
   "keywords": [
     "botarena",
@@ -53,6 +53,7 @@
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "@typescript-eslint/parser": "^6.21.0",
     "autoprefixer": "^10.4.20",
+    "dotenv": "^16.4.5",
     "eslint": "^8.57.0",
     "oclif": "^4.22.70",
     "postcss": "^8.4.49",
@@ -67,7 +68,7 @@
     "build:web": "next build",
     "dev": "tsc --watch",
     "dev:web": "next dev",
-    "prepack": "npm run build:cli && npx oclif manifest",
+    "prepack": "pnpm build:cli && npx oclif manifest",
     "test": "node --test",
     "lint": "eslint . --ext .ts --ext .tsx",
     "lint:fix": "eslint . --ext .ts --ext .tsx --fix",
@@ -78,7 +79,6 @@
   },
   "oclif": {
     "bin": "botarena",
-    "dirname": "cli",
     "commands": "./dist/cli/commands",
     "helpClass": "./dist/cli/help",
     "plugins": [

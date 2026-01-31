@@ -1,4 +1,3 @@
-import { v } from "convex/values";
 import { mutation } from "./_generated/server";
 
 /**
@@ -15,72 +14,56 @@ import { mutation } from "./_generated/server";
  */
 const SAMPLE_BOTS = [
   {
-    slug: "devbot-v1",
+    owner: null,
     name: "DevBot",
     description: "A helpful development assistant with deep knowledge of modern web technologies.",
-    llmPrimary: "claude-3-sonnet",
-    llmFallbacks: ["gpt-4"],
+    modelPrimary: "anthropic/claude-3-5-sonnet",
+    modelFallbacks: ["openai/gpt-4"],
     harness: "ClawdBot",
     skills: ["typescript", "react", "nextjs", "tailwind", "convex"],
     mcps: ["filesystem", "github", "terminal"],
     clis: ["botarena", "clawdbot"],
     version: "1.0.0",
-    config: {
-      runtime: "ClawdBot",
-      primaryModel: "claude-3-sonnet",
-      capabilities: ["code-review", "refactoring", "architecture"],
-    },
+    updateTime: new Date().toISOString(),
   },
   {
-    slug: "code-reviewer-pro",
+    owner: null,
     name: "Code Reviewer Pro",
     description: "Expert at reviewing code for security, performance, and best practices.",
-    llmPrimary: "gpt-4",
-    llmFallbacks: [],
+    modelPrimary: "openai/gpt-4",
+    modelFallbacks: [],
     harness: "ClawdBot",
     skills: ["security", "performance", "testing", "ci-cd"],
     mcps: ["github", "gitlab"],
     clis: ["eslint", "prettier"],
     version: "2.1.0",
-    config: {
-      runtime: "ClawdBot",
-      primaryModel: "gpt-4",
-      capabilities: ["security-audit", "performance-analysis", "test-coverage"],
-    },
+    updateTime: new Date().toISOString(),
   },
   {
-    slug: "docs-writer",
+    owner: null,
     name: "Documentation Writer",
     description: "Specializes in creating clear, comprehensive technical documentation.",
-    llmPrimary: "claude-3-opus",
-    llmFallbacks: ["claude-3-sonnet"],
+    modelPrimary: "anthropic/claude-3-opus",
+    modelFallbacks: ["anthropic/claude-3-5-sonnet"],
     harness: "ClawdBot",
     skills: ["technical-writing", "markdown", "api-docs", "tutorials"],
     mcps: ["filesystem", "web-search"],
     clis: ["mdbook", "vitepress"],
     version: "0.5.0",
-    config: {
-      runtime: "ClawdBot",
-      primaryModel: "claude-3-opus",
-      capabilities: ["documentation", "api-specs", "tutorials"],
-    },
+    updateTime: new Date().toISOString(),
   },
   {
-    slug: "test-automation-bot",
+    owner: null,
     name: "Test Automation Bot",
     description: "Generates comprehensive test suites and maintains test coverage.",
-    llmPrimary: "claude-3-sonnet",
-    llmFallbacks: ["gpt-4", "claude-3-haiku"],
+    modelPrimary: "anthropic/claude-3-5-sonnet",
+    modelFallbacks: ["openai/gpt-4", "anthropic/claude-3-haiku"],
     harness: "ClawdBot",
     skills: ["unit-testing", "integration-testing", "e2e-testing", "jest", "playwright"],
     mcps: ["filesystem", "github"],
     clis: ["jest", "playwright", "vitest"],
     version: "1.2.3",
-    config: {
-      runtime: "ClawdBot",
-      primaryModel: "claude-3-sonnet",
-      capabilities: ["test-generation", "coverage-analysis", "bug-detection"],
-    },
+    updateTime: new Date().toISOString(),
   },
 ];
 
@@ -108,15 +91,24 @@ export const seedDevProfiles = mutation({
     }
     
     // Insert each sample bot
+    const slugs: string[] = [];
     for (const bot of SAMPLE_BOTS) {
-      await ctx.db.insert("botProfiles", bot);
+      const profileId = await ctx.db.insert("botProfiles", {
+        ...bot,
+        slug: "pending",
+      });
+      await ctx.db.patch(profileId, {
+        slug: profileId,
+        updateTime: new Date().toISOString(),
+      });
+      slugs.push(profileId);
     }
     
     console.log(`Seeded ${SAMPLE_BOTS.length} development profiles`);
     return { 
       seeded: SAMPLE_BOTS.length, 
       message: "Development profiles seeded successfully",
-      slugs: SAMPLE_BOTS.map(b => b.slug),
+      slugs,
     };
   },
 });

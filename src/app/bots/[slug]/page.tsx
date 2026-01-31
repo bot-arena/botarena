@@ -11,12 +11,20 @@ interface BotProfilePageProps {
 const normalizeProfile = (profile: any) => {
   if (!profile || typeof profile !== 'object') return profile;
 
-  const llmConfig = profile.llm ?? profile.config?.llm ?? {};
+  const llmConfig = profile.llm ?? {};
   const llm = {
-    primary: llmConfig.primary ?? profile.llmPrimary ?? 'UNKNOWN',
-    fallbacks: llmConfig.fallbacks ?? profile.llmFallbacks ?? [],
-    temperature: llmConfig.temperature,
-    maxTokens: llmConfig.maxTokens,
+    primary:
+      llmConfig.primary ??
+      llmConfig.modelPrimary ??
+      profile.modelPrimary ??
+      profile.llmPrimary ??
+      'UNKNOWN',
+    fallbacks:
+      llmConfig.fallbacks ??
+      llmConfig.modelFallbacks ??
+      profile.modelFallbacks ??
+      profile.llmFallbacks ??
+      [],
   };
 
   const normalizeDate = (value: unknown) => {
@@ -25,9 +33,9 @@ const normalizeProfile = (profile: any) => {
     return value;
   };
 
-  const createdAt = normalizeDate(profile.createdAt ?? profile._creationTime);
+  const createdAt = normalizeDate(profile._creationTime ?? profile.createdAt);
   const updatedAt = normalizeDate(
-    profile.updatedAt ?? profile._creationTime ?? profile.createdAt
+    profile.updateTime ?? profile.updatedAt ?? profile._creationTime ?? profile.createdAt
   );
 
   return {

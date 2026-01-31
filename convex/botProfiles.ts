@@ -57,54 +57,44 @@ export const searchProfiles = query({
 
 /**
  * Mutation: Create new profile (transaction - ACID compliant)
- * Generates unique slug and inserts profile
+ * Uses document ID as slug until claim flow updates it
  */
 export const createProfile = mutation({
   args: {
+    owner: v.optional(v.union(v.null(), v.string())),
     name: v.string(),
     description: v.string(),
     avatar: v.optional(v.string()),
-    llmPrimary: v.string(),
-    llmFallbacks: v.optional(v.array(v.string())),
+    modelPrimary: v.string(),
+    modelFallbacks: v.optional(v.array(v.string())),
     harness: v.string(),
     skills: v.array(v.string()),
     mcps: v.array(v.string()),
     clis: v.array(v.string()),
     version: v.string(),
-    config: v.any(),
   },
   handler: async (ctx, args) => {
     const now = new Date().toISOString();
-    // Generate unique slug from name
-    const baseSlug = args.name
-      .toLowerCase()
-      .replace(/[^a-z0-9]/g, "-")
-      .replace(/-+/g, "-")
-      .replace(/^-|-$/g, "");
-    const randomSuffix = Math.random().toString(36).substring(2, 8);
-    const slug = `${baseSlug}-${randomSuffix}`;
-
-    // Insert profile (entire function is a transaction)
     const profileId = await ctx.db.insert("botProfiles", {
+      owner: args.owner ?? null,
       name: args.name,
-      slug,
+      slug: "pending",
+      version: args.version,
       description: args.description,
-      avatar: args.avatar,
-      llmPrimary: args.llmPrimary,
-      llmFallbacks: args.llmFallbacks,
       harness: args.harness,
+      modelPrimary: args.modelPrimary,
+      modelFallbacks: args.modelFallbacks ?? [],
       skills: args.skills,
       mcps: args.mcps,
       clis: args.clis,
-      version: args.version,
-      createdAt: now,
-      updatedAt: now,
-      config: args.config,
+      ...(args.avatar ? { avatar: args.avatar } : {}),
+      updateTime: now,
     });
 
+    await ctx.db.patch(profileId, { slug: profileId });
+
     // Return the created profile
-    const profile = await ctx.db.get(profileId);
-    return profile;
+    return await ctx.db.get(profileId);
   },
 });
 
@@ -117,13 +107,13 @@ export const updateProfile = mutation({
     id: v.id("botProfiles"),
     description: v.optional(v.string()),
     avatar: v.optional(v.string()),
-    config: v.optional(v.any()),
+    deleteTime: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const { id, ...updates } = args;
     await ctx.db.patch(id, {
       ...updates,
-      updatedAt: new Date().toISOString(),
+      updateTime: new Date().toISOString(),
     });
     return await ctx.db.get(id);
   },

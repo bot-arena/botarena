@@ -4,6 +4,7 @@ import { Navigation } from '@/components/Navigation';
 import { Footer } from '@/components/Footer';
 import { CRTBackground } from '@/components/CRTBackground';
 import { GeistMono } from 'geist/font/mono';
+import { Providers } from './providers';
 
 export const metadata: Metadata = {
   title: 'npx botarena — Showcase Your Bot!',
@@ -31,16 +32,18 @@ export default function RootLayout({
   return (
     <html lang="en" className={GeistMono.variable}>
       <body className="min-h-screen bg-[var(--color-bg-primary)] text-[var(--color-text-primary)] antialiased">
-        <div className="min-h-screen relative">
-          <CRTBackground />
-          <div className="relative z-10">
-            <Navigation />
-            <main className="pt-[60px] pb-[80px] md:pb-0 px-4">
-              {children}
-            </main>
-            <Footer />
+        <Providers>
+          <div className="min-h-screen relative">
+            <CRTBackground />
+            <div className="relative z-10">
+              <Navigation />
+              <main className="pt-[60px] pb-[80px] md:pb-0 px-4">
+                {children}
+              </main>
+              <Footer />
+            </div>
           </div>
-        </div>
+        </Providers>
       </body>
     </html>
   );

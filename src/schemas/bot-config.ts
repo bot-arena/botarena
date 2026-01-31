@@ -20,6 +20,12 @@ import { z } from 'zod';
  */
 export const PublicBotConfig = z.object({
   // Core identity
+  owner: z
+    .string()
+    .min(1, 'Owner must be at least 1 character')
+    .max(100, 'Owner must be 100 characters or less')
+    .nullable()
+    .optional(),
   name: z.string()
     .min(1, 'Bot name is required')
     .max(100, 'Bot name must be 100 characters or less'),
@@ -30,10 +36,24 @@ export const PublicBotConfig = z.object({
     .max(500, 'Description must be 500 characters or less'),
   
   // LLM configuration (public info only - no API keys)
-  llm: z.object({
-    primary: z.string().min(1, 'Primary LLM is required'),
-    fallbacks: z.array(z.string()).default([]),
-  }),
+  modelPrimary: z
+    .string()
+    .min(1, 'Primary LLM is required')
+    .regex(
+      /^[a-z0-9][a-z0-9._-]*\/[a-z0-9][a-z0-9._-]*$/i,
+      'Model must match provider/model'
+    ),
+  modelFallbacks: z
+    .array(
+      z
+        .string()
+        .min(1)
+        .regex(
+          /^[a-z0-9][a-z0-9._-]*\/[a-z0-9][a-z0-9._-]*$/i,
+          'Model must match provider/model'
+        )
+    )
+    .default([]),
   
   // Skills/tools the bot has access to (names only, no config)
   skills: z.array(z.string())
@@ -125,9 +145,11 @@ export function sanitizeConfig(rawConfig: unknown): PublicBotConfigType {
   
   // Extract only public-safe fields (whitelist approach)
   const sanitized = {
+    owner: raw.owner,
     name: raw.name,
     description: raw.description,
-    llm: raw.llm,
+    modelPrimary: raw.modelPrimary,
+    modelFallbacks: raw.modelFallbacks,
     skills: raw.skills,
     mcps: raw.mcps,
     clis: raw.clis,

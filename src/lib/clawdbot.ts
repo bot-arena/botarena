@@ -35,9 +35,7 @@ export const SKILL_DIRECTORIES = [
   'agents/skills',
 ];
 
-export type PublicConfigOverrides = Partial<Omit<PublicBotConfigType, 'llm'>> & {
-  llm?: Partial<PublicBotConfigType['llm']>;
-};
+export type PublicConfigOverrides = Partial<PublicBotConfigType>;
 
 /**
  * ClawdBot Discovery Class
@@ -132,15 +130,12 @@ export class ClawdBotDiscovery {
     // Use auto-extracted description as fallback if user didn't provide one
     const finalDescription = overrides.description || userDescription || autoDescription || '';
 
-    const llmOverrides = overrides.llm ?? {};
-
     const publicConfig = {
+      owner: overrides.owner ?? null,
       name: overrides.name || discovery.name || 'Unnamed Bot',
       description: finalDescription,
-      llm: {
-        primary: llmOverrides.primary || llm.primary,
-        fallbacks: llmOverrides.fallbacks ?? llm.fallbacks ?? [],
-      },
+      modelPrimary: overrides.modelPrimary || llm.primary,
+      modelFallbacks: overrides.modelFallbacks ?? llm.fallbacks ?? [],
       skills: overrides.skills ?? discovery.skills ?? [],
       mcps: overrides.mcps ?? mcps,
       clis: overrides.clis ?? clis,

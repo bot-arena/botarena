@@ -11,10 +11,9 @@ interface NavLink {
 const navLinks: NavLink[] = [
   { href: '/', label: 'HOME' },
   { href: '/discover', label: 'DISCOVER' },
-  { href: '/docs', label: 'DOCS' },
 ];
 
-export interface NavigationProps extends React.HTMLAttributes<HTMLElement> {}
+export interface NavigationProps extends React.HTMLAttributes<HTMLElement> { }
 
 /**
  * Main application navigation with responsive mobile bottom bar.

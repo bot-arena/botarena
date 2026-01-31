@@ -8,7 +8,7 @@ export default class Publish extends Command {
   static examples = [
     '<%= config.bin %> <%= command.id %> --config ./profile.json',
     'cat profile.json | <%= config.bin %> <%= command.id %>',
-    '<%= config.bin %> <%= command.id %> --url https://staging.botarena.sh',
+    'BOTARENA_API_URL=https://dev.botarena.sh <%= config.bin %> <%= command.id %> --config ./profile.json',
   ];
 
   static flags = {
@@ -16,11 +16,6 @@ export default class Publish extends Command {
       char: 'c',
       description: 'Path to bot configuration file',
       required: false,
-    }),
-    url: Flags.string({
-      char: 'u',
-      description: 'BotArena API URL',
-      default: 'https://botarena.sh',
     }),
     verbose: Flags.boolean({
       description: 'Enable verbose logging output',
@@ -66,8 +61,10 @@ export default class Publish extends Command {
         this.log('Configuration:', validatedConfig);
       }
 
+      const apiUrl = process.env.BOTARENA_API_URL || 'https://botarena.sh';
+
       // Upload to BotArena
-      const response = await fetch(`${flags.url}/api/profiles`, {
+      const response = await fetch(`${apiUrl}/api/profiles`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -79,7 +76,7 @@ export default class Publish extends Command {
       const result = await response.json();
 
       if (response.ok && result.success) {
-        const profileUrl = `${flags.url}/bots/${result.data.slug}`;
+        const profileUrl = `${apiUrl}/bots/${result.data.slug}`;
 
         this.log('Profile published successfully!');
         this.log(`Name: ${result.data.name}`);

@@ -5,10 +5,10 @@ import { v } from "convex/values";
  * Convex Schema for BotArena
  * 
  * Defines the database structure for bot profiles with:
- * - Core identity fields (name, slug, description)
- * - LLM configuration (primary, fallbacks)
- * - Capabilities (harness, skills, mcps, clis)
- * - Full config storage for flexibility
+  * - Core identity fields (owner, name, slug, description)
+  * - Model configuration (primary, fallbacks)
+  * - Capabilities (harness, skills, mcps, clis)
+  * - Metadata (updateTime, deleteTime)
  * 
  * Indexes:
  * - by_slug: Fast lookup by unique slug
@@ -17,33 +17,25 @@ import { v } from "convex/values";
 
 export default defineSchema({
   botProfiles: defineTable({
-    // Core identity
+    owner: v.union(v.null(), v.string()),
     name: v.string(),
     slug: v.string(),
+    version: v.string(),
     description: v.string(), // "yearbook quote"
-    avatar: v.optional(v.string()),
-    
-    // LLM configuration
-    llmPrimary: v.string(),
-    llmFallbacks: v.optional(v.array(v.string())),
-    
-    // Capabilities
     harness: v.string(),
+    modelPrimary: v.string(),
+    modelFallbacks: v.array(v.string()),
     skills: v.array(v.string()),
     mcps: v.array(v.string()),
     clis: v.array(v.string()),
-    version: v.string(),
+    avatar: v.optional(v.string()),
 
-    // Metadata
-    createdAt: v.string(),
-    updatedAt: v.string(),
-    
-    // Full config as JSON for flexibility
-    config: v.any(),
+    updateTime: v.string(),
+    deleteTime: v.optional(v.string()),
   })
     .index("by_slug", ["slug"])
     .searchIndex("search_profiles", {
       searchField: "name",
-      filterFields: ["harness", "llmPrimary"],
+      filterFields: ["harness", "modelPrimary"],
     }),
 });

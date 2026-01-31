@@ -9,6 +9,10 @@ import { httpAction } from "./_generated/server";
  */
 
 const http = httpRouter();
+const MODEL_PATTERN = /^[a-z0-9][a-z0-9._-]*\/[a-z0-9][a-z0-9._-]*$/i;
+
+const isValidModel = (value: unknown): value is string =>
+  typeof value === "string" && MODEL_PATTERN.test(value);
 
 /**
  * POST /api/profiles - Create profile from CLI
@@ -24,19 +28,52 @@ http.route({
       // Import API inside handler to avoid circular dependencies
       const { api } = await import("./_generated/api");
       
+      const modelPrimary = body.modelPrimary ?? body.llm?.primary;
+      const modelFallbacks = body.modelFallbacks ?? body.llm?.fallbacks ?? [];
+
+      const owner = typeof body.owner === "string" && body.owner.trim()
+        ? body.owner.trim()
+        : null;
+
+      if (!isValidModel(modelPrimary)) {
+        return new Response(
+          JSON.stringify({
+            success: false,
+            error: "modelPrimary must match provider/model",
+          }),
+          {
+            status: 400,
+            headers: { "Content-Type": "application/json" },
+          }
+        );
+      }
+
+      if (!Array.isArray(modelFallbacks) || modelFallbacks.some((model) => !isValidModel(model))) {
+        return new Response(
+          JSON.stringify({
+            success: false,
+            error: "modelFallbacks must be an array of provider/model strings",
+          }),
+          {
+            status: 400,
+            headers: { "Content-Type": "application/json" },
+          }
+        );
+      }
+
       // Call the mutation to create profile
       const profile = await ctx.runMutation(api.botProfiles.createProfile, {
+        owner,
         name: body.name,
         description: body.description,
         avatar: body.avatar,
-        llmPrimary: body.llm?.primary || body.llmPrimary || "Not specified",
-        llmFallbacks: body.llm?.fallbacks || body.llmFallbacks || [],
+        modelPrimary,
+        modelFallbacks,
         harness: body.harness,
         skills: body.skills || [],
         mcps: body.mcps || [],
         clis: body.clis || [],
         version: body.version || "1.0.0",
-        config: body,
       });
 
       return new Response(

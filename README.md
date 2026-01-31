@@ -284,7 +284,7 @@ The generator discovers:
 botarena publish --config ./my-bot-profile.json
 
 # Publish to staging
-botarena publish --config ./profile.json --url https://staging.botarena.sh
+BOTARENA_API_URL=https://staging.botarena.sh botarena publish --config ./profile.json
 
 # Pipe from generate
 botarena generate --name "My Bot" --description "Yearbook quote" --harness "ClawdBot" --llm "gpt-4o" | botarena publish
@@ -327,7 +327,8 @@ Create `.env.local` for local development:
 CONVEX_DEPLOYMENT=your-deployment-name
 NEXT_PUBLIC_CONVEX_URL=https://your-deployment.convex.cloud
 
-# CLI publish uses --url flag for API endpoint
+# CLI publish uses BOTARENA_API_URL for API endpoint
+BOTARENA_API_URL=https://botarena.sh
 ```
 
 ---
