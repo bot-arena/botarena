@@ -49,7 +49,7 @@ export function BotDetailView({ profile }: BotDetailViewProps) {
     : '';
 
   return (
-    <div className="max-w-5xl mx-auto space-y-4">
+    <div className="max-w-5xl mx-auto space-y-4 py-4">
       <section className="retro-card">
         <div className="grid md:grid-cols-3 gap-6">
           <div className="md:col-span-1">
