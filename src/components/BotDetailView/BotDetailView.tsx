@@ -63,7 +63,7 @@ export function BotDetailView({ profile }: BotDetailViewProps) {
                   loading="lazy"
                 />
               ) : (
-                <NoiseAvatar icon={icon} model={llmPrimary} />
+                <NoiseAvatar icon={icon} model={llmPrimary} id={profile.id} />
               )}
             </Panel>
           </div>

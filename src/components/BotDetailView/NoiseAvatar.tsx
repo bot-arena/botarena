@@ -3,14 +3,42 @@
 import * as React from 'react';
 import { cn } from '@/lib/utils';
 
+// Deterministic hash function (cyrb128)
+function cyrb128(str: string): number {
+  let h1 = 1779033703, h2 = 3144134277, h3 = 1013904242, h4 = 2773480762;
+  for (let i = 0, k; i < str.length; i++) {
+    k = str.charCodeAt(i);
+    h1 = h2 ^ Math.imul(h1 ^ k, 597399067);
+    h2 = h3 ^ Math.imul(h2 ^ k, 2869860233);
+    h3 = h4 ^ Math.imul(h3 ^ k, 951274213);
+    h4 = h1 ^ Math.imul(h4 ^ k, 2716044179);
+  }
+  h1 = Math.imul(h3 ^ (h1 >>> 18), 597399067);
+  h2 = Math.imul(h4 ^ (h2 >>> 22), 2869860233);
+  h3 = Math.imul(h1 ^ (h3 >>> 17), 951274213);
+  h4 = Math.imul(h2 ^ (h4 >>> 19), 2716044179);
+  return (h1 ^ h2 ^ h3 ^ h4) >>> 0;
+}
+
+// Mulberry32 PRNG - produces deterministic output for same seed
+function mulberry32(a: number) {
+  return function() {
+    let t = a += 0x6D2B79F5;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  }
+}
+
 interface NoiseCanvasProps {
   className?: string;
   fps?: number;
   density?: number;
   size?: number;
+  seed?: string | undefined;
 }
 
-function NoiseCanvas({ className, fps = 12, density = 0.6, size = 96 }: NoiseCanvasProps) {
+function NoiseCanvas({ className, fps = 12, density = 0.6, size = 96, seed }: NoiseCanvasProps) {
   const canvasRef = React.useRef<HTMLCanvasElement | null>(null);
 
   React.useEffect(() => {
@@ -28,17 +56,27 @@ function NoiseCanvas({ className, fps = 12, density = 0.6, size = 96 }: NoiseCan
     const imageData = context.createImageData(dimension, dimension);
     const data = imageData.data;
 
+    // Create PRNG - deterministic if seed provided, random otherwise
+    const random = seed ? mulberry32(cyrb128(seed)) : Math.random;
+
     const renderNoise = () => {
       for (let i = 0; i < data.length; i += 4) {
-        const value = (Math.random() * 255) | 0;
+        const value = (random() * 255) | 0;
         data[i] = value;
         data[i + 1] = value;
         data[i + 2] = value;
-        data[i + 3] = Math.random() < density ? 255 : 0;
+        data[i + 3] = random() < density ? 255 : 0;
       }
       context.putImageData(imageData, 0, 0);
     };
 
+    // If seed is provided, render once statically (no animation)
+    if (seed) {
+      renderNoise();
+      return;
+    }
+
+    // Otherwise, use animated noise (original behavior)
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReducedMotion) {
       renderNoise();
@@ -62,7 +100,7 @@ function NoiseCanvas({ className, fps = 12, density = 0.6, size = 96 }: NoiseCan
     return () => {
       window.cancelAnimationFrame(animationId);
     };
-  }, [density, fps, size]);
+  }, [density, fps, size, seed]);
 
   return (
     <canvas
@@ -79,6 +117,7 @@ interface NoiseAvatarProps {
   model?: string;
   status?: string;
   className?: string;
+  id?: string | undefined;
 }
 
 export function NoiseAvatar({
@@ -86,10 +125,11 @@ export function NoiseAvatar({
   model,
   status = 'SIGNAL_LOCK',
   className,
+  id,
 }: NoiseAvatarProps) {
   return (
     <div className={cn('relative h-full w-full overflow-hidden', className)}>
-      <NoiseCanvas className="absolute inset-0 opacity-40" />
+      <NoiseCanvas className="absolute inset-0 opacity-40" seed={id} />
       <div
         className="absolute inset-0 opacity-40"
         style={{
