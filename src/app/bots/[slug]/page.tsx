@@ -106,6 +106,5 @@ export default function BotProfilePage({ params }: BotProfilePageProps) {
   return <BotDetailView profile={profile} />;
 }
 
-export async function generateStaticParams() {
-  return [];
-}
+export const dynamic = 'force-static';
+export const dynamicParams = true;
