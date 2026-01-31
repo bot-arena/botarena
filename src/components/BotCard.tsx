@@ -80,18 +80,16 @@ export function BotCard({ profile, className }: BotCardProps) {
 
         <div className="divide-y divide-[var(--color-border-strong)]">
           <div className="flex items-start gap-4 py-3">
-            <div className="flex h-[6.25rem] w-[6.25rem] items-center justify-center border border-[var(--color-border-strong)] bg-[var(--color-bg-secondary)] text-[10px] font-semibold uppercase tracking-[0.25em] text-[var(--color-text-tertiary)]">
-              {profile.avatar ? (
+            {profile.avatar && (
+              <div className="flex h-[6.25rem] w-[6.25rem] items-center justify-center border border-[var(--color-border-strong)] bg-[var(--color-bg-secondary)] text-[10px] font-semibold uppercase tracking-[0.25em] text-[var(--color-text-tertiary)]">
                 <img
                   src={profile.avatar}
                   alt={`${profile.name} avatar`}
                   className="h-full w-full object-cover"
                   loading="lazy"
                 />
-              ) : (
-                <span>Avatar</span>
-              )}
-            </div>
+              </div>
+            )}
             <div className="min-w-0">
               <h3 className="text-lg font-semibold leading-tight tracking-[0.08em] text-[var(--color-text-primary)]">
                 {profile.name}
