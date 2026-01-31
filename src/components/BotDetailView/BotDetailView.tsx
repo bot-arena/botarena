@@ -19,6 +19,7 @@ import { CopyableUrl } from './CopyableUrl';
 import { DebugToggle } from './DebugToggle';
 import { SkillCard } from './SkillCard';
 import { McpRow } from './McpRow';
+import { NoiseAvatar } from './NoiseAvatar';
 
 /**
  * Detailed view component for displaying bot profile information.
@@ -44,7 +45,15 @@ export function BotDetailView({ profile }: BotDetailViewProps) {
     [skillsData, mcpsData]
   );
   const rarityColor = getRarityColor(rarity);
-  const icon = getBotIcon(profile.llm.primary);
+  const llmPrimary = profile.llm?.primary ?? 'UNKNOWN';
+  const llmFallbacks = profile.llm?.fallbacks ?? [];
+  const icon = getBotIcon(llmPrimary);
+  const createdAtLabel = profile.createdAt
+    ? formatFullDate(profile.createdAt)
+    : 'UNKNOWN';
+  const updatedAtLabel = profile.updatedAt
+    ? formatFullDate(profile.updatedAt)
+    : 'UNKNOWN';
 
   // Construct public URL
   const publicUrl = profile.slug
@@ -56,10 +65,8 @@ export function BotDetailView({ profile }: BotDetailViewProps) {
       <section className="retro-card">
         <div className="grid md:grid-cols-3 gap-6">
           <div className="md:col-span-1">
-            <Panel className="w-full aspect-square flex items-center justify-center mb-2">
-              <span className="text-5xl" aria-hidden="true">
-                {icon}
-              </span>
+            <Panel className="w-full aspect-square overflow-hidden mb-2">
+              <NoiseAvatar icon={icon} model={llmPrimary} />
             </Panel>
             <div className="text-center">
               <div className="text-xs uppercase text-[var(--color-text-secondary)]">
@@ -75,8 +82,8 @@ export function BotDetailView({ profile }: BotDetailViewProps) {
             <div className="grid grid-cols-2 gap-4 text-sm">
               <InfoItem label="HARNESS" value={profile.harness} />
               <InfoItem label="VERSION" value={`v${profile.version}`} />
-              <InfoItem label="CREATED" value={formatFullDate(profile.createdAt)} />
-              <InfoItem label="UPDATED" value={formatFullDate(profile.updatedAt)} />
+              <InfoItem label="CREATED" value={createdAtLabel} />
+              <InfoItem label="UPDATED" value={updatedAtLabel} />
             </div>
 
             <Panel className="p-3">
@@ -102,16 +109,16 @@ export function BotDetailView({ profile }: BotDetailViewProps) {
 
       <ConfigSection title="LLM_CONFIG" expanded={true}>
         <div className="space-y-3">
-          <ConfigField label="PRIMARY_MODEL" value={profile.llm.primary} />
+          <ConfigField label="PRIMARY_MODEL" value={llmPrimary} />
           <ConfigField
             label="FALLBACK_MODELS"
-            value={profile.llm.fallbacks ?? []}
+            value={llmFallbacks}
           />
           <ConfigField
             label="TEMPERATURE"
-            value={profile.llm.temperature ?? 'N/A'}
+            value={profile.llm?.temperature ?? 'N/A'}
           />
-          <ConfigField label="MAX_TOKENS" value={profile.llm.maxTokens ?? 'N/A'} />
+          <ConfigField label="MAX_TOKENS" value={profile.llm?.maxTokens ?? 'N/A'} />
         </div>
       </ConfigSection>
 

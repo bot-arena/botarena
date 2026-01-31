@@ -73,11 +73,12 @@ http.route({
  * Returns profile data for a given slug
  */
 http.route({
-  path: "/api/profiles/{slug}",
+  pathPrefix: "/api/profiles/",
   method: "GET",
   handler: httpAction(async (ctx, request) => {
     const url = new URL(request.url);
-    const slug = url.pathname.split("/").pop();
+    const pathSegments = url.pathname.split("/").filter(Boolean);
+    const slug = pathSegments[pathSegments.length - 1];
 
     if (!slug) {
       return new Response(

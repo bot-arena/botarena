@@ -8,12 +8,45 @@ interface BotProfilePageProps {
   }>;
 }
 
+const normalizeProfile = (profile: any) => {
+  if (!profile || typeof profile !== 'object') return profile;
+
+  const llmConfig = profile.llm ?? profile.config?.llm ?? {};
+  const llm = {
+    primary: llmConfig.primary ?? profile.llmPrimary ?? 'UNKNOWN',
+    fallbacks: llmConfig.fallbacks ?? profile.llmFallbacks ?? [],
+    temperature: llmConfig.temperature,
+    maxTokens: llmConfig.maxTokens,
+  };
+
+  const normalizeDate = (value: unknown) => {
+    if (!value) return undefined;
+    if (typeof value === 'number') return new Date(value).toISOString();
+    return value;
+  };
+
+  const createdAt = normalizeDate(profile.createdAt ?? profile._creationTime);
+  const updatedAt = normalizeDate(
+    profile.updatedAt ?? profile._creationTime ?? profile.createdAt
+  );
+
+  return {
+    ...profile,
+    llm,
+    createdAt,
+    updatedAt,
+  };
+};
+
 export async function generateMetadata(
   { params }: BotProfilePageProps
 ): Promise<Metadata> {
   const { slug } = await params;
   
-  const apiUrl = process.env.NEXT_PUBLIC_CONVEX_URL || '';
+  const apiUrl =
+    process.env.NEXT_PUBLIC_CONVEX_SITE_URL ||
+    process.env.NEXT_PUBLIC_CONVEX_URL ||
+    '';
   const response = await fetch(`${apiUrl}/api/profiles/${slug}`, {
     cache: 'no-store',
   });
@@ -26,7 +59,7 @@ export async function generateMetadata(
   }
   
   const result = await response.json();
-  const profile = result.data;
+  const profile = normalizeProfile(result.data);
   
   return {
     title: `${profile.name} | BotArena`,
@@ -48,7 +81,10 @@ export async function generateMetadata(
 export default async function BotProfilePage({ params }: BotProfilePageProps) {
   const { slug } = await params;
   
-  const apiUrl = process.env.NEXT_PUBLIC_CONVEX_URL || '';
+  const apiUrl =
+    process.env.NEXT_PUBLIC_CONVEX_SITE_URL ||
+    process.env.NEXT_PUBLIC_CONVEX_URL ||
+    '';
   const response = await fetch(`${apiUrl}/api/profiles/${slug}`, {
     cache: 'no-store',
   });
