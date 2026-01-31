@@ -37,7 +37,7 @@ export default function RootLayout({
           <CRTBackground />
           <div className="relative z-10 flex flex-col flex-grow">
             <Navigation />
-            <main className="flex-grow pt-[60px] pb-[80px] md:pb-0 px-4">
+            <main className="flex-grow pt-[60px] px-4">
               {children}
             </main>
             <Footer />

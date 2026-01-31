@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 
-export interface FooterProps extends React.HTMLAttributes<HTMLElement> {}
+export interface FooterProps extends React.HTMLAttributes<HTMLElement> { }
 
 /**
  * Application footer with version info and links.
@@ -18,7 +18,7 @@ export const Footer = React.forwardRef<HTMLElement, FooterProps>(
       >
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-center items-center gap-4 text-xs text-[var(--color-text-secondary)]">
-            <span>BOTARENA_V1.0</span>
+            <span>© 2026 BOTARENA</span>
             <span className="hidden md:inline" aria-hidden="true">|</span>
             <a
               href="https://github.com/bot-arena/botarena"

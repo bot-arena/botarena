@@ -16,12 +16,41 @@ const navLinks: NavLink[] = [
 export interface NavigationProps extends React.HTMLAttributes<HTMLElement> { }
 
 /**
- * Main application navigation with responsive mobile bottom bar.
+ * Main application navigation with responsive mobile side drawer.
  * Includes logo, navigation links, and GitHub link.
  */
 export const Navigation = React.forwardRef<HTMLElement, NavigationProps>(
   (props, ref) => {
     const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+    const drawerRef = React.useRef<HTMLDivElement>(null);
+
+    React.useEffect(() => {
+      const handleClickOutside = (event: MouseEvent) => {
+        if (drawerRef.current && !drawerRef.current.contains(event.target as Node)) {
+          setIsMenuOpen(false);
+        }
+      };
+
+      if (isMenuOpen) {
+        document.addEventListener('click', handleClickOutside);
+      }
+
+      return () => {
+        document.removeEventListener('click', handleClickOutside);
+      };
+    }, [isMenuOpen]);
+
+    React.useEffect(() => {
+      if (isMenuOpen) {
+        document.body.style.overflow = 'hidden';
+      } else {
+        document.body.style.overflow = '';
+      }
+
+      return () => {
+        document.body.style.overflow = '';
+      };
+    }, [isMenuOpen]);
 
     return (
       <>
@@ -62,7 +91,10 @@ export const Navigation = React.forwardRef<HTMLElement, NavigationProps>(
 
             <button
               type="button"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsMenuOpen((prev) => !prev);
+              }}
               className="md:hidden p-2 border border-[var(--color-border-strong)] hover:bg-[var(--color-accent-primary)] hover:text-white transition-colors"
               aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
               aria-expanded={isMenuOpen}
@@ -95,24 +127,48 @@ export const Navigation = React.forwardRef<HTMLElement, NavigationProps>(
           </div>
         </header>
 
-        {/* Mobile bottom navigation */}
-        <nav
-          id="mobile-navigation"
-          className="fixed bottom-0 left-0 right-0 h-20 bg-[var(--color-bg-secondary)] border-t-2 border-[var(--color-border-strong)] z-50 md:hidden"
-          aria-label="Mobile navigation"
-        >
-          <div className="grid grid-cols-3 h-full">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="flex flex-col items-center justify-center border-r border-[var(--color-border-strong)] last:border-r-0 hover:bg-[var(--color-bg-primary)] transition-colors"
-              >
-                <span className="text-xs font-bold uppercase">{link.label}</span>
-              </Link>
-            ))}
+        {/* Mobile side drawer */}
+        {isMenuOpen && (
+          <div className="md:hidden">
+            {/* Backdrop overlay */}
+            <div className="fixed inset-0 bg-black/50 z-40" />
+
+            {/* Drawer panel */}
+            <div
+              ref={drawerRef}
+              id="mobile-navigation"
+              className="fixed top-[60px] right-0 bottom-0 w-[280px] bg-[var(--color-bg-secondary)] border-l-2 border-[var(--color-border-strong)] z-50 shadow-xl transform translate-x-0 transition-transform duration-300 ease-out"
+              aria-label="Mobile navigation"
+            >
+              <nav className="flex flex-col h-full">
+                <div className="flex-1 py-4">
+                  {navLinks.map((link) => (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      onClick={() => setIsMenuOpen(false)}
+                      className="block px-6 py-4 uppercase text-xs font-bold border-b border-[var(--color-border-strong)] hover:bg-[var(--color-bg-primary)] transition-colors"
+                    >
+                      {link.label}
+                    </Link>
+                  ))}
+                </div>
+
+                <div className="p-4 border-t border-[var(--color-border-strong)]">
+                  <a
+                    href="https://github.com/bot-arena/botarena"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="block w-full text-center uppercase text-xs font-bold px-4 py-3 border border-[var(--color-border-strong)] hover:bg-[var(--color-accent-primary)] hover:text-white transition-colors"
+                  >
+                    GITHUB
+                  </a>
+                </div>
+              </nav>
+            </div>
           </div>
-        </nav>
+        )}
       </>
     );
   }
