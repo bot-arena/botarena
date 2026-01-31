@@ -99,46 +99,50 @@ export function BotDetailView({ profile }: BotDetailViewProps) {
         </div>
       </section>
 
-      <ConfigSection title="LLM_CONFIG" expanded={true}>
-        <div className="space-y-3">
-          <ConfigField label="PRIMARY_MODEL" value={llmPrimary} />
-          <ConfigField
-            label="FALLBACK_MODELS"
-            value={llmFallbacks}
-          />
-        </div>
-      </ConfigSection>
-
-      <ConfigSection title="SKILLS" expanded={true}>
-        <div className="badge-inline-container">
-          {skillsData.map((skill, index) => (
-            <SkillCard key={`${skill.name}-${index}`} skill={skill} />
-          ))}
-        </div>
-        <div className="mt-2 text-xs text-[var(--color-text-secondary)]">
-          TOTAL_SKILLS: {skillsData.length}
-        </div>
-      </ConfigSection>
-
-      <ConfigSection title="MCP_SERVERS" expanded={true}>
-        <div className="badge-inline-container">
-          {mcpsData.map((mcp, index) => (
-            <McpRow key={`${mcp.name}-${index}`} mcp={mcp} />
-          ))}
-        </div>
-      </ConfigSection>
-
-      {clisData.length > 0 && (
-        <ConfigSection title="CLI_TOOLS" expanded={true}>
-          <div className="badge-inline-container">
-            {clisData.map((cli, index) => (
-              <CliBadge
-                key={`${typeof cli === 'string' ? cli : cli.name}-${index}`}
-                cli={cli}
+      {!debugMode && (
+        <>
+          <ConfigSection title="LLM_CONFIG" expanded={true}>
+            <div className="space-y-3">
+              <ConfigField label="PRIMARY_MODEL" value={llmPrimary} />
+              <ConfigField
+                label="FALLBACK_MODELS"
+                value={llmFallbacks}
               />
-            ))}
-          </div>
-        </ConfigSection>
+            </div>
+          </ConfigSection>
+
+          <ConfigSection title="SKILLS" expanded={true} count={skillsData.length}>
+            <div className="badge-inline-container">
+              {skillsData.map((skill, index) => (
+                <SkillCard key={`${skill.name}-${index}`} skill={skill} />
+              ))}
+            </div>
+            <div className="mt-2 text-xs text-[var(--color-text-secondary)]">
+              TOTAL_SKILLS: {skillsData.length}
+            </div>
+          </ConfigSection>
+
+          <ConfigSection title="MCP_SERVERS" expanded={true} count={mcpsData.length}>
+            <div className="badge-inline-container">
+              {mcpsData.map((mcp, index) => (
+                <McpRow key={`${mcp.name}-${index}`} mcp={mcp} />
+              ))}
+            </div>
+          </ConfigSection>
+
+          {clisData.length > 0 && (
+            <ConfigSection title="CLI_TOOLS" expanded={true} count={clisData.length}>
+              <div className="badge-inline-container">
+                {clisData.map((cli, index) => (
+                  <CliBadge
+                    key={`${typeof cli === 'string' ? cli : cli.name}-${index}`}
+                    cli={cli}
+                  />
+                ))}
+              </div>
+            </ConfigSection>
+          )}
+        </>
       )}
 
       {debugMode && (

@@ -13,6 +13,10 @@ export interface ConfigSectionProps extends React.HTMLAttributes<HTMLElement> {
    * @default false
    */
   expanded?: boolean;
+  /**
+   * Optional count to display in the header
+   */
+  count?: number;
 }
 
 /**
@@ -20,7 +24,7 @@ export interface ConfigSectionProps extends React.HTMLAttributes<HTMLElement> {
  * Used in bot detail views to organize configuration into expandable sections.
  */
 export const ConfigSection = React.forwardRef<HTMLElement, ConfigSectionProps>(
-  ({ title, children, expanded = false, className, ...props }, ref) => {
+  ({ title, children, expanded = false, count, className, ...props }, ref) => {
     const [isOpen, setIsOpen] = React.useState(expanded);
 
     return (
@@ -32,7 +36,7 @@ export const ConfigSection = React.forwardRef<HTMLElement, ConfigSectionProps>(
           aria-expanded={isOpen}
           aria-controls={`config-content-${title}`}
         >
-          <span>{title}</span>
+          <span>{count !== undefined ? `${title} [${count}]` : title}</span>
           <span className="text-xs" aria-hidden="true">
             {isOpen ? '[-]' : '[+]'}
           </span>
