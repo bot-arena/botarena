@@ -567,6 +567,99 @@
   .badge-cli-simple .badge-name {
     font-size: 0.75rem; /* 12px */
   }
+
+  /* ============================================
+     INLINE COMPACT BADGES - Fit around content
+     ============================================ */
+
+  .badge-inline {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background-color: var(--color-bg-panel);
+    border: 1px solid var(--color-border-strong);
+    padding: 4px 10px;
+    box-shadow: 2px 2px 0 0 var(--color-accent-primary);
+    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+    cursor: default;
+    width: fit-content;
+    white-space: nowrap;
+  }
+
+  .badge-inline:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 3px 3px 0 0 var(--color-accent-primary);
+  }
+
+  .badge-inline .badge-icon {
+    width: 14px;
+    height: 14px;
+    margin-top: 0;
+  }
+
+  .badge-inline .badge-icon svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  .badge-inline .badge-name {
+    font-size: 0.75rem; /* 12px */
+    font-weight: 600;
+    line-height: 1.2;
+    color: var(--color-text-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+
+  /* Inline Skill Variant */
+  .badge-inline-skill {
+    box-shadow: 2px 2px 0 0 var(--color-accent-primary);
+  }
+
+  .badge-inline-skill:hover {
+    box-shadow: 3px 3px 0 0 var(--color-accent-primary);
+    border-color: var(--color-accent-primary);
+  }
+
+  .badge-inline-skill .badge-icon {
+    color: var(--color-accent-primary);
+  }
+
+  /* Inline MCP Variant */
+  .badge-inline-mcp {
+    box-shadow: 2px 2px 0 0 var(--color-accent-success);
+  }
+
+  .badge-inline-mcp:hover {
+    box-shadow: 3px 3px 0 0 var(--color-accent-success);
+    border-color: var(--color-accent-success);
+  }
+
+  .badge-inline-mcp .badge-icon {
+    color: var(--color-accent-success);
+  }
+
+  /* Inline CLI Variant */
+  .badge-inline-cli {
+    box-shadow: 2px 2px 0 0 var(--color-accent-warning);
+  }
+
+  .badge-inline-cli:hover {
+    box-shadow: 3px 3px 0 0 var(--color-accent-warning);
+    border-color: var(--color-accent-warning);
+  }
+
+  .badge-inline-cli .badge-icon {
+    color: var(--color-accent-warning);
+  }
+
+  /* Inline container for wrapping */
+  .badge-inline-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

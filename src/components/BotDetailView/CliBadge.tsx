@@ -6,14 +6,14 @@ interface CliBadgeProps {
 }
 
 /**
- * Beautiful CLI badge component with retro gaming aesthetic.
- * Displays CLI name with Terminal icon in a compact grid-friendly format.
+ * Compact inline CLI badge that fits around the CLI name.
+ * Displays CLI name with Terminal icon in a tight, badge-like format.
  */
 export function CliBadge({ cli }: CliBadgeProps) {
   // Handle string CLIs (backward compatibility)
   if (typeof cli === 'string') {
     return (
-      <div className="badge-beautiful badge-cli badge-cli-simple">
+      <div className="badge-inline badge-inline-cli">
         <div className="badge-icon">
           <Terminal aria-hidden="true" />
         </div>
@@ -23,7 +23,7 @@ export function CliBadge({ cli }: CliBadgeProps) {
   }
 
   return (
-    <div className="badge-beautiful badge-cli badge-cli-simple">
+    <div className="badge-inline badge-inline-cli">
       <div className="badge-icon">
         <Terminal aria-hidden="true" />
       </div>

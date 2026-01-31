@@ -6,39 +6,28 @@ interface SkillCardProps {
 }
 
 /**
- * Beautiful skill badge component with retro gaming aesthetic.
- * Displays skill name and optional description with Zap icon.
+ * Compact inline skill badge that fits around the skill name.
+ * Displays skill name with Zap icon in a tight, badge-like format.
  */
 export function SkillCard({ skill }: SkillCardProps) {
   // Handle string skills (backward compatibility)
   if (typeof skill === 'string') {
     return (
-      <div className="badge-beautiful badge-skill">
+      <div className="badge-inline badge-inline-skill">
         <div className="badge-icon">
           <Zap aria-hidden="true" />
         </div>
-        <div className="badge-content">
-          <div className="badge-header">
-            <span className="badge-name">{skill}</span>
-          </div>
-        </div>
+        <span className="badge-name">{skill}</span>
       </div>
     );
   }
 
   return (
-    <div className="badge-beautiful badge-skill">
+    <div className="badge-inline badge-inline-skill">
       <div className="badge-icon">
         <Zap aria-hidden="true" />
       </div>
-      <div className="badge-content">
-        <div className="badge-header">
-          <span className="badge-name">{skill.name}</span>
-        </div>
-        {skill.description && (
-          <div className="badge-description">{skill.description}</div>
-        )}
-      </div>
+      <span className="badge-name">{skill.name}</span>
     </div>
   );
 }

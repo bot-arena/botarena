@@ -110,7 +110,7 @@ export function BotDetailView({ profile }: BotDetailViewProps) {
       </ConfigSection>
 
       <ConfigSection title="SKILLS" expanded={true}>
-        <div className="grid grid-cols-2 gap-2">
+        <div className="badge-inline-container">
           {skillsData.map((skill, index) => (
             <SkillCard key={`${skill.name}-${index}`} skill={skill} />
           ))}
@@ -121,7 +121,7 @@ export function BotDetailView({ profile }: BotDetailViewProps) {
       </ConfigSection>
 
       <ConfigSection title="MCP_SERVERS" expanded={true}>
-        <div className="space-y-2">
+        <div className="badge-inline-container">
           {mcpsData.map((mcp, index) => (
             <McpRow key={`${mcp.name}-${index}`} mcp={mcp} />
           ))}
@@ -130,7 +130,7 @@ export function BotDetailView({ profile }: BotDetailViewProps) {
 
       {clisData.length > 0 && (
         <ConfigSection title="CLI_TOOLS" expanded={true}>
-          <div className="grid grid-cols-3 gap-2">
+          <div className="badge-inline-container">
             {clisData.map((cli, index) => (
               <CliBadge
                 key={`${typeof cli === 'string' ? cli : cli.name}-${index}`}
